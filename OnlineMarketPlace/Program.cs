@@ -1,3 +1,6 @@
+using OnlineMarketPlace.Models;
+using OnlineMarketPlace.Repository;
+
 namespace OnlineMarketPlace
 {
     public class Program
@@ -27,6 +30,7 @@ namespace OnlineMarketPlace
                 pattern: "{controller=Home}/{action=Index}/{id?}");
 
             app.Run();
+
         }
     }
 }
