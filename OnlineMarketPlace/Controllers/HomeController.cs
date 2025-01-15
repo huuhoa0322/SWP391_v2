@@ -11,7 +11,7 @@ namespace OnlineMarketPlace.Controllers
 
         private readonly UserRepository userRepository = new();
 
-        
+
 
         public HomeController(ILogger<HomeController> logger)
         {
@@ -29,7 +29,7 @@ namespace OnlineMarketPlace.Controllers
 
         public IActionResult Privacy()
         {
-            
+
             return View();
         }
 
