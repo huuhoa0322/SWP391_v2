@@ -1,4 +1,23 @@
-﻿<div class="left-sidebar">
+﻿@model OnlineMarketPlace.Models.CategoriesList;
+
+<div class="left-sidebar">
+    <h3>Danh sách danh mục</h3>
+    <ul>
+        @for (int i = 0; i < Model.CategoriesParent.Count; i++)
+        {
+            <li>
+                @Model.CategoriesParent[i].Name
+                <ul>
+                    @foreach (var child in Model.CategoriesChild[i])
+                    {
+                        <li>@child.Name</li>
+                    }
+                </ul>
+            </li>
+        }
+    </ul>
+
+
 	<h2>Category</h2>
 	<div class="panel-group category-products" id="accordian">
 		<!--category-productsr-->

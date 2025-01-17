@@ -20,14 +20,14 @@ namespace OnlineMarketPlace.Repository
             return res;
         }
 
-        public List<Category> GetCatgoryChild()
+        public List<Category> GetCatgoryChild(int parentid)
         {
             List<Category> res = new List<Category>();
             foreach (Category c in _allcategory)
             {
                 if (c.Parent != null)
                 {
-                    res.Add(c);
+                    if(c.ParentId == parentid) res.Add(c);
                 }
             }
             return res;
