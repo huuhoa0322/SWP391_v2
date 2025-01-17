@@ -17,7 +17,7 @@ public partial class User
 
     public string Email { get; set; } = null!;
 
-    public string Role { get; set; } = null!;
+    public string Role { get; set; } = "customer";
 
     public DateOnly Dob { get; set; }
 
