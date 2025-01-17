@@ -12,43 +12,30 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 public class RegisterController : Controller
 {
 
-    private readonly ILogger<HomeController> _logger;
-    [HttpGet]
-    public IActionResult Index()
-    {
-        return View();
-    }
+    private readonly ILogger<LoginController> _logger;
 
-    private OnlineShoppingContext _context;
+    private readonly UserRepository _userRepository = new();
 
-    public RegisterController(ILogger<HomeController> logger)
+    public RegisterController(ILogger<LoginController> logger)
     {
         _logger = logger;
     }
-    public IActionResult Register(User user)
+
+    [HttpGet]
+    public IActionResult Register()
+    {
+        return View();
+    }
+    public async Task<IActionResult> Register(User user)
     {
         if (ModelState.IsValid)
         {
-            // Lưu thông tin người dùng vào cơ sở dữ liệu
-            _context.Users.Add(user);         
-            // Sử dụng TempData để truyền thông báo
+            // Thêm dữ liệu vào cơ sở dữ liệu một cách bất đồng bộ
+            await _userRepository.AddAsync(user);
             TempData["SuccessMessage"] = "Đăng ký thành công. Vui lòng đăng nhập!";
-
-            // Chuyển hướng đến trang login
-            return RedirectToAction("Index", "Home"); // Thay "Account" bằng controller trang login của bạn
+            return RedirectToAction("Index", "Home"); // Chuyển hướng sau khi đăng ký thành công
         }
-        else
-        {
-            var errors = ModelState.Values
-            .SelectMany(v => v.Errors)
-            .Select(e => e.ErrorMessage)
-            .ToList();
-
-            ViewBag.Errors = errors; // Gửi danh sách lỗi đến View
-            TempData["SuccessMessage"] = "Đăng ký k thành công. Vui lòng đăng nhập!";
-
-            // Trả về lại form đăng ký với thông báo lỗi
-            return View("Index");
-        }
+        return View(user);
     }
+
 }
