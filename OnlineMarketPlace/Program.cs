@@ -19,6 +19,9 @@ namespace OnlineMarketPlace
                 options.Cookie.IsEssential = true; // Make the session cookie essential
             });
 
+            builder.Services.AddTransient<EmailService>(); // add mail service
+
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -29,6 +32,7 @@ namespace OnlineMarketPlace
             app.UseStaticFiles();
 
             app.UseRouting();
+
 
             app.UseAuthorization();
 

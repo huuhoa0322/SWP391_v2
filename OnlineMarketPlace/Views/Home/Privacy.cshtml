@@ -1,6 +1,12 @@
 ﻿@{
     ViewData["Title"] = "Privacy Policy";
 }
-<h1>@ViewData["Title"]</h1>
+<h1>Test Email</h1>
 
-<p>Use this page to detail your site's privacy policy.</p>
+<form method="get" action="/Email/SendEmail">
+    <input type="email" name="email" placeholder="Nhập email" required />
+    <button type="submit">Gửi Email</button>
+</form>
+
+
+<p>Nếu muốn sử dụng vui lòng đọc trong doc (có thể doc chưa cập nhật do Coder vẫn ngủ).</p>
