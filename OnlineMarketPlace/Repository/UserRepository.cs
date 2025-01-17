@@ -13,5 +13,12 @@ namespace OnlineMarketPlace.Repository
             return _context.Users.ToList();
 
         }
+
+        public User? GetUser(string username, string password)
+        {
+            _context = new();
+            return _context.Users.FirstOrDefault(u => u.Username == username && u.Password == password);
+        }
+
     }
 }
