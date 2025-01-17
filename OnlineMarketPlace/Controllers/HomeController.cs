@@ -11,7 +11,7 @@ namespace OnlineMarketPlace.Controllers
 
         private readonly UserRepository userRepository = new();
 
-
+        private readonly ProductRepository productRepository = new();
 
         public HomeController(ILogger<HomeController> logger)
         {
@@ -19,12 +19,9 @@ namespace OnlineMarketPlace.Controllers
         }
 
         public IActionResult Index()
-        {
-            string a = userRepository.GetUsers()[0].Username;
-            ViewData["Message"] = a;
-            //ViewBag.Message2 = "welcome here ViewBag!";
-
-            return View();
+        {;
+            var products = productRepository.GetProducts();
+            return View(products);
         }
 
         public IActionResult Privacy()

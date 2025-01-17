@@ -33,6 +33,7 @@ public partial class OnlineShoppingContext : DbContext
     }
 
 
+
     private string GetConnectionString()
 
     {
@@ -50,7 +51,7 @@ public partial class OnlineShoppingContext : DbContext
 
         return strConn;
 
-    }
+    }// use code in json file to connect to database
 
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
