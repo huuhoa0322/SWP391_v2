@@ -32,8 +32,8 @@ public class LoginController : Controller
         }
         else
         {
-            //HttpContext.Session.SetString("Username", user.Username);
-            //HttpContext.Session.SetString("Role", user.Role);
+            HttpContext.Session.SetString("Username", user.Username);
+            HttpContext.Session.SetString("Role", user.Role);
             return RedirectToAction("Index", "Home");
         }
 
