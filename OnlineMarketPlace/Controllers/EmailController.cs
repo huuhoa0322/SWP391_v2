@@ -18,13 +18,6 @@ public class EmailController : Controller
         return RedirectToAction("Index", "Home");
     }
 
-    public async Task<IActionResult> SendEmail(String email, String subject, String Body)
-    {
-        await _emailService.SendEmailAsync(email, subject, Body);
-        //return Ok("Email Sent");
-        ViewData["mailmesage"] = "mail sent complete";
-        return RedirectToAction("Index", "Home");
-    }
-
+ 
 
 }

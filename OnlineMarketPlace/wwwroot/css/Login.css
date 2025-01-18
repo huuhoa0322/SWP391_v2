@@ -1,7 +1,4 @@
-﻿/* Login Page Styles */
-
-/* Tổng quát chỉ trong login-container */
-.login-container {
+﻿.login-container {
     background-color: #ffffff;
     padding: 20px;
     border-radius: 8px;
@@ -77,10 +74,25 @@
             cursor: pointer;
             font-size: 14px;
             transition: background-color 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
 
-            .login-container .social-login button:hover {
-                background-color: #e0e0e0;
+            .login-container .social-login button.google {
+                background-color: #4285F4;
+                color: white;
+                border: none;
+            }
+
+                .login-container .social-login button.google:hover {
+                    background-color: #357ae8;
+                }
+
+            .login-container .social-login button img {
+                width: 20px;
+                height: 20px;
             }
 
     .login-container .additional-links {

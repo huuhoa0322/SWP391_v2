@@ -18,7 +18,14 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Remove="Category.cs" />
+    <Compile Remove="Discount.cs" />
+    <Compile Remove="OnlineShoppingContext.cs" />
+    <Compile Remove="Product.cs" />
+    <Compile Remove="RatingAndReview.cs" />
     <Compile Remove="Repository\pProductRepository.cs" />
+    <Compile Remove="Shop.cs" />
+    <Compile Remove="User.cs" />
   </ItemGroup>
 
   <ItemGroup>

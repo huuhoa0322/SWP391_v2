@@ -26,16 +26,16 @@ public class RegisterController : Controller
     {
         return View();
     }
-    public async Task<IActionResult> Register(User user)
-    {
-        if (ModelState.IsValid)
-        {
-            // Thêm dữ liệu vào cơ sở dữ liệu một cách bất đồng bộ
-            await _userRepository.AddAsync(user);
-            TempData["SuccessMessage"] = "Đăng ký thành công. Vui lòng đăng nhập!";
-            return RedirectToAction("Index", "Home"); // Chuyển hướng sau khi đăng ký thành công
-        }
-        return View(user);
-    }
+    //public async Task<IActionResult> Register(User user)
+    //{
+    //    if (ModelState.IsValid)
+    //    {
+    //        // Thêm dữ liệu vào cơ sở dữ liệu một cách bất đồng bộ
+    //        await _userRepository.AddAsync(user);
+    //        TempData["SuccessMessage"] = "Đăng ký thành công. Vui lòng đăng nhập!";
+    //        return RedirectToAction("Index", "Home"); // Chuyển hướng sau khi đăng ký thành công
+    //    }
+    //    return View(user);
+    //}
 
 }

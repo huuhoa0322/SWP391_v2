@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authentication;
+﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Mvc;
@@ -24,10 +25,10 @@ public class LoginController : Controller
     }
 
     [HttpPost]
-    public IActionResult CheckLogin(string username, string password)
+    public async Task<IActionResult> CheckLogin(string username, string password)
     {
 
-        var user = _userRepository.GetUser(username, password);
+        var user = await _userRepository.GetUser(username, password);
         if (user == null)
         {
             ViewBag.ErrorMessage = "Tài khoản hoặc mật khẩu không đúng.";
@@ -53,7 +54,13 @@ public class LoginController : Controller
 
     public async Task<IActionResult> GoogleResponse()
     {
-        var result = await HttpContext.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+        //var result = await HttpContext.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+        var result = await HttpContext.AuthenticateAsync(GoogleDefaults.AuthenticationScheme);
+        //if (!result.Succeeded)
+        //{
+        //    //Neu xác thuc ko thanh cong quay ve trang Login
+        //    return RedirectToAction("Login");
+        //}
         var claims = result.Principal.Identities.FirstOrDefault().Claims.Select(claim => new
         {
             claim.Issuer,
@@ -61,7 +68,16 @@ public class LoginController : Controller
             claim.Type,
             claim.Value
         });
-        return RedirectToAction("Index", "Home");
-        //return Json(claims);
+        //var email = claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
+        //return RedirectToAction("Index", "Home");
+        return Json(claims);
+        //string username = email.Split('@')[0];
+        //var existUser = await _userRepository.GetUserByEmail(email);
+        //if (existUser == null)
+        //{
+        //    var u = new User();
+        //    u.Email = email;
+        //    u.Name = ClaimTypes.
+        //}
     }
 }

@@ -1,4 +1,5 @@
-﻿using OnlineMarketPlace.Models;
+﻿using Microsoft.EntityFrameworkCore;
+using OnlineMarketPlace.Models;
 
 namespace OnlineMarketPlace.Repository
 {
@@ -14,16 +15,22 @@ namespace OnlineMarketPlace.Repository
 
         }
 
-        public User? GetUser(string username, string password)
+        public async Task<User?> GetUser(string username, string password)
         {
             _context = new();
-            return _context.Users.FirstOrDefault(u => u.Username == username && u.Password == password);
+            return await _context.Users.FirstOrDefaultAsync(u => u.Username == username && u.Password == password);
         }
         public async Task AddAsync(User user)
         {
             _context = new();
             await _context.Users.AddAsync(user);
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<User?> GetUserByEmail(string email)
+        {
+            _context = new();
+            return await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
         }
     }
 }
