@@ -19,6 +19,11 @@ namespace OnlineMarketPlace.Repository
             _context = new();
             return _context.Users.FirstOrDefault(u => u.Username == username && u.Password == password);
         }
-
+        public async Task AddAsync(User user)
+        {
+            _context = new();
+            await _context.Users.AddAsync(user);
+            await _context.SaveChangesAsync();
+        }
     }
 }

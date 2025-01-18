@@ -44,6 +44,7 @@ namespace OnlineMarketPlace
 
             app.UseRouting();
 
+
             app.UseAuthorization();
 
             app.UseSession();
