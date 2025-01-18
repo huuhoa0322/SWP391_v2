@@ -1,4 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.Google;
+using Microsoft.AspNetCore.Mvc;
 using OnlineMarketPlace.Controllers;
 using OnlineMarketPlace.Models;
 using OnlineMarketPlace.Repository;
@@ -37,5 +40,28 @@ public class LoginController : Controller
             return RedirectToAction("Index", "Home");
         }
 
+    }
+
+    public async Task LoginByGoogle()
+    {
+        await HttpContext.ChallengeAsync(GoogleDefaults.AuthenticationScheme,
+            new AuthenticationProperties
+            {
+                RedirectUri = Url.Action("GoogleResponse")
+            });
+    }
+
+    public async Task<IActionResult> GoogleResponse()
+    {
+        var result = await HttpContext.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+        var claims = result.Principal.Identities.FirstOrDefault().Claims.Select(claim => new
+        {
+            claim.Issuer,
+            claim.OriginalIssuer,
+            claim.Type,
+            claim.Value
+        });
+        return RedirectToAction("Index", "Home");
+        //return Json(claims);
     }
 }
