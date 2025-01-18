@@ -3,13 +3,13 @@
 }
 
 <h2>Register New Account</h2>
-@if (!ViewData.ModelState.IsValid)
+@if (ViewBag.Errors != null)
 {
 	<div class="alert alert-danger">
 		<ul>
-			@foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+			@foreach (var error in ViewBag.Errors)
 			{
-				<li>@error.ErrorMessage</li>
+				<li>@error</li>
 			}
 		</ul>
 	</div>
@@ -43,13 +43,13 @@
 		<input type="email" class="form-control" id="email" name="email" placeholder="Enter your email" required />
 	</div>
 
-
-
+	<input type="hidden" id="role" name="role" value="customer" />
+	<input type="hidden" id="loginBy" name="loginBy" value="false" />
 	<div class="form-group">
 		<label for="dob">Date of Birth</label>
 		<input type="date" class="form-control" id="dob" name="dob" required />
 	</div>
-	
+
 
 	<button type="submit" class="btn btn-primary">Register</button>
 

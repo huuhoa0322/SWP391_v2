@@ -19,7 +19,7 @@ public partial class User
 
     public string Role { get; set; } = "customer";
 
-    public DateOnly Dob { get; set; }
+    public DateTime Dob { get; set; }
 
     public bool IsDeleted { get; set; }
 

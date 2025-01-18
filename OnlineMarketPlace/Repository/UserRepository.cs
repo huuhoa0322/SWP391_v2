@@ -20,14 +20,30 @@ namespace OnlineMarketPlace.Repository
             _context = new();
             return await _context.Users.FirstOrDefaultAsync(u => u.Username == username && u.Password == password);
         }
+        
+
+        public async Task<User?> GetUserByEmail(string email)
+        {
+            _context = new();
+            return await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
+        }
+
+        //add user
         public async Task AddAsync(User user)
         {
             _context = new();
             await _context.Users.AddAsync(user);
             await _context.SaveChangesAsync();
         }
+        //check username
+        public async Task<User?> checkUserName(string username)
+        {
+            _context = new();
+            return await _context.Users.FirstOrDefaultAsync(u => u.Username == username);
+        }
 
-        public async Task<User?> GetUserByEmail(string email)
+        //checkEmail
+        public async Task<User?> checkEmail(string email)
         {
             _context = new();
             return await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
