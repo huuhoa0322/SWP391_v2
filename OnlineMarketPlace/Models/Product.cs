@@ -29,7 +29,7 @@ public partial class Product
 
     public DateTime? DeletedAt { get; set; }
 
-    public virtual Category Category { get; set; } = null!;
+    public virtual CategoryModel Category { get; set; } = null!;
 
     public virtual ICollection<Discount> Discounts { get; set; } = new List<Discount>();
 
