@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace OnlineMarketPlace.Models;
+namespace OnlineMarketPlace;
 
 public partial class User
 {
@@ -17,7 +17,7 @@ public partial class User
 
     public string Email { get; set; } = null!;
 
-    public string Role { get; set; } = "customer";
+    public string Role { get; set; } = null!;
 
     public DateOnly Dob { get; set; }
 
