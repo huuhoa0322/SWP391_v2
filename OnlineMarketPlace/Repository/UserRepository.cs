@@ -25,7 +25,7 @@ namespace OnlineMarketPlace.Repository
         public async Task<User?> GetUserByEmail(string email)
         {
             _context = new();
-            return await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
+            return await _context.Users.FirstOrDefaultAsync(u => u.Email == email && u.IsDeleted == false);
         }
 
         //add user

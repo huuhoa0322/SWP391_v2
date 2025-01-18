@@ -103,7 +103,9 @@ GO
 ALTER TABLE [Product] ADD CONSTRAINT [product_categoryid_foreign] FOREIGN KEY ([categoryId]) REFERENCES [Category] ([id])
 GO
 
-INSERT INTO [User] (name, username, password, gender, email, role, dob, isDeleted, deletedBy, deletedAt) VALUES (N'John Doe', 'johndoe', 'password123', 1, 'johndoe@example.com', 'customer', '1990-05-15', 0, 0, NULL, NULL);
-INSERT INTO [User] (name, username, password, gender, email, role, dob, isDeleted, deletedBy, deletedAt) VALUES (N'admin', 'admin', 'admin', 1, 'admin@example.com', 'admin', '1990-05-15', 0, 0, NULL, NULL);
+INSERT INTO [User] (name, username, password, gender, email, role, dob, loginBy, isDeleted, deletedBy, deletedAt)
+VALUES
+    (N'John Doe', 'johndoe', 'password123', 1, 'johndoe@example.com', 'customer', '1990-05-15', 0, 0, NULL, NULL),
+    (N'admin', 'admin', 'admin', 1, 'admin@example.com', 'admin', '1990-05-15', 0, 0, NULL, NULL);
 
 select * from [User]
