@@ -1,6 +1,9 @@
 ﻿@model IEnumerable<Product>
 <div class="col-sm-3">
-	@Html.Partial("_SidebarPartial");
+	@{
+		var categoriesL = ViewData["CategoriesList"] as OnlineMarketPlace.Models.CategoriesList;
+	}
+	@Html.Partial("_SidebarPartial", categoriesL);
 </div>
 
 <div class="col-sm-9 padding-right">
@@ -38,3 +41,5 @@
 				</div>
 			</div>
 		}
+	</div>
+</div>

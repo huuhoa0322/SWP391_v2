@@ -16,5 +16,5 @@ public  class CategoryModel
     public virtual CategoryModel? Parent { get; set; }
 
     public virtual ICollection<Product> Products { get; set; } = new List<Product>();
-    public required string Slug { get; set; }
+    //public required string Slug { get; set; }
 }
