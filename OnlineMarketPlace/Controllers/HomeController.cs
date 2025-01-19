@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Query.Internal;
 using OnlineMarketPlace.Models;
 using OnlineMarketPlace.Repository;
 
@@ -7,7 +8,6 @@ namespace OnlineMarketPlace.Controllers
 {
     public class HomeController : Controller
     {
-        
 
         private readonly UserRepository userRepository = new();
 
@@ -21,21 +21,30 @@ namespace OnlineMarketPlace.Controllers
             _logger = logger;
         }
 
-        public IActionResult Index()
-        {;
-            var products = productRepository.GetProducts();
+        public async Task<IActionResult> Index()
+        {
+            
+            var products = await productRepository.GetProductsAsync();
             var categoriesParent = categoryRepository.GetCatgoryParent();
 
-            // change for each parent category, get all child categories. using linq
+            //change for each parent category, get all child categories. using linq
+
             var categoriesChildList = categoriesParent
                 .Select(parent => categoryRepository.GetCatgoryChild(parent.Id))
                 .ToList();
 
+            //var categoriesChildList = (await Task.WhenAll(
+            //categoriesParent.Select(async parent => await categoryRepository.GetCategoryChildAsync(parent.Id)))).ToList();
+            //Console.WriteLine();
             // insert to datview
             CategoriesList categoriesList = new CategoriesList(categoriesParent, categoriesChildList);
             ViewData["CategoriesList"] = categoriesList;
             return View(products);
         }
+
+
+
+
 
         public IActionResult Privacy()
         {

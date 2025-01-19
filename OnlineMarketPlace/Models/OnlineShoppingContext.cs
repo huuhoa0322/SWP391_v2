@@ -15,7 +15,7 @@ public partial class OnlineShoppingContext : DbContext
     {
     }
 
-    public virtual DbSet<Category> Categories { get; set; }
+    public virtual DbSet<CategoryModel> Categories { get; set; }
 
     public virtual DbSet<Discount> Discounts { get; set; }
 
@@ -56,7 +56,7 @@ public partial class OnlineShoppingContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<Category>(entity =>
+        modelBuilder.Entity<CategoryModel>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__Category__3213E83F186F8D9E");
 

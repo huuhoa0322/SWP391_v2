@@ -23,6 +23,7 @@
 	<div class="form-group">
 		<label for="username">Username</label>
 		<input type="text" class="form-control" id="username" name="username" placeholder="Enter a username" required />
+		<small id="usernameError" class="text-danger"></small>
 	</div>
 
 	<div class="form-group">
@@ -41,6 +42,7 @@
 	<div class="form-group">
 		<label for="email">Email</label>
 		<input type="email" class="form-control" id="email" name="email" placeholder="Enter your email" required />
+		<small id="emailError" class="text-danger"></small>
 	</div>
 
 	<input type="hidden" id="role" name="role" value="customer" />
@@ -48,6 +50,7 @@
 	<div class="form-group">
 		<label for="dob">Date of Birth</label>
 		<input type="date" class="form-control" id="dob" name="dob" required />
+		<small id="dobError" class="text-danger"></small>
 	</div>
 
 
@@ -55,3 +58,48 @@
 
 
 </form>
+<script>
+	// Kiểm tra username
+	document.getElementById("username").addEventListener("input", async function () {
+		const username = this.value;
+		if (username.length > 0) {
+			const response = await fetch(`/Register/CheckUsername?username=${username}`);
+			const result = await response.json();
+			const errorElement = document.getElementById("usernameError");
+			if (!result.isValid) {
+				errorElement.textContent = result.message;
+			} else {
+				errorElement.textContent = "";
+			}
+		}
+	});
+	// Kiểm tra email
+	document.getElementById("email").addEventListener("input", async function () {
+		const email = this.value;
+		if (email.length > 0) {
+			const response = await fetch(`/Register/CheckEmail?email=${email}`);
+			const result = await response.json();
+			const errorElement = document.getElementById("emailError");
+			if (!result.isValid) {
+				errorElement.textContent = result.message;
+			} else {
+				errorElement.textContent = "";
+			}
+		}
+	});
+
+	// Kiểm tra ngày sinh
+	document.getElementById("dob").addEventListener("change", async function () {
+		const dob = this.value;
+		if (dob) {
+			const response = await fetch(`/Register/ValidateDob?dob=${dob}`);
+			const result = await response.json();
+			const errorElement = document.getElementById("dobError");
+			if (!result.isValid) {
+				errorElement.textContent = result.message;
+			} else {
+				errorElement.textContent = "";
+			}
+		}
+	});
+</script>

@@ -85,6 +85,44 @@ public class RegisterController : Controller
             ViewBag.Errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
             return View("Register");
         }
+
+    }
+    // API kiểm tra username
+    [HttpGet]
+    public async Task<IActionResult> CheckUsername(string username)
+    {
+        var exists = await _userRepository.checkUserName(username);
+        if (exists != null && !exists.IsDeleted)
+        {
+            return Json(new { isValid = false, message = "Username already exists. Please choose another." });
+        }
+
+        return Json(new { isValid = true });
+    }
+    // API kiểm tra email
+    [HttpGet]
+    public async Task<IActionResult> CheckEmail(string email)
+    {
+        var exists = await _userRepository.checkEmail(email);
+        if (exists != null && !exists.IsDeleted)
+        {
+            return Json(new { isValid = false, message = "Email already exists. Please use another email." });
+        }
+
+        return Json(new { isValid = true });
     }
 
+    
+    // API kiểm tra ngày sinh
+    
+    [HttpGet]
+    public IActionResult ValidateDob(DateTime dob)
+    {
+        if (dob > DateTime.Now)
+        {
+            return Json(new { isValid = false, message = "Date of birth cannot be in the future." });
+        }
+
+        return Json(new { isValid = true });
+    }
 }

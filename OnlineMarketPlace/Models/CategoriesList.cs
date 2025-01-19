@@ -2,10 +2,10 @@
 {
     public class CategoriesList
     {
-        public List<Category> CategoriesParent { get; set; }
-        public List<List<Category>> CategoriesChild { get; set; }
+        public List<CategoryModel> CategoriesParent { get; set; }
+        public List<List<CategoryModel>> CategoriesChild { get; set; }
 
-        public CategoriesList(List<Category> categoriesParent, List<List<Category>> categoriesChild)
+        public CategoriesList(List<CategoryModel> categoriesParent, List<List<CategoryModel>> categoriesChild)
         {
             CategoriesParent = categoriesParent;
             CategoriesChild = categoriesChild;
