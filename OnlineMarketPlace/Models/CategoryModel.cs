@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace OnlineMarketPlace.Models;
 
-public partial class CategoryModel
+public  class CategoryModel
 {
     public int Id { get; set; }
 
@@ -16,5 +16,5 @@ public partial class CategoryModel
     public virtual CategoryModel? Parent { get; set; }
 
     public virtual ICollection<Product> Products { get; set; } = new List<Product>();
-    public string Slug { get; internal set; }
+    public required string Slug { get; set; }
 }
