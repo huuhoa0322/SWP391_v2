@@ -18,7 +18,7 @@ namespace OnlineMarketPlace.Repository
         public async Task<User?> GetUser(string username, string password)
         {
             _context = new();
-            return await _context.Users.FirstOrDefaultAsync(u => u.Username == username && u.Password == password);
+            return await _context.Users.FirstOrDefaultAsync(u => u.Username == username && u.Password == ncryptpasswordmd5.HashPasswordMD5(password));
         }
         
 
@@ -48,5 +48,42 @@ namespace OnlineMarketPlace.Repository
             _context = new();
             return await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
         }
+        
+        //Update user
+        public async Task<bool> UpdateUserAsync(User updatedUser)
+        {
+            _context = new();
+
+            var existingUser = await _context.Users.FindAsync(updatedUser.Id);
+
+            if (existingUser == null)
+            {
+                return false; 
+            }
+
+            existingUser.Name = updatedUser.Name ?? existingUser.Name;
+            existingUser.Username = updatedUser.Username ?? existingUser.Username;
+            existingUser.Password = updatedUser.Password ?? existingUser.Password;
+            existingUser.Email = updatedUser.Email ?? existingUser.Email;
+            existingUser.Gender = updatedUser.Gender;
+            existingUser.Dob = updatedUser.Dob;
+            existingUser.Role = updatedUser.Role ?? existingUser.Role;
+            existingUser.IsDeleted = updatedUser.IsDeleted;
+            existingUser.DeletedBy = updatedUser.DeletedBy ?? existingUser.DeletedBy;
+            existingUser.DeletedAt = updatedUser.DeletedAt ?? existingUser.DeletedAt;
+            existingUser.Token = updatedUser.Token ?? existingUser.Token;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+                return true; 
+            }
+            catch (DbUpdateException)
+            {
+                return false; 
+            }
+        }
+
+
     }
 }

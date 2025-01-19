@@ -1,0 +1,35 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Quên Mật Khẩu</title>
+    <link rel="stylesheet" href="~/css/Login.css">
+</head>
+<body>
+    <div class="forgetpass-container">
+        <h2>Quên Mật Khẩu</h2>
+        <form asp-action="SendMailForgetPass" asp-controller="Login" method="post">
+            <div>
+                <label for="email">Email:</label>
+                <input type="text" id="email" name="email" required />
+            </div>
+            <div>
+                <button type="submit">Gửi</button>
+            </div>
+            <br />
+
+        </form>
+    </div>
+    @if (TempData["error"] != null)
+    {
+        <div class="alert alert-danger">
+            @TempData["error"]
+        </div>
+    }
+    @if (TempData["success"] != null)
+    {
+        <div class="alert alert-success">
+            @TempData["success"]
+        </div>
+    }
+</body>
+</html>

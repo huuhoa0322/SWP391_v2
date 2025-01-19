@@ -1,3 +1,4 @@
+
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
 using OnlineMarketPlace.Models;
@@ -12,7 +13,9 @@ namespace OnlineMarketPlace
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
-                        builder.Services.AddControllersWithViews();
+            builder.Services.AddControllersWithViews();
+
+            builder.Services.AddTransient<IEmailService, Repository.EmailService>();
 
             builder.Services.AddSession(options =>
             {

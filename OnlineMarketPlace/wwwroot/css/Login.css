@@ -9,6 +9,7 @@
     font-family: Arial, sans-serif;
 }
 
+
     .login-container h2 {
         text-align: center;
         color: #ffa726;
@@ -110,3 +111,89 @@
             .login-container .additional-links a:hover {
                 text-decoration: underline;
             }
+
+
+.forgetpass-container h2 {
+    color: #ffa726;
+    font-size: 20px;
+    margin-bottom: 20px;
+}
+
+/* Label */
+.forgetpass-container label {
+    display: block;
+    font-size: 14px;
+    font-weight: bold;
+    color: #555;
+    margin-bottom: 5px;
+}
+
+/* Input */
+.forgetpass-container input[type="text"] {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    background-color: #f9f9f9;
+    transition: border-color 0.3s;
+}
+
+    .forgetpass-container input[type="text"]:focus {
+        border-color: #aaa;
+        outline: none;
+    }
+
+/* Button */
+.forgetpass-container button {
+    width: 8%;
+    background-color: #d3d3d3;
+    color: #444;
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    background-color: #ffa726;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+    .forgetpass-container button:hover {
+        background-color: #bbb;
+    }
+
+.alert {
+    padding: 10px;
+    margin-top: 20px;
+    font-size: 14px;
+    border-radius: 4px;
+}
+
+.alert-danger {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+.alert-success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+/* Responsive */
+/*@media (max-width: 480px) {
+    .forgetpass-container {
+        padding: 20px;
+    }
+
+        .forgetpass-container h2 {
+            font-size: 18px;
+        }
+
+        .forgetpass-container input[type="text"],
+        .forgetpass-container button {
+            font-size: 12px;
+        }
+}*/

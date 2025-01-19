@@ -11,15 +11,29 @@ public class LoginController : Controller
 {
     private readonly ILogger<LoginController> _logger;
 
+    private readonly IEmailService _emailService;
+
     private readonly UserRepository _userRepository = new();
 
-    public LoginController(ILogger<LoginController> logger)
+    public LoginController(ILogger<LoginController> logger, IEmailService emailService)
     {
         _logger = logger;
+        _emailService = emailService;
     }
+
 
     [HttpGet]
     public IActionResult Login()
+    {
+        return View();
+    }
+
+    public IActionResult ForgetPass()
+    {
+        return View();
+    }
+
+    public IActionResult NewPass()
     {
         return View();
     }
@@ -31,7 +45,7 @@ public class LoginController : Controller
         var user = await _userRepository.GetUser(username, password);
         if (user == null)
         {
-            ViewBag.ErrorMessage = "Tài khoản hoặc mật khẩu không đúng.";
+            ViewBag.ErrorMessage = "Tài khoản hoặc mật khẩu không đúng!";
             return View("Login");
         }
         else
@@ -94,5 +108,32 @@ public class LoginController : Controller
             ViewBag.ErrorMessage = "Email đã được đăng ký.";
             return View("Login");
         }else return RedirectToAction("Index", "Home"); //Email da duoc dky trong DB
+    }
+
+    public async Task<IActionResult> SendMailForgetPass(string email)
+    {
+        var checkMail = await _userRepository.GetUserByEmail(email);
+        if (checkMail == null)
+        {
+            TempData["error"] = "Email not found";
+            return RedirectToAction("ForgetPass", "Login");
+        }
+        else
+        {
+            string token = Guid.NewGuid().ToString();
+            checkMail.Token = token;
+            await _userRepository.UpdateUserAsync(checkMail);
+            var receiver = checkMail.Email;
+            var subject = "Change password for user " + checkMail.Email;
+            var message = "Click on link to change password " + "<a href='" + $"{Request.Scheme}://{Request.Host}/Account/NewPass?email=" + checkMail.Token;
+
+            await _emailService.SendEmailAsync(receiver, subject, message);
+
+            TempData["success"] = "An email has been sent to you to change password.";
+            return RedirectToAction("ForgetPass", "Login");
+
+        }
+
+        
     }
 }
