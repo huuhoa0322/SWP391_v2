@@ -11,16 +11,12 @@ namespace OnlineMarketPlace.Controllers
 
         private readonly ProductRepository _productRepository = new();
 
-        public ProductController(ILogger<LoginController> logger)
-        {
-            _logger = logger;
-        }
+        //public ProductController(ILogger<LoginController> logger)
+        //{
+        //    _logger = logger;
+        //} // bỏ
 
         [HttpGet]
-        public IActionResult Register()
-        {
-            return View();
-        }
 
 
         //public async Task<IActionResult> Details(int id)
