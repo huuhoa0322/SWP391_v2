@@ -27,7 +27,11 @@ namespace OnlineMarketPlace.Repository
             _context = new();
             return await _context.Users.FirstOrDefaultAsync(u => u.Email == email && u.IsDeleted == false);
         }
-
+        public async Task<User?> GetUserById(int id)
+        {
+            _context = new();
+            return await _context.Users.FirstOrDefaultAsync(u => u.Id == id );
+        }
         //add user
         public async Task AddAsync(User user)
         {

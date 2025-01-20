@@ -8,13 +8,9 @@
 
   <ItemGroup>
     <Compile Remove="Views\NewFolder1\**" />
-    <Compile Remove="Views\NewFolder\**" />
     <Content Remove="Views\NewFolder1\**" />
-    <Content Remove="Views\NewFolder\**" />
     <EmbeddedResource Remove="Views\NewFolder1\**" />
-    <EmbeddedResource Remove="Views\NewFolder\**" />
     <None Remove="Views\NewFolder1\**" />
-    <None Remove="Views\NewFolder\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -43,10 +39,6 @@
     </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="8.0.1" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Models\" />
   </ItemGroup>
 
 </Project>
