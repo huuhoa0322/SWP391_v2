@@ -32,11 +32,6 @@ namespace OnlineMarketPlace.Controllers
             var categoriesChildList = categoriesParent
                 .Select(parent => categoryRepository.GetCatgoryChild(parent.Id))
                 .ToList();
-
-            //var categoriesChildList = (await Task.WhenAll(
-            //categoriesParent.Select(async parent => await categoryRepository.GetCategoryChildAsync(parent.Id)))).ToList();
-            //Console.WriteLine();
-            // insert to datview
             CategoriesList categoriesList = new CategoriesList(categoriesParent, categoriesChildList);
             ViewData["CategoriesList"] = categoriesList;
             return View(products);
