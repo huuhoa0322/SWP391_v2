@@ -18,7 +18,7 @@ namespace OnlineMarketPlace.Repository
         public async Task<User?> GetUser(string username, string password)
         {
             _context = new();
-            return await _context.Users.FirstOrDefaultAsync(u => u.Username == username && u.Password == ncryptpasswordmd5.HashPasswordMD5(password));
+            return await _context.Users.FirstOrDefaultAsync(u => u.Username == username && u.Password == ncryptpasswordmd5.HashPasswordMD5(password) && u.IsDeleted == false);
         }
         
 
@@ -26,6 +26,12 @@ namespace OnlineMarketPlace.Repository
         {
             _context = new();
             return await _context.Users.FirstOrDefaultAsync(u => u.Email == email && u.IsDeleted == false);
+        }
+
+        public async Task<User?> GetUserByEmailAndToken(string email, string token)
+        {
+            _context = new();
+            return await _context.Users.FirstOrDefaultAsync(u => u.Email == email && u.IsDeleted == false && u.Token == token);
         }
 
         //add user
@@ -46,7 +52,7 @@ namespace OnlineMarketPlace.Repository
         public async Task<User?> checkEmail(string email)
         {
             _context = new();
-            return await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
+            return await _context.Users.FirstOrDefaultAsync(u => u.Email == email && u.IsDeleted == false);
         }
         
         //Update user

@@ -129,7 +129,7 @@
 }
 
 /* Input */
-.forgetpass-container input[type="text"] {
+.forgetpass-container input[type="text"], input[type="password"] {
     width: 100%;
     padding: 12px;
     margin-bottom: 20px;
@@ -140,7 +140,7 @@
     transition: border-color 0.3s;
 }
 
-    .forgetpass-container input[type="text"]:focus {
+    .forgetpass-container input[type="text"], input[type="password"]:focus {
         border-color: #aaa;
         outline: none;
     }

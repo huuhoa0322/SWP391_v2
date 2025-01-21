@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using OnlineMarketPlace.Controllers;
 using OnlineMarketPlace.Models;
@@ -33,9 +34,24 @@ public class LoginController : Controller
         return View();
     }
 
-    public IActionResult NewPass()
+    [HttpGet]
+    public async Task<IActionResult> NewPass(string email, string token)
     {
-        return View();
+
+        var checkuser = await _userRepository.GetUserByEmailAndToken(email, token);
+
+        if (checkuser != null)
+        {
+            ViewBag.Email = checkuser.Email;
+            ViewBag.Token = token;
+            return View();
+        }
+
+        else
+        {
+            TempData["error"] = "Email not found or token is not right";
+            return RedirectToAction("ForgetPass", "Login");
+        }
     }
 
     [HttpPost]
@@ -45,7 +61,7 @@ public class LoginController : Controller
         var user = await _userRepository.GetUser(username, password);
         if (user == null)
         {
-            ViewBag.ErrorMessage = "Tài khoản hoặc mật khẩu không đúng!";
+            ViewBag.ErrorMessage = "Username or password is incorrect!";
             return View("Login");
         }
         else
@@ -83,7 +99,7 @@ public class LoginController : Controller
             claim.Value
         });
         var email = claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
-        
+
         //return Json(claims);
         string username = email.Split('@')[0];
         var existUser = await _userRepository.GetUserByEmail(email);
@@ -105,9 +121,10 @@ public class LoginController : Controller
         }
         else if (existUser.LoginBy == false) //Email da duoc dang ky bang Register
         {
-            ViewBag.ErrorMessage = "Email đã được đăng ký.";
+            ViewBag.ErrorMessage = "Email is existed";
             return View("Login");
-        }else return RedirectToAction("Index", "Home"); //Email da duoc dky trong DB
+        }
+        else return RedirectToAction("Index", "Home"); //Email da duoc dky trong DB
     }
 
     public async Task<IActionResult> SendMailForgetPass(string email)
@@ -125,7 +142,7 @@ public class LoginController : Controller
             await _userRepository.UpdateUserAsync(checkMail);
             var receiver = checkMail.Email;
             var subject = "Change password for user " + checkMail.Email;
-            var message = "Click on link to change password " + "<a href='" + $"{Request.Scheme}://{Request.Host}/Account/NewPass?email=" + checkMail.Token;
+            var message = "Click on link to change password " + "<a href='" + $"{Request.Scheme}://{Request.Host}/Login/NewPass?email={checkMail.Email}&token={checkMail.Token}>";
 
             await _emailService.SendEmailAsync(receiver, subject, message);
 
@@ -134,6 +151,24 @@ public class LoginController : Controller
 
         }
 
-        
     }
+
+    public async Task<IActionResult> ResetPass(string email, string pass)
+    {   
+        var checkMail = await _userRepository.GetUserByEmail(email);
+        if (checkMail == null)
+        {
+            TempData["error"] = "Email not found";
+            return RedirectToAction("ForgetPass", "Login");
+        }
+        else
+        {
+            checkMail.Password = ncryptpasswordmd5.HashPasswordMD5(pass);
+            await _userRepository.UpdateUserAsync(checkMail);
+            TempData["success"] = "Login successfully";
+            return RedirectToAction("Index", "Home");
+        }
+    }
+
+
 }
