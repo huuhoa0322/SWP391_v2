@@ -4,36 +4,36 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Đăng Nhập</title>
+    <title>Login</title>
     <link rel="stylesheet" href="~/css/Login.css">
 </head>
 <body>
     <div class="login-container">
-        <h2>Đăng Nhập</h2>
+        <h2>Login</h2>
 
         <form asp-action="CheckLogin" asp-controller="Login" method="post">
             <div>
-                <label for="username">Tên đăng nhập:</label>
+                <label for="username">Username:</label>
                 <input type="text" id="username" name="username" required />
             </div>
             <div>
-                <label for="password">Mật khẩu:</label>
+                <label for="password">Password:</label>
                 <input type="password" id="password" name="password" required />
             </div>
             <div>
-                <button type="submit">Đăng Nhập</button>
+                <button type="submit">Login</button>
             </div>
             <br />
 
             @if (ViewBag.ErrorMessage != null)
             {
                 <div class="error-message">@ViewBag.ErrorMessage
-                <a asp-action="ForgetPass" asp-controller="Login">Quên mật khẩu</a>
+                <a asp-action="ForgetPass" asp-controller="Login">Forgotten account?</a>
                 </div>
             }
 
             <div>
-				<p>Bạn chưa có tài khoản? <a asp-action ="Register" asp-controller="Register">Đăng ký</a></p>
+				<p>You dont have any account? <a asp-action ="Register" asp-controller="Register">Register</a></p>
                 
             </div>
 
