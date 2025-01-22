@@ -2412,8 +2412,8 @@ h2.title {
   border-color:#FE980F transparent transparent transparent;
   top: 25px;
   left: 5px
-} 
-
+}
+/* add my self*/
 
 
 /*************************
@@ -2520,4 +2520,12 @@ h2.title {
   color: #FE980F;
 }
 
+/* popup message*/
+
+/* Container for the popup */
+.popup {
+	position: relative;
+	display: inline-block;
+	cursor: pointer;
+}
 

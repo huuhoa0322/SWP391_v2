@@ -1,4 +1,6 @@
 ﻿@model List<OnlineMarketPlace.Models.Product>
+@using Microsoft.AspNetCore.Http
+
 
 <section id="slider">
 	<!--slider-->
@@ -68,6 +70,9 @@
 
 <h3>@ViewData["mailmesage"]</h3>
 
+
+
+
 <div class="col-sm-3">
 	@{
 		var categoriesL = ViewData["CategoriesList"] as OnlineMarketPlace.Models.CategoriesList;
@@ -75,39 +80,76 @@
 	@Html.Partial("_SidebarPartial", categoriesL);
 </div>
 
+
 <div class="col-sm-9 padding-right">
 	<div class="features_items">
 		<!--features_items-->
 		<h2 class="title text-center">Features Items</h2>
-
-
-		@foreach (var product in Model)
+		@{
+			var userName = Context.Session.GetString("Username");
+		}
+		@if (!string.IsNullOrEmpty(userName))
 		{
-			<div class="col-sm-4">
-				<div class="product-image-wrapper">
+			@foreach (var product in Model)
+			{
+				<div class="col-sm-4">
+					<div class="product-image-wrapper">
 
-					<div class="single-products">
-						<a asp-action="Details" asp-controller="Product" asp-route-Id="@product.Id">
-							<div class="productinfo text-center">
-								<img src="images/home/@product.Image" alt="" width="100%" />
-								<h2>@product.Price</h2>
-								<p>@product.Name</p>
-								<a href="#" class="btn btn-default add-to-cart"><i class="fa fa-shopping-cart"></i>Add to cart</a>
-							</div>
+						<div class="single-products">
+							<a asp-action="Details" asp-controller="Product" asp-route-Id="@product.Id">
+								<div class="productinfo text-center">
+									<img src="images/home/@product.Image" alt="" width="100%" />
+									<h2>@product.Price</h2>
+									<p>@product.Name</p>
+									<a href="#" class="btn btn-default add-to-cart"><i class="fa fa-shopping-cart"></i>Add to cart</a>
+								</div>
 
-						</a>
-					</div>
-
-
-					<div class="choose">
-						<ul class="nav nav-pills nav-justified">
-							<li><a href="#"><i class="fa fa-plus-square"></i>Add to wishlist</a></li>
-							<li><a href="#"><i class="fa fa-plus-square"></i>Add to compare</a></li>
-						</ul>
+							</a>
+						</div>
+						<div class="choose">
+							<ul class="nav nav-pills nav-justified">
+								<li><a href="#"><i class="fa fa-plus-square"></i>Add to wishlist</a></li>
+								<li><a href="#"><i class="fa fa-plus-square"></i>Add to compare</a></li>
+							</ul>
+						</div>
 					</div>
 				</div>
-			</div>
+			}
+		} else
+		{
+			@for (int i = 0; i <= 2; i++)
+			{
+				<div class="col-sm-4">
+					<div class="product-image-wrapper">
+
+						<div class="single-products">
+							<a asp-action="Details" asp-controller="Product" asp-route-Id="@Model[i].Id">
+								<div class="productinfo text-center">
+									<img src="images/home/@Model[i].Image" alt="" width="100%" />
+									<h2>@Model[i].Price</h2>
+									<p>@Model[i].Name</p>
+									<a href="#" class="btn btn-default add-to-cart"><i class="fa fa-shopping-cart"></i>Add to cart</a>
+								</div>
+
+							</a>
+						</div>
+
+
+						<div class="choose">
+							<ul class="nav nav-pills nav-justified">
+								<li><a href="#"><i class="fa fa-plus-square"></i>Add to wishlist</a></li>
+								<li><a href="#"><i class="fa fa-plus-square"></i>Add to compare</a></li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			}
+
+			<button type="button" class="btn btn-default get">
+				<a asp-controller="Login" asp-action="Login">Login to see more</a>
+			</button>  
 		}
+			
 
 
 	</div><!--features_items-->

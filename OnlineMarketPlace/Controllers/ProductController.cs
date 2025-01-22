@@ -32,7 +32,6 @@ namespace OnlineMarketPlace.Controllers
         {
             if (id == 0) return RedirectToAction("Index");
 
-
             var categoriesParent = categoryRepository.GetCatgoryParent();
 
             //change for each parent category, get all child categories. using linq

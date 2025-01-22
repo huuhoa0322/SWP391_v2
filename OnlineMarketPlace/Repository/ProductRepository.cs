@@ -26,5 +26,11 @@ namespace OnlineMarketPlace.Repository
             _context = new();
             return await _context.Products.FirstOrDefaultAsync(p => p.Id == id);
         }
+
+        public async Task<List<Product>> GetProductsNumberAsync(int n)
+        {
+            _context = new();
+            return await _context.Products.Take(n).ToListAsync();
+        }
     }
 }
