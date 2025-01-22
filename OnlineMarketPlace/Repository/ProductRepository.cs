@@ -18,7 +18,7 @@ namespace OnlineMarketPlace.Repository
         public async Task<List<Product>> GetProductsAsync()
         {
             _context = new();
-            return await _context.Products.ToListAsync();
+            return await _context.Products.Where(p => p.IsDeleted == false).ToListAsync();
         }
 
         public async Task<Product> GetProductByIdAsync(int id)
@@ -27,10 +27,10 @@ namespace OnlineMarketPlace.Repository
             return await _context.Products.FirstOrDefaultAsync(p => p.Id == id);
         }
 
-        public async Task<List<Product>> GetProductsNumberAsync(int n)
-        {
-            _context = new();
-            return await _context.Products.Take(n).ToListAsync();
-        }
+        //public async Task<List<Product>> GetProductsNumberAsync(int n)
+        //{
+        //    _context = new();
+        //    return await _context.Products.Take(n).ToListAsync();
+        //}
     }
 }
