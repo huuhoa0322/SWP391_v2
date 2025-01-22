@@ -15,6 +15,7 @@ public class RegisterController : Controller
     private readonly ILogger<LoginController> _logger;
 
     private readonly UserRepository _userRepository = new();
+    private const string CaptchaSessionKey = "CaptchaCode";
 
     public RegisterController(ILogger<LoginController> logger)
     {
@@ -26,7 +27,7 @@ public class RegisterController : Controller
     {
         return View();
     }
-
+    [HttpPost]
     public async Task<IActionResult> Register(User user)
     {
 
@@ -124,5 +125,45 @@ public class RegisterController : Controller
         }
 
         return Json(new { isValid = true });
+    }
+    [HttpGet]
+    public IActionResult GenerateCaptcha()
+    {
+        string captchaCode = GenerateRandomCode(5);
+        HttpContext.Session.SetString(CaptchaSessionKey, captchaCode);
+
+        using var bitmap = new Bitmap(150, 50);
+        using var graphics = Graphics.FromImage(bitmap);
+        var font = new Font(FontFamily.GenericSansSerif, 24, FontStyle.Bold, GraphicsUnit.Pixel);
+        var rectangle = new Rectangle(0, 0, bitmap.Width, bitmap.Height);
+
+        // Vẽ nền
+        graphics.SmoothingMode = SmoothingMode.AntiAlias;
+        graphics.FillRectangle(Brushes.LightGray, rectangle);
+
+        // Vẽ chữ CAPTCHA
+        var brush = new SolidBrush(Color.Black);
+        graphics.DrawString(captchaCode, font, brush, 10, 10);
+
+        // Thêm nhiễu
+        var rand = new Random();
+        for (int i = 0; i < 20; i++)
+        {
+            int x = rand.Next(0, bitmap.Width);
+            int y = rand.Next(0, bitmap.Height);
+            bitmap.SetPixel(x, y, Color.Black);
+        }
+
+        using var stream = new MemoryStream();
+        bitmap.Save(stream, ImageFormat.Png);
+        return File(stream.ToArray(), "image/png");
+    }
+
+    private string GenerateRandomCode(int length)
+    {
+        const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        var random = new Random();
+        return new string(Enumerable.Repeat(chars, length)
+            .Select(s => s[random.Next(s.Length)]).ToArray());
     }
 }
