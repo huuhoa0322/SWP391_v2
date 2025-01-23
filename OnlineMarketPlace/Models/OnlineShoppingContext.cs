@@ -228,10 +228,6 @@ public partial class OnlineShoppingContext : DbContext
                 .HasMaxLength(255)
                 .IsUnicode(false)
                 .HasColumnName("username");
-            entity.Property(e => e.Token)
-                .HasMaxLength(255)
-                .IsUnicode(false)
-                .HasColumnName("token");
         });
 
         OnModelCreatingPartial(modelBuilder);

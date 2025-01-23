@@ -28,11 +28,11 @@ namespace OnlineMarketPlace.Repository
             return await _context.Users.FirstOrDefaultAsync(u => u.Email == email && u.IsDeleted == false);
         }
 
-        public async Task<User?> GetUserByEmailAndToken(string email, string token)
-        {
-            _context = new();
-            return await _context.Users.FirstOrDefaultAsync(u => u.Email == email && u.IsDeleted == false && u.Token == token);
-        }
+        //public async Task<User?> GetUserByEmailAndToken(string email, string token)
+        //{
+        //    _context = new();
+        //    return await _context.Users.FirstOrDefaultAsync(u => u.Email == email && u.IsDeleted == false && u.Token == token);
+        //}
 
         public async Task<User?> GetUserById(int id)
         {
@@ -82,7 +82,7 @@ namespace OnlineMarketPlace.Repository
             existingUser.IsDeleted = updatedUser.IsDeleted;
             existingUser.DeletedBy = updatedUser.DeletedBy ?? existingUser.DeletedBy;
             existingUser.DeletedAt = updatedUser.DeletedAt ?? existingUser.DeletedAt;
-            existingUser.Token = updatedUser.Token ?? existingUser.Token;
+            //existingUser.Token = updatedUser.Token ?? existingUser.Token;
 
             try
             {
