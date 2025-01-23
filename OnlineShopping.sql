@@ -109,4 +109,6 @@ VALUES
     (N'John Doe', 'johndoe', 'password123', 1, 'johndoe@example.com', 'customer', '1990-05-15', 0, 0, NULL, NULL),
     (N'admin', 'admin', 'admin', 1, 'admin@example.com', 'admin', '1990-05-15', 0, 0, NULL, NULL);
 
+	ALTER TABLE [User] DROP COLUMN Token;
+
 select * from [User]
