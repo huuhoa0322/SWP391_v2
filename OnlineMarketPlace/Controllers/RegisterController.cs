@@ -1,17 +1,19 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using OnlineMarketPlace.Controllers;
+using Microsoft.Extensions.Logging;
 using OnlineMarketPlace.Models;
 using OnlineMarketPlace.Repository;
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.IO;
-using static System.Runtime.InteropServices.JavaScript.JSType;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 
 public class RegisterController : Controller
 {
-
     private readonly ILogger<LoginController> _logger;
 
     private readonly UserRepository _userRepository = new();
@@ -21,43 +23,45 @@ public class RegisterController : Controller
     {
         _logger = logger;
     }
+    
 
     [HttpGet]
     public IActionResult Register()
     {
+        // Generate a new CAPTCHA when the Register page is loaded
+        string captchaCode = GenerateRandomCode(5);
+        HttpContext.Session.SetString(CaptchaSessionKey, captchaCode);
+
         return View();
     }
-    [HttpPost]
-    public async Task<IActionResult> Register(User user)
-    {
 
+    [HttpPost]
+    public async Task<IActionResult> Register(User user, string captcha)
+    {
         var errors = new List<string>();
 
-        // Kiểm tra tên đăng nhập
+        // Verify CAPTCHA
+        var sessionCaptcha = HttpContext.Session.GetString(CaptchaSessionKey);
+        if (string.IsNullOrEmpty(sessionCaptcha) || !sessionCaptcha.Equals(captcha, StringComparison.OrdinalIgnoreCase))
+        {
+            errors.Add("Captcha is incorrect. Please try again.");
+        }
 
+        // Validate username
         var checkUserNameExist = await _userRepository.checkUserName(user.Username);
-        if (checkUserNameExist != null)
+        if (checkUserNameExist != null && !checkUserNameExist.IsDeleted)
         {
-            // Nếu tài khoản tồn tại nhưng IsDeleted = false, báo lỗi
-            if (checkUserNameExist.IsDeleted == false)
-            {
-                errors.Add("Username already exists. Please choose another username.");
-            }
+            errors.Add("Username already exists. Please choose another username.");
         }
 
-        // Kiểm tra email
+        // Validate email
         var checkEmailExist = await _userRepository.checkEmail(user.Email);
-        if (checkEmailExist != null)
+        if (checkEmailExist != null && !checkEmailExist.IsDeleted)
         {
-            // Nếu tài khoản tồn tại nhưng IsDeleted = false, báo lỗi
-            if (checkEmailExist.IsDeleted == false)
-            {
-                errors.Add("Email already exists. Please use another email.");
-            }
+            errors.Add("Email already exists. Please use another email.");
         }
 
-
-        // Kiểm tra ngày sinh
+        // Validate date of birth
         if (user.Dob > DateTime.Now)
         {
             errors.Add("Date of birth cannot be in the future.");
@@ -69,26 +73,22 @@ public class RegisterController : Controller
             return View("Register");
         }
 
-
         if (ModelState.IsValid)
         {
-            //Ma hoa mk
+            // Encrypt the password
             user.Password = ncryptpasswordmd5.HashPasswordMD5(user.Password);
-            // Thêm dữ liệu vào cơ sở dữ liệu một cách bất đồng bộ
 
+            // Add the user to the database asynchronously
             await _userRepository.AddAsync(user);
-            TempData["SuccessMessage"] = "Đăng ký thành công. Vui lòng đăng nhập!";
-            return RedirectToAction("Login", "Login"); // Chuyển hướng sau khi đăng ký thành công
-        }
-        else
-        {
 
-            ViewBag.Errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
-            return View("Register");
+            TempData["SuccessMessage"] = "Registration successful. Please log in!";
+            return RedirectToAction("Login", "Login");
         }
 
+        ViewBag.Errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
+        return View("Register");
     }
-    // API kiểm tra username
+
     [HttpGet]
     public async Task<IActionResult> CheckUsername(string username)
     {
@@ -100,7 +100,17 @@ public class RegisterController : Controller
 
         return Json(new { isValid = true });
     }
-    // API kiểm tra email
+    [HttpGet]
+    public async Task<IActionResult> CheckCaptcha(string captcha)
+    {
+        var sessionCaptcha = HttpContext.Session.GetString(CaptchaSessionKey);
+        if (string.IsNullOrEmpty(sessionCaptcha) || !sessionCaptcha.Equals(captcha, StringComparison.OrdinalIgnoreCase))
+        {
+            return Json(new { isValid = false, message = "Captcha is incorrect. Please try again." });
+        }
+
+        return Json(new { isValid = true });
+    }
     [HttpGet]
     public async Task<IActionResult> CheckEmail(string email)
     {
@@ -113,9 +123,6 @@ public class RegisterController : Controller
         return Json(new { isValid = true });
     }
 
-    
-    // API kiểm tra ngày sinh
-    
     [HttpGet]
     public IActionResult ValidateDob(DateTime dob)
     {
@@ -126,37 +133,48 @@ public class RegisterController : Controller
 
         return Json(new { isValid = true });
     }
+
     [HttpGet]
     public IActionResult GenerateCaptcha()
     {
-        string captchaCode = GenerateRandomCode(5);
-        HttpContext.Session.SetString(CaptchaSessionKey, captchaCode);
-
-        using var bitmap = new Bitmap(150, 50);
-        using var graphics = Graphics.FromImage(bitmap);
-        var font = new Font(FontFamily.GenericSansSerif, 24, FontStyle.Bold, GraphicsUnit.Pixel);
-        var rectangle = new Rectangle(0, 0, bitmap.Width, bitmap.Height);
-
-        // Vẽ nền
-        graphics.SmoothingMode = SmoothingMode.AntiAlias;
-        graphics.FillRectangle(Brushes.LightGray, rectangle);
-
-        // Vẽ chữ CAPTCHA
-        var brush = new SolidBrush(Color.Black);
-        graphics.DrawString(captchaCode, font, brush, 10, 10);
-
-        // Thêm nhiễu
-        var rand = new Random();
-        for (int i = 0; i < 20; i++)
+        try
         {
-            int x = rand.Next(0, bitmap.Width);
-            int y = rand.Next(0, bitmap.Height);
-            bitmap.SetPixel(x, y, Color.Black);
-        }
+            string captchaCode = GenerateRandomCode(5);
+            HttpContext.Session.SetString(CaptchaSessionKey, captchaCode);
 
-        using var stream = new MemoryStream();
-        bitmap.Save(stream, ImageFormat.Png);
-        return File(stream.ToArray(), "image/png");
+            using var bitmap = new Bitmap(150, 50);
+            using var graphics = Graphics.FromImage(bitmap);
+            graphics.SmoothingMode = SmoothingMode.AntiAlias;
+
+            // Draw background
+            graphics.Clear(Color.LightGray);
+
+            // Draw CAPTCHA text
+            var font = new Font(FontFamily.GenericSansSerif, 24, FontStyle.Bold, GraphicsUnit.Pixel);
+            var brush = new SolidBrush(Color.Black);
+            graphics.DrawString(captchaCode, font, brush, 10, 10);
+
+            // Add noise
+            var rand = new Random();
+            var pen = new Pen(Color.Gray);
+            for (int i = 0; i < 10; i++)
+            {
+                int x1 = rand.Next(0, bitmap.Width);
+                int y1 = rand.Next(0, bitmap.Height);
+                int x2 = rand.Next(0, bitmap.Width);
+                int y2 = rand.Next(0, bitmap.Height);
+                graphics.DrawLine(pen, x1, y1, x2, y2);
+            }
+
+            using var stream = new MemoryStream();
+            bitmap.Save(stream, ImageFormat.Png);
+            return File(stream.ToArray(), "image/png");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error generating CAPTCHA.");
+            return StatusCode(500, "An error occurred while generating CAPTCHA.");
+        }
     }
 
     private string GenerateRandomCode(int length)

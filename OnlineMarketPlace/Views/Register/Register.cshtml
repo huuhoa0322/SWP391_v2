@@ -58,6 +58,7 @@
 		<br>
 		<img src="@Url.Action("GenerateCaptcha", "Register")" alt="Captcha Image" class="mb-2" />     <br>
 		<input type="text" class="form-control" id="captcha" name="captcha" placeholder="Enter the text from the image" required />
+		<small id="capchalError" class="text-danger"></small>
 	</div>
 
 	<button type="submit" class="btn btn-primary">Register</button>
@@ -101,6 +102,19 @@
 			const response = await fetch(`/Register/ValidateDob?dob=${dob}`);
 			const result = await response.json();
 			const errorElement = document.getElementById("dobError");
+			if (!result.isValid) {
+				errorElement.textContent = result.message;
+			} else {
+				errorElement.textContent = "";
+			}
+		}
+	});
+	document.getElementById("capcha").addEventListener("input", async function () {
+		const capcha = this.value;
+		if (email.length > 0) {
+			const response = await fetch(`/Register/CheckCapcha?capcha=${capcha}`);
+			const result = await response.json();
+			const errorElement = document.getElementById("capchalError");
 			if (!result.isValid) {
 				errorElement.textContent = result.message;
 			} else {
