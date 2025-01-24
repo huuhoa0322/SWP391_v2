@@ -1,51 +1,175 @@
-﻿<title>Danh Mục</title>
-<style>
-    .container {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        flex-wrap: wrap; /* Cho phép xuống dòng nếu không đủ không gian */
-        gap: 20px; /* Khoảng cách giữa các danh mục */
-    }
-
-    .category {
-        text-align: center;
-        background-color: #fff;
-        border-radius: 10px;
-        padding: 15px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        text-decoration: none; /* Loại bỏ gạch chân */
-        color: inherit; /* Giữ nguyên màu chữ */
-    }
-
-        .category img {
-            max-width: 100%;
+﻿
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f8f8;
         }
 
-        .category p {
-            margin-top: 10px;
-            font-size: 14px;
-            color: #333;
+        nav {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+        }
+
+        .filters, .sorting {
+            padding: 10px;
+            background-color: white;
+            margin: 10px;
+            border-radius: 5px;
+        }
+
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: white;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+            padding: 10px;
+            z-index: 1;
+            border-radius: 5px;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        .dropdown-content button {
+            display: block;
+            width: 100%;
+            text-align: left;
+            background: none;
+            border: none;
+            padding: 8px;
+            cursor: pointer;
+        }
+
+        .product-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            padding: 10px;
+        }
+
+        .product {
+            background-color: white;
+            padding: 15px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 200px;
+        }
+
+            .product img {
+                max-width: 100%;
+                border-radius: 5px;
+            }
+
+        .price {
+            color: red;
             font-weight: bold;
         }
 
-        .category:hover {
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Hiệu ứng hover */
+        .old-price {
+            text-decoration: line-through;
+            color: gray;
         }
-</style>
+    </style>
 <body>
-    <div class="container">
-        <a href="thoitrangnam.html" class="category">
-            <img src="images/home/iframe1.png" alt="Thời Trang Nam">
-            <p>Thời Trang Nam</p>
-        </a>
-        <a href="thietbidientu.html" class="category">
-            <img src="images/home/iframe1.png" alt="Thiết Bị Điện Tử">
-            <p>Thiết Bị Điện Tử</p>
-        </a>
-        <a href="maytinhlaptop.html" class="category">
-            <img src="images/home/iframe1.png" alt="Máy Tính & Laptop">
-            <p>Máy Tính & Laptop</p>
-        </a>
-    </div>
+    <main>
+        <section class="filters">
+            <h3>Filter by criteria</h3>
+            <div class="dropdown">
+                <button>Filter ▼</button>
+                <div class="dropdown-content">
+                    <button>Available</button>
+                    <button>Promotions</button>
+                </div>
+            </div>
+            <div class="dropdown">
+                <button>Price ▼</button>
+                <div class="dropdown-content">
+                    <button>Below 5 million</button>
+                    <button>5 - 10 million</button>
+                    <button>Above 10 million</button>
+                </div>
+            </div>
+        </section>
+        <section class="sorting">
+            <h3>Sort by</h3>
+            <button>Price High - Low</button>
+            <button>Price Low - High</button>
+            <button>Hot Promotions</button>
+            <button>Most Viewed</button>
+        </section>
+        <section class="product-list">
+            <div class="product">
+                <img src="iphone16promax.jpg" alt="iPhone 16 Pro Max">
+                <h4>iPhone 16 Pro Max 1TB</h4>
+                <p class="price">44,690,000₫ <span class="old-price">46,990,000₫</span></p>
+                <p>6.9 inches | 1TB</p>
+            </div>
+            <div class="product">
+                <img src="iphone16promax.jpg" alt="iPhone 16 Pro Max">
+                <h4>iPhone 16 Pro Max 1TB</h4>
+                <p class="price">41,790,000₫ <span class="old-price">43,990,000₫</span></p>
+                <p>6.3 inches | 1TB</p>
+            </div>
+            <div class="product">
+                <img src="iphone16promax.jpg" alt="iPhone 16 Pro Max">
+                <h4>iPhone 16 Pro Max 1TB</h4>
+                <p class="price">41,790,000₫ <span class="old-price">43,990,000₫</span></p>
+                <p>6.3 inches | 1TB</p>
+            </div>
+            <div class="product">
+                <img src="iphone16promax.jpg" alt="iPhone 16 Pro Max">
+                <h4>iPhone 16 Pro Max 1TB</h4>
+                <p class="price">41,790,000₫ <span class="old-price">43,990,000₫</span></p>
+                <p>6.3 inches | 1TB</p>
+            </div>
+            <div class="product">
+                <img src="iphone16promax.jpg" alt="iPhone 16 Pro Max">
+                <h4>iPhone 16 Pro Max 1TB</h4>
+                <p class="price">41,790,000₫ <span class="old-price">43,990,000₫</span></p>
+                <p>6.3 inches | 1TB</p>
+            </div>
+            <div class="product">
+                <img src="iphone16promax.jpg" alt="iPhone 16 Pro Max">
+                <h4>iPhone 16 Pro Max 1TB</h4>
+                <p class="price">41,790,000₫ <span class="old-price">43,990,000₫</span></p>
+                <p>6.3 inches | 1TB</p>
+            </div>
+            <div class="product">
+                <img src="iphone16promax.jpg" alt="iPhone 16 Pro Max">
+                <h4>iPhone 16 Pro Max 1TB</h4>
+                <p class="price">41,790,000₫ <span class="old-price">43,990,000₫</span></p>
+                <p>6.3 inches | 1TB</p>
+            </div>
+            <div class="product">
+                <img src="iphone16promax.jpg" alt="iPhone 16 Pro Max">
+                <h4>iPhone 16 Pro Max 1TB</h4>
+                <p class="price">41,790,000₫ <span class="old-price">43,990,000₫</span></p>
+                <p>6.3 inches | 1TB</p>
+            </div>
+            <div class="product">
+                <img src="iphone16promax.jpg" alt="iPhone 16 Pro Max">
+                <h4>iPhone 16 Pro Max 1TB</h4>
+                <p class="price">41,790,000₫ <span class="old-price">43,990,000₫</span></p>
+                <p>6.3 inches | 1TB</p>
+            </div>
+            <div class="product">
+                <img src="iphone16promax.jpg" alt="iPhone 16 Pro Max">
+                <h4>iPhone 16 Pro Max 1TB</h4>
+                <p class="price">41,790,000₫ <span class="old-price">43,990,000₫</span></p>
+                <p>6.3 inches | 1TB</p>
+            </div>
+        </section>
+    </main>
 </body>
+
