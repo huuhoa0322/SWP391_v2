@@ -13,13 +13,15 @@ namespace OnlineMarketPlace.Controllers
 
         private readonly CategoryRepository categoryRepository = new();
 
-        //public ProductController(ILogger<LoginController> logger)
-        //{
-        //    _logger = logger;
-        //} // bỏ
+        private readonly RatingAndReviewRepository ratingAndReviewRepository = new();
 
-        [HttpGet]
 
+        //[HttpGet]
+
+        public ProductController(ILogger<LoginController> logger)
+        {
+            _logger = logger;
+        }
 
         //public async Task<IActionResult> Details(int id)
         //{
@@ -45,8 +47,17 @@ namespace OnlineMarketPlace.Controllers
             var product = await _productRepository.GetProductByIdAsync(id);
             if (product == null) return NotFound();
 
+            List<RatingAndReview> reviews = await ratingAndReviewRepository.GetReviewsByProductIdAsync(id);
+            ViewData["rv"] = reviews;
+
             return View(product);
+
+            
+
+
         }
+
+
 
 
     }

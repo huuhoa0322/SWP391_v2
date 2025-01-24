@@ -16,20 +16,21 @@
 			<div class="col-sm-5">
 				<div class="view-product">
 					<img src="~/images/home/@Model.Image" alt="" />
-					<h3>ZOOM</h3>
+
+					@* <h3>ZOOM</h3> *@
 				</div>
 				<div id="similar-product" class="carousel slide" data-ride="carousel">
-
+					<!--sửa 24/1 -->
 					<!-- Wrapper for slides -->
-					<div class="carousel-inner">
-						<div class="item active">
-							<a href=""><img src="~/images/product-details/similar1.jpg" alt=""></a>
-							<a href=""><img src="~/images/product-details/similar2.jpg" alt=""></a>
-							<a href=""><img src="~/images/product-details/similar3.jpg" alt=""></a>
-						</div>
-						
+					@* <div class="carousel-inner"> *@
+					@* 	<div class="item active"> *@
+					@* 		<a href=""><img src="~/images/product-details/similar1.jpg" alt=""></a> *@
+					@* 		<a href=""><img src="~/images/product-details/similar2.jpg" alt=""></a> *@
+					@* 		<a href=""><img src="~/images/product-details/similar3.jpg" alt=""></a> *@
+					@* 	</div> *@
 
-					</div>
+
+					@* </div> *@
 
 					<!-- Controls -->
 					<a class="left item-control" href="#similar-product" data-slide="prev">
@@ -72,12 +73,12 @@
 					<li class="active"><a href="#details" data-toggle="tab">Details</a></li>
 					<li><a href="#companyprofile" data-toggle="tab">Company Profile</a></li>
 					<li><a href="#tag" data-toggle="tab">Tag</a></li>
-					<li ><a href="#reviews" data-toggle="tab">Reviews (5)</a></li>
+					<li><a href="#reviews" data-toggle="tab">Reviews</a></li>
 				</ul>
 			</div>
 			<div class="tab-content">
 				<div class="tab-pane fade active in" id="details">
-                    @Model.Description					
+					@Model.Description					
 				</div>
 
 				<div class="tab-pane fade" id="companyprofile">
@@ -182,14 +183,30 @@
 					</div>
 				</div>
 
-				<div class="tab-pane fade" id="reviews">
-					<div class="col-sm-12">
-						<ul>
-							<li><a href=""><i class="fa fa-user"></i>EUGEN</a></li>
-							<li><a href=""><i class="fa fa-clock-o"></i>12:41 PM</a></li>
-							<li><a href=""><i class="fa fa-calendar-o"></i>31 DEC 2014</a></li>
-						</ul>
-						<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>
+
+				 @{ 
+				 	var reviews = ViewData["rv"] as List<OnlineMarketPlace.Models.RatingAndReview>; 
+				 } 
+				 <div class="tab-pane fade" id="reviews"> 
+				 	<div class="col-sm-12">
+						@if (reviews != null && reviews.Any())
+						{
+							<p>@($"Found {reviews.Count} reviews.")</p> <!-- Hiển thị số lượng phần tử -->
+							<ul>
+								@foreach (RatingAndReview review in reviews)
+								{
+									<li>
+
+										<strong>Rating:</strong> @review.Rating <br />
+										<strong>Review:</strong> @review.Review
+									</li>
+								}
+							</ul>
+						}
+						else
+						{
+							<p>No reviews available.</p>
+						}
 						<p><b>Write Your Review</b></p>
 
 						<form action="#">
