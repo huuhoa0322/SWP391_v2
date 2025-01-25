@@ -15,6 +15,8 @@ namespace OnlineMarketPlace.Controllers
 
         private readonly RatingAndReviewRepository ratingAndReviewRepository = new();
 
+        private readonly ShopRepository shopRepository = new();
+
 
         //[HttpGet]
 
@@ -34,27 +36,27 @@ namespace OnlineMarketPlace.Controllers
         {
             if (id == 0) return RedirectToAction("Index");
 
-            var categoriesParent = categoryRepository.GetCatgoryParent();
+            //var categoriesParent = categoryRepository.GetCatgoryParent();
 
-            //change for each parent category, get all child categories. using linq
-
-            var categoriesChildList = categoriesParent
-                .Select(parent => categoryRepository.GetCatgoryChild(parent.Id))
-                .ToList();
-            CategoriesList categoriesList = new CategoriesList(categoriesParent, categoriesChildList);
-            ViewData["CategoriesList"] = categoriesList;
+            //var categoriesChildList = categoriesParent
+            //    .Select(parent => categoryRepository.GetCatgoryChild(parent.Id))
+            //    .ToList();
+            //CategoriesList categoriesList = new CategoriesList(categoriesParent, categoriesChildList);
+            //ViewData["CategoriesList"] = categoriesList;
 
             var product = await _productRepository.GetProductByIdAsync(id);
-            if (product == null) return NotFound();
+            if (product == null) return NotFound(); // lấy 1 san pham theo id
 
             List<RatingAndReview> reviews = await ratingAndReviewRepository.GetReviewsByProductIdAsync(id);
             ViewData["rv"] = reviews;
 
+            var shop = await shopRepository.GetShopByIdAsync(product.SellerId);
+            ViewData["Shop"] = shop;
+
+            var relatedProducts = await _productRepository.GetProductsByCategoryIdAsync(product.CategoryId);
+            ViewData["RelatedProducts"] = relatedProducts;
+
             return View(product);
-
-            
-
-
         }
 
 

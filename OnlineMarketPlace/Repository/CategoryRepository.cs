@@ -8,8 +8,14 @@ namespace OnlineMarketPlace.Repository
 {
     public class CategoryRepository
     {
-        private static OnlineShoppingContext _context = new();
-        private List<CategoryModel> _allcategory = _context.Categories.ToList();
+        private static OnlineShoppingContext _context;
+        private List<CategoryModel> _allcategory;
+
+        public CategoryRepository()
+        {
+            _context = new();
+            _allcategory = _context.Categories.ToList();
+        }
 
         public List<CategoryModel> GetCatgoryParent()
         {
