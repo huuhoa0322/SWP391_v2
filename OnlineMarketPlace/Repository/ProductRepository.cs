@@ -27,7 +27,14 @@ namespace OnlineMarketPlace.Repository
             return await _context.Products.FirstOrDefaultAsync(p => p.Id == id);
         }
 
-        
+        public async Task<List<Product>> GetProductsByCategoryIdAsync(int categoryId)
+        {
+            _context = new();
+            return await _context.Products
+                .Where(p => p.CategoryId == categoryId && p.IsDeleted == false)
+                .ToListAsync();
+        }
+
 
         //public async Task<List<Product>> GetProductsNumberAsync(int n)
         //{

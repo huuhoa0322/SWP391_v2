@@ -15,6 +15,8 @@ namespace OnlineMarketPlace.Controllers
 
         private readonly RatingAndReviewRepository ratingAndReviewRepository = new();
 
+        private readonly ShopRepository shopRepository = new();
+
 
         //[HttpGet]
 
@@ -57,16 +59,18 @@ namespace OnlineMarketPlace.Controllers
             ViewData["CategoriesList"] = viewModel;
 
             var product = await _productRepository.GetProductByIdAsync(id);
-            if (product == null) return NotFound();
+            if (product == null) return NotFound(); // lấy 1 san pham theo id
 
             List<RatingAndReview> reviews = await ratingAndReviewRepository.GetReviewsByProductIdAsync(id);
             ViewData["rv"] = reviews;
 
+            var shop = await shopRepository.GetShopByIdAsync(product.SellerId);
+            ViewData["Shop"] = shop;
+
+            var relatedProducts = await _productRepository.GetProductsByCategoryIdAsync(product.CategoryId);
+            ViewData["RelatedProducts"] = relatedProducts;
+
             return View(product);
-
-            
-
-
         }
 
 

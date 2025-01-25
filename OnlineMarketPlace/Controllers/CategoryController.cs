@@ -2,6 +2,9 @@
 using Microsoft.EntityFrameworkCore;
 using OnlineMarketPlace.Models;
 using OnlineMarketPlace.Repository;
+using OnlineMarketPlace.Models;
+using System.Threading.Tasks;
+using System.Linq;
 
 namespace OnlineMarketPlace.Controllers
 {
@@ -9,6 +12,8 @@ namespace OnlineMarketPlace.Controllers
     {
         private readonly ProductRepository _productRepository = new();
         private readonly CategoryRepository _categoryRepository = new();
+
+        private const int Pagesize = 9;
 
         public async Task<IActionResult> Index()
         {
