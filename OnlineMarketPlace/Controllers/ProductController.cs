@@ -34,15 +34,27 @@ namespace OnlineMarketPlace.Controllers
         {
             if (id == 0) return RedirectToAction("Index");
 
-            var categoriesParent = categoryRepository.GetCatgoryParent();
+            var viewModel = new CategoriesList();
 
-            //change for each parent category, get all child categories. using linq
+            // Retrieve all parent categories
+            viewModel.CategoriesParent = await categoryRepository.GetCatgoryParent();
 
-            var categoriesChildList = categoriesParent
-                .Select(parent => categoryRepository.GetCatgoryChild(parent.Id))
-                .ToList();
-            CategoriesList categoriesList = new CategoriesList(categoriesParent, categoriesChildList);
-            ViewData["CategoriesList"] = categoriesList;
+            // Retrieve child categories for each parent
+            var childCategoriesArray = await Task.WhenAll(
+                viewModel.CategoriesParent.Select(async parent =>
+                {
+                    using (var context = new OnlineShoppingContext())
+                    {
+                        return await context.Categories
+                            .Where(c => c.ParentId == parent.Id)
+                            .ToListAsync();
+                    }
+                })
+            );
+
+            viewModel.CategoriesChild = childCategoriesArray.ToList();
+            //CategoriesList categoriesList = new CategoriesList(categoriesParent, flattenedCategoriesChildList);
+            ViewData["CategoriesList"] = viewModel;
 
             var product = await _productRepository.GetProductByIdAsync(id);
             if (product == null) return NotFound();

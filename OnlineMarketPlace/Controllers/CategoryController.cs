@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using OnlineMarketPlace.Models;
 using OnlineMarketPlace.Repository;
 
@@ -11,13 +12,26 @@ namespace OnlineMarketPlace.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var categoriesParent = _categoryRepository.GetCatgoryParent();
-            var categoriesChildList = categoriesParent
-                .Select(parent => _categoryRepository.GetCatgoryChild(parent.Id))
-                .ToList();
+            var viewModel = new CategoriesList();
 
-            CategoriesList categoriesList = new CategoriesList(categoriesParent, categoriesChildList);
-            ViewData["CategoriesList"] = categoriesList;
+            // Retrieve all parent categories
+            viewModel.CategoriesParent = await _categoryRepository.GetCatgoryParent();
+
+            // Retrieve child categories for each parent
+            var childCategoriesArray = await Task.WhenAll(
+                viewModel.CategoriesParent.Select(async parent =>
+                {
+                    using (var context = new OnlineShoppingContext())
+                    {
+                        return await context.Categories
+                            .Where(c => c.ParentId == parent.Id)
+                            .ToListAsync();
+                    }
+                })
+            );
+            viewModel.CategoriesChild = childCategoriesArray.ToList();
+            //CategoriesList categoriesList = new CategoriesList(categoriesParent, flattenedCategoriesChildList);
+            ViewData["CategoriesList"] = viewModel;
 
             var products = await _productRepository.GetProductsAsync();
             ViewData["Products"] = products;

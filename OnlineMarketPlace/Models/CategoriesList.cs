@@ -10,5 +10,9 @@
             CategoriesParent = categoriesParent;
             CategoriesChild = categoriesChild;
         }
+
+        public CategoriesList()
+        {
+        }
     }
 }

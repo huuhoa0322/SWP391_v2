@@ -9,32 +9,20 @@ namespace OnlineMarketPlace.Repository
     public class CategoryRepository
     {
         private static OnlineShoppingContext _context = new();
-        private List<CategoryModel> _allcategory = _context.Categories.ToList();
+        //private List<CategoryModel> _allcategory = _context.Categories.ToList();
 
-        public List<CategoryModel> GetCatgoryParent()
+        public async Task<List<CategoryModel>> GetCatgoryParent()
         {
-            List<CategoryModel> res = new List<CategoryModel>();
-            foreach (CategoryModel c in _allcategory)
-            {
-                if (c.Parent == null)
-                {
-                    res.Add(c);
-                }
-            }
-            return res;
+            return await _context.Categories
+            .Where(c => c.Parent == null)
+            .ToListAsync();
         }
 
-        public List<CategoryModel> GetCatgoryChild(int parentid)
+        public async Task<List<CategoryModel>> GetCatgoryChild(int parentid)
         {
-            List<CategoryModel> res = new List<CategoryModel>();
-            foreach (CategoryModel c in _allcategory)
-            {
-                if (c.Parent != null)
-                {
-                    if (c.ParentId == parentid) res.Add(c);
-                }
-            }
-            return res;
+            return await _context.Categories
+            .Where(c => c.Parent != null && c.ParentId == parentid)
+            .ToListAsync();
         }
 
         //private readonly OnlineShoppingContext _context;
