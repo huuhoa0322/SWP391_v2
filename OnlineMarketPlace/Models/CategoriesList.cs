@@ -1,4 +1,6 @@
-﻿namespace OnlineMarketPlace.Models
+﻿
+
+namespace OnlineMarketPlace.Models
 {
     public class CategoriesList
     {

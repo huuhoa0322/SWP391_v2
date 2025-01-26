@@ -20,5 +20,4 @@ public partial class RatingAndReview
     public virtual User CreatedByNavigation { get; set; } = null!;
 
     public virtual Product Product { get; set; } = null!;
-
 }
