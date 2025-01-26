@@ -15,8 +15,6 @@ namespace OnlineMarketPlace.Repository
         public async Task<Shop?> GetShopByIdAsync(int id)
         {
             return await _context.Shops
-                .Include(s => s.Owner)
-                .Include(s => s.Products)
                 .FirstOrDefaultAsync(s => s.Id == id && !s.IsDeleted);
         }
 

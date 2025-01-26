@@ -1,0 +1,72 @@
+﻿
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@Model.ShopName</title>
+    <link rel="stylesheet" href="~/css/shop.css" />
+</head>
+<body>
+    <div class="shop-container">
+        <!-- Header -->
+        <div class="shop-header">
+            <div class="shop-logo">
+                <img src="@Model.LogoUrl" alt="Shop Logo" class="logo-image" />
+            </div>
+            <div class="shop-info">
+                <h1 class="shop-name">@Model.ShopName</h1>
+                <p>Online @Model.LastActive phút trước</p>
+                <button class="follow-button">+ Theo Dõi</button>
+                <button class="chat-button">Chat</button>
+            </div>
+            <div class="shop-stats">
+                <p><strong>Sản Phẩm:</strong> @Model.ProductCount</p>
+                <p><strong>Người Theo Dõi:</strong> @Model.FollowerCount</p>
+                <p><strong>Đang Theo:</strong> @Model.FollowingCount</p>
+                <p><strong>Đánh Giá:</strong> @Model.Rating (@Model.ReviewCount Đánh Giá)</p>
+                <p><strong>Tham Gia:</strong> @Model.JoinedDuration</p>
+            </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="shop-tabs">
+            <ul>
+                <li class="active-tab">Dạo</li>
+                <li>TẤT CẢ SẢN PHẨM</li>
+                <li>Giảm giá</li>
+                <li>Dụng cụ điện và thiết bị</li>
+                <li>Chăm sóc ô tô</li>
+                <li>Máy In, Máy Scan & Máy Fax</li>
+            </ul>
+        </div>
+
+        <!-- Voucher -->
+        <div class="shop-voucher">
+            <div class="voucher-card">
+                <p><strong>Giảm:</strong> @Model.Voucher.Discount</p>
+                <p><strong>Đơn Tối Thiểu:</strong> @Model.Voucher.MinOrderValue</p>
+                <p><strong>HSD:</strong> @Model.Voucher.ExpiryDate</p>
+                <button class="save-button">Lưu</button>
+            </div>
+        </div>
+
+        <!-- Product Suggestions -->
+        <div class="product-suggestions">
+            <h2>GỢI Ý CHO BẠN</h2>
+            <div class="product-list">
+                @foreach (var product in Model.SuggestedProducts)
+                {
+                    <div class="product-card">
+                        <img src="@product.ImageUrl" alt="@product.Name" class="product-image" />
+                        <p class="product-name">@product.Name</p>
+                        <p class="product-price">@product.Price VND</p>
+                    </div>
+                }
+            </div>
+            <a href="#" class="view-more-link">Xem Tất Cả ></a>
+        </div>
+    </div>
+</body>
+</html>

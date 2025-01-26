@@ -30,6 +30,7 @@ public partial class OnlineShoppingContext : DbContext
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         optionsBuilder.UseSqlServer(GetConnectionString());
+        optionsBuilder.UseLazyLoadingProxies();
     }
 
 
@@ -234,4 +235,6 @@ public partial class OnlineShoppingContext : DbContext
     }
 
     partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
+
+
 }
