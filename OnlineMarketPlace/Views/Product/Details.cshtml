@@ -49,13 +49,17 @@
 					<img src="~/images/product-details/new.jpg" class="newarrival" alt="" />
 					<h2>@Model.Name</h2>
 					
-					<div>
+                    <div>
 						<!-- Xếp hạng -->
-						4.9 <img src="~/images/product-details/rating.png" alt="Rating" style="height: 16px;" />
-						| 1,3k Đánh Giá
+						<a href="#reviews" style="text-decoration: none; color: inherit;">
+							4.9 <img src="~/images/product-details/rating.png" alt="Rating" style="height: 16px;" />
+						</a>
+						| <a href="#reviews" style="text-decoration: none; color: inherit;">
+							1,3k Đánh Giá
+						</a>
 						| @Model.QuantitySold Đã bán
 						| <span style="color: #007bff; cursor: pointer;">Tố cáo</span>
-					</div>
+                    </div>
 
 
 					<span>
