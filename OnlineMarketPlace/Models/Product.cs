@@ -29,11 +29,17 @@ public partial class Product
 
     public DateTime? DeletedAt { get; set; }
 
+    public virtual ICollection<Cart> Carts { get; set; } = new List<Cart>();
+
     public virtual CategoryModel Category { get; set; } = null!;
 
     public virtual ICollection<Discount> Discounts { get; set; } = new List<Discount>();
 
+    public virtual ICollection<OrderDetail> OrderDetails { get; set; } = new List<OrderDetail>();
+
     public virtual ICollection<RatingAndReview> RatingAndReviews { get; set; } = new List<RatingAndReview>();
+
+    public virtual ICollection<Report> Reports { get; set; } = new List<Report>();
 
     public virtual Shop Seller { get; set; } = null!;
 }

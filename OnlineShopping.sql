@@ -10,6 +10,7 @@ GO
 USE OnlineShopping
 GO
 
+--Inter 1
 CREATE TABLE [User] (
   [id] INT PRIMARY KEY NOT NULL IDENTITY(1, 1),
   [name] NVARCHAR(255) NOT NULL,
@@ -22,8 +23,7 @@ CREATE TABLE [User] (
   [loginBy] BIT NOT NULL,
   [isDeleted] BIT NOT NULL,
   [deletedBy] INT,
-  [deletedAt] DATETIME,
-  [token] VARCHAR(255),
+  [deletedAt] DATETIME
 )
 GO
 
@@ -84,31 +84,75 @@ CREATE TABLE [Discount] (
 GO
 
 ALTER TABLE [Discount] ADD CONSTRAINT [discount_productid_foreign] FOREIGN KEY ([productId]) REFERENCES [Product] ([id])
-GO
-
 ALTER TABLE [RatingAndReview] ADD CONSTRAINT [ratingandreview_createdby_foreign] FOREIGN KEY ([createdBy]) REFERENCES [User] ([id])
-GO
-
 ALTER TABLE [Category] ADD CONSTRAINT [category_parentid_foreign] FOREIGN KEY ([parentId]) REFERENCES [Category] ([id])
-GO
-
 ALTER TABLE [Shop] ADD CONSTRAINT [shop_ownerid_foreign] FOREIGN KEY ([ownerId]) REFERENCES [User] ([id])
-GO
-
 ALTER TABLE [RatingAndReview] ADD CONSTRAINT [ratingandreview_productid_foreign] FOREIGN KEY ([productId]) REFERENCES [Product] ([id])
-GO
-
 ALTER TABLE [Product] ADD CONSTRAINT [product_sellerid_foreign] FOREIGN KEY ([sellerId]) REFERENCES [Shop] ([id])
-GO
-
 ALTER TABLE [Product] ADD CONSTRAINT [product_categoryid_foreign] FOREIGN KEY ([categoryId]) REFERENCES [Category] ([id])
 GO
 
-INSERT INTO [User] (name, username, password, gender, email, role, dob, [loginBy], isDeleted, deletedBy, deletedAt)
-VALUES
-    (N'John Doe', 'johndoe', 'password123', 1, 'johndoe@example.com', 'customer', '1990-05-15', 0, 0, NULL, NULL),
-    (N'admin', 'admin', 'admin', 1, 'admin@example.com', 'admin', '1990-05-15', 0, 0, NULL, NULL);
 
-	ALTER TABLE [User] DROP COLUMN Token;
+--Inter 2
+CREATE TABLE [Cart] (
+  [id] INT PRIMARY KEY NOT NULL IDENTITY(1, 1),
+  [userId] INT NOT NULL,
+  [productId] INT NOT NULL,
+  [quantity] INT NOT NULL
+)
+ALTER TABLE [Cart]
+ADD CONSTRAINT [cart_userid_foreign] FOREIGN KEY ([userId]) REFERENCES [User]([id]),
+    CONSTRAINT [cart_productid_foreign] FOREIGN KEY ([productId]) REFERENCES [Product]([id])
+GO
 
-select * from [User]
+
+CREATE TABLE [Direct] (
+  [id] INT PRIMARY KEY NOT NULL IDENTITY(1, 1),
+  [userId] INT NOT NULL,
+  [directer] NVARCHAR(255) NOT NULL,
+  [phoneNumber] VARCHAR NOT NULL,
+  [name] NVARCHAR(255) NOT NULL
+)
+ALTER TABLE [Direct]
+ADD CONSTRAINT [direct_userid_foreign] FOREIGN KEY ([userId]) REFERENCES [User]([id])
+GO
+
+
+CREATE TABLE [Order] (
+  [id] INT PRIMARY KEY NOT NULL IDENTITY(1, 1),
+  [userId] INT NOT NULL,
+  [total] FLOAT(53) NOT NULL,
+  [createAt] DATETIME NOT NULL,
+  [status] NVARCHAR(50) NOT NULL,
+  [directId] INT NOT NULL,
+  [paymentMethod] NVARCHAR(50) NOT NULL
+)
+ALTER TABLE [Order]
+ADD CONSTRAINT [order_userid_foreign] FOREIGN KEY ([userId]) REFERENCES [User]([id]),
+    CONSTRAINT [order_directid_foreign] FOREIGN KEY ([directId]) REFERENCES [Direct]([id])
+GO
+
+
+CREATE TABLE [OrderDetail] (
+  [id] INT PRIMARY KEY NOT NULL IDENTITY(1, 1),
+  [orderId] INT NOT NULL,
+  [productId] INT NOT NULL,
+  [quantity] INT NOT NULL
+)
+ALTER TABLE [OrderDetail]
+ADD CONSTRAINT [orderdetail_orderid_foreign] FOREIGN KEY ([orderId]) REFERENCES [Order]([id]),
+    CONSTRAINT [orderdetail_productid_foreign] FOREIGN KEY ([productId]) REFERENCES [Product]([id])
+GO
+
+
+CREATE TABLE [Report] (
+  [id] INT PRIMARY KEY NOT NULL IDENTITY(1, 1),
+  [productId] INT NOT NULL,
+  [userId] INT NOT NULL,
+  [createAt] DATETIME NOT NULL,
+  [detail] NVARCHAR(255) NOT NULL
+)
+ALTER TABLE [Report]
+ADD CONSTRAINT [report_productid_foreign] FOREIGN KEY ([productId]) REFERENCES [Product]([id]),
+    CONSTRAINT [report_userid_foreign] FOREIGN KEY ([userId]) REFERENCES [User]([id])
+GO

@@ -15,13 +15,23 @@ public partial class OnlineShoppingContext : DbContext
     {
     }
 
+    public virtual DbSet<Cart> Carts { get; set; }
+
     public virtual DbSet<CategoryModel> Categories { get; set; }
 
+    public virtual DbSet<Direct> Directs { get; set; }
+
     public virtual DbSet<Discount> Discounts { get; set; }
+
+    public virtual DbSet<Order> Orders { get; set; }
+
+    public virtual DbSet<OrderDetail> OrderDetails { get; set; }
 
     public virtual DbSet<Product> Products { get; set; }
 
     public virtual DbSet<RatingAndReview> RatingAndReviews { get; set; }
+
+    public virtual DbSet<Report> Reports { get; set; }
 
     public virtual DbSet<Shop> Shops { get; set; }
 
@@ -30,6 +40,7 @@ public partial class OnlineShoppingContext : DbContext
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         optionsBuilder.UseSqlServer(GetConnectionString());
+        optionsBuilder.UseLazyLoadingProxies();
     }
 
 
@@ -51,11 +62,31 @@ public partial class OnlineShoppingContext : DbContext
 
         return strConn;
 
-    }// use code in json file to connect to database
-
-
+    }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<Cart>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__Cart__3213E83F471B6070");
+
+            entity.ToTable("Cart");
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.ProductId).HasColumnName("productId");
+            entity.Property(e => e.Quantity).HasColumnName("quantity");
+            entity.Property(e => e.UserId).HasColumnName("userId");
+
+            entity.HasOne(d => d.Product).WithMany(p => p.Carts)
+                .HasForeignKey(d => d.ProductId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("cart_productid_foreign");
+
+            entity.HasOne(d => d.User).WithMany(p => p.Carts)
+                .HasForeignKey(d => d.UserId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("cart_userid_foreign");
+        });
+
         modelBuilder.Entity<CategoryModel>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__Category__3213E83F186F8D9E");
@@ -71,6 +102,31 @@ public partial class OnlineShoppingContext : DbContext
             entity.HasOne(d => d.Parent).WithMany(p => p.InverseParent)
                 .HasForeignKey(d => d.ParentId)
                 .HasConstraintName("category_parentid_foreign");
+        });
+
+        modelBuilder.Entity<Direct>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__Direct__3213E83F8D898281");
+
+            entity.ToTable("Direct");
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.Directer)
+                .HasMaxLength(255)
+                .HasColumnName("directer");
+            entity.Property(e => e.Name)
+                .HasMaxLength(255)
+                .HasColumnName("name");
+            entity.Property(e => e.PhoneNumber)
+                .HasMaxLength(1)
+                .IsUnicode(false)
+                .HasColumnName("phoneNumber");
+            entity.Property(e => e.UserId).HasColumnName("userId");
+
+            entity.HasOne(d => d.User).WithMany(p => p.Directs)
+                .HasForeignKey(d => d.UserId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("direct_userid_foreign");
         });
 
         modelBuilder.Entity<Discount>(entity =>
@@ -94,6 +150,59 @@ public partial class OnlineShoppingContext : DbContext
                 .HasForeignKey(d => d.ProductId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("discount_productid_foreign");
+        });
+
+        modelBuilder.Entity<Order>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__Order__3213E83FE6B0C72B");
+
+            entity.ToTable("Order");
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.CreateAt)
+                .HasColumnType("datetime")
+                .HasColumnName("createAt");
+            entity.Property(e => e.DirectId).HasColumnName("directId");
+            entity.Property(e => e.PaymentMethod)
+                .HasMaxLength(50)
+                .HasColumnName("paymentMethod");
+            entity.Property(e => e.Status)
+                .HasMaxLength(50)
+                .HasColumnName("status");
+            entity.Property(e => e.Total).HasColumnName("total");
+            entity.Property(e => e.UserId).HasColumnName("userId");
+
+            entity.HasOne(d => d.Direct).WithMany(p => p.Orders)
+                .HasForeignKey(d => d.DirectId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("order_directid_foreign");
+
+            entity.HasOne(d => d.User).WithMany(p => p.Orders)
+                .HasForeignKey(d => d.UserId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("order_userid_foreign");
+        });
+
+        modelBuilder.Entity<OrderDetail>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__OrderDet__3213E83F9B552274");
+
+            entity.ToTable("OrderDetail");
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.OrderId).HasColumnName("orderId");
+            entity.Property(e => e.ProductId).HasColumnName("productId");
+            entity.Property(e => e.Quantity).HasColumnName("quantity");
+
+            entity.HasOne(d => d.Order).WithMany(p => p.OrderDetails)
+                .HasForeignKey(d => d.OrderId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("orderdetail_orderid_foreign");
+
+            entity.HasOne(d => d.Product).WithMany(p => p.OrderDetails)
+                .HasForeignKey(d => d.ProductId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("orderdetail_productid_foreign");
         });
 
         modelBuilder.Entity<Product>(entity =>
@@ -163,6 +272,33 @@ public partial class OnlineShoppingContext : DbContext
                 .HasConstraintName("ratingandreview_productid_foreign");
         });
 
+        modelBuilder.Entity<Report>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__Report__3213E83FC10B5B31");
+
+            entity.ToTable("Report");
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.CreateAt)
+                .HasColumnType("datetime")
+                .HasColumnName("createAt");
+            entity.Property(e => e.Detail)
+                .HasMaxLength(255)
+                .HasColumnName("detail");
+            entity.Property(e => e.ProductId).HasColumnName("productId");
+            entity.Property(e => e.UserId).HasColumnName("userId");
+
+            entity.HasOne(d => d.Product).WithMany(p => p.Reports)
+                .HasForeignKey(d => d.ProductId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("report_productid_foreign");
+
+            entity.HasOne(d => d.User).WithMany(p => p.Reports)
+                .HasForeignKey(d => d.UserId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("report_userid_foreign");
+        });
+
         modelBuilder.Entity<Shop>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__Shop__3213E83F4D2B2E68");
@@ -224,6 +360,10 @@ public partial class OnlineShoppingContext : DbContext
                 .HasMaxLength(255)
                 .IsUnicode(false)
                 .HasColumnName("role");
+            entity.Property(e => e.Token)
+                .HasMaxLength(255)
+                .IsUnicode(false)
+                .HasColumnName("token");
             entity.Property(e => e.Username)
                 .HasMaxLength(255)
                 .IsUnicode(false)
@@ -234,4 +374,6 @@ public partial class OnlineShoppingContext : DbContext
     }
 
     partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
+
+
 }
