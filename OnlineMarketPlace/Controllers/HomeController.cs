@@ -22,8 +22,12 @@ namespace OnlineMarketPlace.Controllers
             _logger = logger;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int newlimit)
         {
+            if (newlimit == 0)
+            {
+                newlimit = 6;
+            }
             var products = await productRepository.GetProductsAsync();
             var viewModel = new CategoriesList();
 
@@ -45,6 +49,7 @@ namespace OnlineMarketPlace.Controllers
             viewModel.CategoriesChild = childCategoriesArray.ToList();
             //CategoriesList categoriesList = new CategoriesList(categoriesParent, flattenedCategoriesChildList);
             ViewData["CategoriesList"] = viewModel;
+            ViewData["limit"] = newlimit;
             return View(products);
         }
 

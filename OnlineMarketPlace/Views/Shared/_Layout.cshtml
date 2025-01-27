@@ -63,29 +63,29 @@
 						<div class="logo pull-left">
 							<a asp-controller="Home" asp-action="Index"><img src="~/images/home/logo.png" alt="" /></a>
 						</div>
-						<div class="btn-group pull-right">
-							<div class="btn-group">
-								<button type="button" class="btn btn-default dropdown-toggle usa" data-toggle="dropdown">
-									USA
-									<span class="caret"></span>
-								</button>
-								<ul class="dropdown-menu">
-									<li><a href="#">VietNam</a></li>
-									<li><a href="#">English</a></li>
-								</ul>
-							</div>
+						@* <div class="btn-group pull-right"> *@
+						@* 	<div class="btn-group"> *@
+						@* 		<button type="button" class="btn btn-default dropdown-toggle usa" data-toggle="dropdown"> *@
+						@* 			USA *@
+						@* 			<span class="caret"></span> *@
+						@* 		</button> *@
+						@* 		<ul class="dropdown-menu"> *@
+						@* 			<li><a href="#">VietNam</a></li> *@
+						@* 			<li><a href="#">English</a></li> *@
+						@* 		</ul> *@
+						@* 	</div> *@
 
-							<div class="btn-group">
-								<button type="button" class="btn btn-default dropdown-toggle usa" data-toggle="dropdown">
-									DOLLAR
-									<span class="caret"></span>
-								</button>
-								<ul class="dropdown-menu">
-									<li><a href="#">Canadian Dollar</a></li>
-									<li><a href="#">Pound</a></li>
-								</ul>
-							</div>
-						</div>
+						@* 	<div class="btn-group"> *@
+						@* 		<button type="button" class="btn btn-default dropdown-toggle usa" data-toggle="dropdown"> *@
+						@* 			DOLLAR *@
+						@* 			<span class="caret"></span> *@
+						@* 		</button> *@
+						@* 		<ul class="dropdown-menu"> *@
+						@* 			<li><a href="#">VND</a></li> *@
+						@* 			<li><a href="#">Pound</a></li> *@
+						@* 		</ul> *@
+						@* 	</div> *@
+						@* </div> *@
 					</div>
 					<div class="col-sm-8">
 						<div class="shop-menu pull-right">
@@ -93,10 +93,10 @@
 								
 								<li><a href="#"><i class="fa fa-star"></i> Wishlist</a></li>
 								<li><a href="checkout.html"><i class="fa fa-crosshairs"></i> Checkout</a></li>
-								<li><a asp-controller="Home" asp-action="Privacy"><i class="fa fa-crosshairs"></i> email</a></li>
 								<li><a href="cart.html"><i class="fa fa-shopping-cart"></i> Cart</a></li>
 								@{
 									var userName = Context.Session.GetString("Username");
+									var role = Context.Session.GetString("Role");
 								}
 								@if (!string.IsNullOrEmpty(userName))
 								{
@@ -104,6 +104,9 @@
 									<li><a asp-controller="Login" asp-action="Logout"><i class="fa fa-lock"></i> Logout</a></li>
 								}else{
 									<li><a asp-controller="Login" asp-action="Login"><i class="fa fa-lock"></i> Login</a></li>
+								}
+								@if	(!string.IsNullOrEmpty(role) && role.ToLower().Equals("seller")){
+									<li><a asp-controller="Login" asp-action="Logout"><i class="fa fa-lock"></i> shop</a></li>
 								}
 							</ul>
 						</div>
@@ -128,24 +131,9 @@
 						<div class="mainmenu pull-left">
 							<ul class="nav navbar-nav collapse navbar-collapse">
 								<li><a asp-controller="Home" asp-action="Index" class="active">Home</a></li>
-								<li class="dropdown">
-									<a href="#">Shop<i class="fa fa-angle-down"></i></a>
-									<ul role="menu" class="sub-menu">
-										<li><a asp-action="Index" asp-controller="Category">Categories</a></li>
-										<li><a asp-action="Details" asp-controller="Product">Product Details</a></li>
-										<li><a>Checkout</a></li>
-										<li><a>Cart</a></li>
-										<li><a>Login</a></li>
-									</ul>
-								</li>
-								<li class="dropdown">
-									<a href="#">Blog<i class="fa fa-angle-down"></i></a>
-									<ul role="menu" class="sub-menu">
-										<li><a href="blog.html">Blog List</a></li>
-										<li><a href="blog-single.html">Blog Single</a></li>
-									</ul>
-								</li>
-								<li><a href="404.html">404</a></li>
+								<li><a asp-action="Index" asp-controller="Category">Categories</a></li>
+								<li><a>Checkout</a></li>
+								<li><a>Cart</a></li>
 								<li><a href="contact-us.html">Contact</a></li>
 							</ul>
 						</div>
@@ -175,7 +163,7 @@
 	<!--/message-->
 	<div class="popup" onclick="togglePopup()">
 		<img width="20" src="~/images/home/bell.jpg" alt="notification" />
-		<span class="popuptext" id="myPopup">@TempData[""]</span>
+		<span class="popuptext" id="myPopup">@TempData["notification"]</span>
 	</div>
 	<!--/message-->
 
@@ -265,7 +253,7 @@
 		<div class="footer-widget">
 			<div class="container">
 				<div class="row">
-					<div class="col-sm-2">
+					<div class="col-sm-3">
 						<div class="single-widget">
 							<h2>Service</h2>
 							<ul class="nav nav-pills nav-stacked">
@@ -277,19 +265,8 @@
 							</ul>
 						</div>
 					</div>
-					<div class="col-sm-2">
-						<div class="single-widget">
-							<h2>Quock Shop</h2>
-							<ul class="nav nav-pills nav-stacked">
-								<li><a href="#">T-Shirt</a></li>
-								<li><a href="#">Mens</a></li>
-								<li><a href="#">Womens</a></li>
-								<li><a href="#">Gift Cards</a></li>
-								<li><a href="#">Shoes</a></li>
-							</ul>
-						</div>
-					</div>
-					<div class="col-sm-2">
+					
+					<div class="col-sm-3">
 						<div class="single-widget">
 							<h2>Policies</h2>
 							<ul class="nav nav-pills nav-stacked">
