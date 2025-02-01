@@ -4,11 +4,6 @@ VALUES
     (N'admin', 'admin', 'admin', 1, 'admin@example.com', 'admin', '1990-05-15', 0, 0, NULL, NULL),
 	('Alice Smith', 'alice', 'password123', 1, 'alice@example.com', 'Seller', '1990-05-15',0,0, null, null);
 	select *from [user]
-INSERT INTO [User] ([name], [username], [password], [gender], [email], [role], [dob], [isDeleted])
-VALUES
-('Alice Smith', 'alice', 'password123', 1, 'alice@example.com', 'Seller', '1990-05-15', 0),
-('Bob Johnson', 'bob', 'password123', 1, 'bob@example.com', 'Customer', '1985-03-20', 0),
-('Charlie Brown', 'charlie', 'password123', 1, 'charlie@example.com', 'Admin', '1978-07-10', 0);
 
 -- Insert sample data into the [Category] table
 INSERT INTO [Category] ([name], [parentId])
@@ -16,17 +11,12 @@ VALUES
 ('Electronics', null),
 ('Furniture', null),
 ('Clothing', null),
-('Toys', null),
 ('Sports Equipment', null);
 -- Insert sample data into the [Shop] table
 INSERT INTO [Shop] ([ownerId], [name], [description], [createdAt], [logo], [isDeleted])
 VALUES
 (1, 'Alices Electronics', 'Best electronics in town', '2023-01-01', 'alice_logo.png', 0);
 select *from [user]
-
--- edit
-
-
 
 -- Insert sample data into the [Product] table
 INSERT INTO [Product] ([name], [price], [description], [image], [sellerId], [categoryId], [quantitySold], [inventory], [isDeleted])
@@ -35,14 +25,7 @@ VALUES
 ('Dell XPS 13', 1199.99, 'High-performance laptop', 'xps13.png', 1, 3, 20, 50, 0),
 ('Samsung Refrigerator', 899.99, 'Energy-efficient fridge', 'samsung_fridge.png', 1, 4, 10, 25, 0);
 
-
-UPDATE [Product]
-SET [image] = CASE 
-    WHEN [name] = 'iPhone 14' THEN 'product1.jpg'
-    WHEN [name] = 'Dell XPS 13' THEN 'product2.jpg'
-    WHEN [name] = 'Samsung Refrigerator' THEN 'product3.jpg'
-    ELSE [image]
-end;
+select * from Product
 
 -- Insert sample data into the [RatingAndReview] table
 INSERT INTO [RatingAndReview] ([productId], [rating], [review], [createdBy], [createdAt])
@@ -87,22 +70,24 @@ INSERT INTO [Category] ([name], [parentId]) VALUES
 ('Baby Clothes', (SELECT id FROM [Category] WHERE [name] = 'Mother & Baby')),
 ('Diapers & Baby Care', (SELECT id FROM [Category] WHERE [name] = 'Mother & Baby')),
 ('Strollers & Carriers', (SELECT id FROM [Category] WHERE [name] = 'Mother & Baby'));
+
 select *from category
+
 -- Insert products for Men Clothing
 INSERT INTO [Product] ([name], [price], [description], [image], [sellerId], [categoryId], [quantitySold], [inventory], [isDeleted]) VALUES
-('Men Formal Shirt', 29.99, 'Slim fit cotton shirt', 'men_shirt.jpg', 3, (SELECT id FROM [Category] WHERE [name] = 'Men Clothing'), 0, 50, 0),
-('Casual T-Shirt', 19.99, 'Comfortable summer wear', 'casual_tshirt.jpg', 3, (SELECT id FROM [Category] WHERE [name] = 'Men Clothing'), 0, 50, 0),
-('Denim Jeans', 49.99, 'Blue slim fit jeans', 'denim_jeans.jpg', 3, (SELECT id FROM [Category] WHERE [name] = 'Men Clothing'), 0, 50, 0),
-('Leather Jacket', 89.99, 'Classic black leather jacket', 'leather_jacket.jpg', 3, (SELECT id FROM [Category] WHERE [name] = 'Men Clothing'), 0, 50, 0),
-('Chino Pants', 39.99, 'Casual chino pants', 'chino_pants.jpg', 3, (SELECT id FROM [Category] WHERE [name] = 'Men Clothing'), 0, 50, 0);
+('Men Formal Shirt', 29.99, 'Slim fit cotton shirt', 'men_shirt.jpg', 1, (SELECT id FROM [Category] WHERE [name] = 'Men Clothing'), 0, 50, 0),
+('Casual T-Shirt', 19.99, 'Comfortable summer wear', 'casual_tshirt.jpg', 1, (SELECT id FROM [Category] WHERE [name] = 'Men Clothing'), 0, 50, 0),
+('Denim Jeans', 49.99, 'Blue slim fit jeans', 'denim_jeans.jpg', 1, (SELECT id FROM [Category] WHERE [name] = 'Men Clothing'), 0, 50, 0),
+('Leather Jacket', 89.99, 'Classic black leather jacket', 'leather_jacket.jpg', 1, (SELECT id FROM [Category] WHERE [name] = 'Men Clothing'), 0, 50, 0),
+('Chino Pants', 39.99, 'Casual chino pants', 'chino_pants.jpg', 1, (SELECT id FROM [Category] WHERE [name] = 'Men Clothing'), 0, 50, 0);
 select *from  Shop
 -- Insert products for Women Clothing
 INSERT INTO [Product] ([name], [price], [description], [image], [sellerId], [categoryId], [quantitySold], [inventory], [isDeleted]) VALUES
-('Summer Dress', 35.99, 'Lightweight floral dress', 'summer_dress.jpg', 3, (SELECT id FROM [Category] WHERE [name] = 'Women Clothing'), 0, 50, 0),
-('High-Waist Jeans', 45.99, 'Classic blue high-waist jeans', 'highwaist_jeans.jpg', 3, (SELECT id FROM [Category] WHERE [name] = 'Women Clothing'), 0, 50, 0),
-('Women Blazer', 55.99, 'Elegant office blazer', 'women_blazer.jpg', 3, (SELECT id FROM [Category] WHERE [name] = 'Women Clothing'), 0, 50, 0),
-('Crop Top', 25.99, 'Trendy cotton crop top', 'crop_top.jpg', 3, (SELECT id FROM [Category] WHERE [name] = 'Women Clothing'), 0, 50, 0),
-('Maxi Skirt', 39.99, 'Flowy long skirt', 'maxi_skirt.jpg', 3, (SELECT id FROM [Category] WHERE [name] = 'Women Clothing'), 0, 50, 0);
+('Summer Dress', 35.99, 'Lightweight floral dress', 'summer_dress.jpg', 1, (SELECT id FROM [Category] WHERE [name] = 'Women Clothing'), 0, 50, 0),
+('High-Waist Jeans', 45.99, 'Classic blue high-waist jeans', 'highwaist_jeans.jpg', 1, (SELECT id FROM [Category] WHERE [name] = 'Women Clothing'), 0, 50, 0),
+('Women Blazer', 55.99, 'Elegant office blazer', 'women_blazer.jpg', 1, (SELECT id FROM [Category] WHERE [name] = 'Women Clothing'), 0, 50, 0),
+('Crop Top', 25.99, 'Trendy cotton crop top', 'crop_top.jpg', 1, (SELECT id FROM [Category] WHERE [name] = 'Women Clothing'), 0, 50, 0),
+('Maxi Skirt', 39.99, 'Flowy long skirt', 'maxi_skirt.jpg', 1, (SELECT id FROM [Category] WHERE [name] = 'Women Clothing'), 0, 50, 0);
 
 -- Insert products for Shoes & Accessories
 INSERT INTO [Product] ([name], [price], [description], [image], [sellerId], [categoryId], [quantitySold], [inventory], [isDeleted]) VALUES

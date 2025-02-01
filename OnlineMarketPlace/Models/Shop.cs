@@ -13,7 +13,7 @@ public partial class Shop
 
     public string Description { get; set; } = null!;
 
-    public DateOnly CreatedAt { get; set; }
+    public DateTime CreatedAt { get; set; }
 
     public string Logo { get; set; } = null!;
 

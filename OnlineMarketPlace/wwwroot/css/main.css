@@ -1047,6 +1047,9 @@ h2.title {
 #recommended-item-carousel .carousel-inner .item {
   padding-left: 0;
 }
+#sale-item-carousel .carousel-inner .item {
+	padding-left: 0;
+}
 
 .recommended-item-control {
   position: absolute;

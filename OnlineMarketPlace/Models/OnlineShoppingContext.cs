@@ -360,10 +360,7 @@ public partial class OnlineShoppingContext : DbContext
                 .HasMaxLength(255)
                 .IsUnicode(false)
                 .HasColumnName("role");
-            entity.Property(e => e.Token)
-                .HasMaxLength(255)
-                .IsUnicode(false)
-                .HasColumnName("token");
+            
             entity.Property(e => e.Username)
                 .HasMaxLength(255)
                 .IsUnicode(false)

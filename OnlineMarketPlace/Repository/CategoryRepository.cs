@@ -33,6 +33,33 @@ namespace OnlineMarketPlace.Repository
             .ToListAsync();
         }
 
+        public async Task<List<CategoryModel>> GetCatgoryParentByShop(int shopId)
+        {
+            var parentIdHaveChildList = await _context.Categories
+            .Where(c => _context.Products.Any(p => p.CategoryId == c.Id && p.SellerId == shopId)).Select(c => c.ParentId).Distinct()
+            .ToListAsync();
+            var parentIdNoneChildList = await _context.Categories
+            .Where(c => c.ParentId == null && _context.Products.Any(p => p.CategoryId == c.Id && p.SellerId == shopId)).Distinct()
+            .ToListAsync();
+            var catergoriesParentList = new List<CategoryModel>();
+            foreach (var id in parentIdHaveChildList)
+            {
+                var catergory = await _context.Categories.Where(c => c.Id == id).SingleAsync();
+                catergoriesParentList.Add(catergory);
+            }
+            foreach (var parent in parentIdNoneChildList)
+            {
+                catergoriesParentList.Add(parent);
+            }
+            return catergoriesParentList;
+        }
+
+        public async Task<List<CategoryModel>> GetCatgoryChildByShop(int parentid, int shopId)
+        {
+            return await _context.Categories
+            .Where(c => c.ParentId == parentid && _context.Products.Any(p => p.CategoryId == c.Id && p.SellerId == shopId))
+            .ToListAsync();
+        }
         //private readonly OnlineShoppingContext _context;
 
         //public CategoryRepository()

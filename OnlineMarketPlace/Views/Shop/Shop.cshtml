@@ -1,72 +1,277 @@
-﻿
+﻿@{
+	var shop = ViewData["Shop"] as OnlineMarketPlace.Models.Shop;
+	if (shop == null)
+	{
+		<div class="alert alert-warning">Shop data is not available.</div>
+		return;
+	}
+	var rating = ViewData["rating"] as string;
 
+	var categoriesL = ViewData["CategoriesList"] as OnlineMarketPlace.Models.CategoriesList;
+
+}
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@Model.ShopName</title>
-    <link rel="stylesheet" href="~/css/shop.css" />
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>@shop.Name</title>
+	<link rel="stylesheet" href="~/css/shop.css" />
 </head>
 <body>
-    <div class="shop-container">
-        <!-- Header -->
-        <div class="shop-header">
-            <div class="shop-logo">
-                <img src="@Model.LogoUrl" alt="Shop Logo" class="logo-image" />
-            </div>
-            <div class="shop-info">
-                <h1 class="shop-name">@Model.ShopName</h1>
-                <p>Online @Model.LastActive phút trước</p>
-                <button class="follow-button">+ Theo Dõi</button>
-                <button class="chat-button">Chat</button>
-            </div>
-            <div class="shop-stats">
-                <p><strong>Sản Phẩm:</strong> @Model.ProductCount</p>
-                <p><strong>Người Theo Dõi:</strong> @Model.FollowerCount</p>
-                <p><strong>Đang Theo:</strong> @Model.FollowingCount</p>
-                <p><strong>Đánh Giá:</strong> @Model.Rating (@Model.ReviewCount Đánh Giá)</p>
-                <p><strong>Tham Gia:</strong> @Model.JoinedDuration</p>
-            </div>
-        </div>
 
-        <!-- Tabs -->
-        <div class="shop-tabs">
-            <ul>
-                <li class="active-tab">Dạo</li>
-                <li>TẤT CẢ SẢN PHẨM</li>
-                <li>Giảm giá</li>
-                <li>Dụng cụ điện và thiết bị</li>
-                <li>Chăm sóc ô tô</li>
-                <li>Máy In, Máy Scan & Máy Fax</li>
-            </ul>
-        </div>
+	<div class="shop-container">
+		<div class="shop-header">
+			<div class="shop-logo">
+				<img src="@shop.Logo" alt="Shop Logo" class="logo-image" />
+			</div>
+			<div class="shop-info">
+				<h1 class="shop-name">@shop.Name</h1>
+				@* <p>Online @shop.LastActive phút trước</p> *@
+				@* <button class="follow-button">+ Theo Dõi</button> *@
+				<button class="chat-button">Chat</button>
+			</div>
+			<div class="shop-stats">
+				<p><strong>Products:</strong> @shop.Products.Count</p>
+				@* <p><strong>Người Theo Dõi:</strong> @shop.FollowerCount</p> *@
+				@* <p><strong>Đang Theo:</strong> @shop.FollowingCount</p> *@
+				<p><strong>Rating:</strong> @rating</p>
+				@{
+					DateTime createdAt = shop.CreatedAt;
+					TimeSpan timeDifference = DateTime.UtcNow - createdAt;
 
-        <!-- Voucher -->
-        <div class="shop-voucher">
-            <div class="voucher-card">
-                <p><strong>Giảm:</strong> @Model.Voucher.Discount</p>
-                <p><strong>Đơn Tối Thiểu:</strong> @Model.Voucher.MinOrderValue</p>
-                <p><strong>HSD:</strong> @Model.Voucher.ExpiryDate</p>
-                <button class="save-button">Lưu</button>
-            </div>
-        </div>
+					string timeAgo;
+					if (timeDifference.TotalDays >= 30)
+					{
+						int monthsAgo = (int)(timeDifference.TotalDays / 30);
+						timeAgo = $"{monthsAgo} months ago";
+					}
+					else
+					{
+						int daysAgo = (int)timeDifference.TotalDays;
+						timeAgo = $"{daysAgo} days ago";
+					}
+				}
 
-        <!-- Product Suggestions -->
-        <div class="product-suggestions">
-            <h2>GỢI Ý CHO BẠN</h2>
-            <div class="product-list">
-                @foreach (var product in Model.SuggestedProducts)
-                {
-                    <div class="product-card">
-                        <img src="@product.ImageUrl" alt="@product.Name" class="product-image" />
-                        <p class="product-name">@product.Name</p>
-                        <p class="product-price">@product.Price VND</p>
-                    </div>
-                }
-            </div>
-            <a href="#" class="view-more-link">Xem Tất Cả ></a>
-        </div>
-    </div>
+				<p><strong>Joined:</strong> @timeAgo</p>
+
+
+			</div>
+		</div>
+
+		<!-- Tabs -->
+		<div class="shop-tabs">
+			<ul>
+				<li class="active-tab">Home</li>
+				<li>
+					<a href="#all-products">Products</a>
+				</li>
+				<li>
+					<a href="#recommend-products">Recommended For You</a>
+				</li>
+				<li>
+					<a href="#sale-products">Sale</a>
+				</li>
+
+				@* @if (categoriesL != null) *@
+				@* { *@
+				@* 	@foreach (var category in categoriesL.CategoriesParent) *@
+				@* 	{ *@
+				@* 		<li> *@
+				@* 			<a href="#@category.Id">@category.Name</a> *@
+				@* 		</li> *@
+				@* 	} *@
+				@* } *@
+
+			</ul>
+		</div>
+		<br />
+		<br />
+		
+		<!-- Recommend for you -->
+		@{
+			var recommendedProducts = shop.Products.ToList();
+			// ViewData["RelatedProducts"] as List<Product>;
+			int totalProducts = recommendedProducts?.Count ?? 0;
+			int productsPerSlide = 4;
+			int totalSlides = (int)Math.Ceiling((double)totalProducts / productsPerSlide);
+		}
+
+		<div id="recommend-products">
+			<h2 class="title text-center">Recommended For You</h2>
+
+			<div id="recommended-item-carousel" class="carousel slide" data-ride="carousel">
+				<div class="carousel-inner">
+					@for (int slideIndex = 0; slideIndex < totalSlides; slideIndex++)
+					{
+						<div class="item @(slideIndex == 0 ? "active" : "")">
+							@for (int i = 0; i < productsPerSlide; i++)
+							{
+								int productIndex = slideIndex * productsPerSlide + i;
+								if (productIndex < totalProducts)
+								{
+									var product = recommendedProducts[productIndex];
+									<div class="col-sm-3">
+										<div class="product-image-wrapper">
+											<div class="single-products">
+												<a asp-action="Details" asp-controller="Product" asp-route-Id="@product.Id">
+													<div class="productinfo text-center">
+														<img src="@product.Image" alt="@product.Name" />
+														<h2>$@product.Price</h2>
+														<p class="truncate" title="@product.Name">@product.Name</p>
+														<button type="button" class="btn btn-default add-to-cart">
+															<i class="fa fa-shopping-cart"></i>Add to cart
+														</button>
+													</div>
+												</a>
+											</div>
+										</div>
+									</div>
+								}
+							}
+						</div>
+					}
+				</div>
+				@if (totalSlides > 1)
+				{
+					<a class="left recommended-item-control" href="#recommended-item-carousel" data-slide="prev">
+						<i class="fa fa-angle-left"></i>
+					</a>
+					<a class="right recommended-item-control" href="#recommended-item-carousel" data-slide="next">
+						<i class="fa fa-angle-right"></i>
+					</a>
+				}
+			</div>
+		</div>
+		<br />
+		<br />
+		<br />
+		<br />
+
+
+		<!-- Sale -->
+		@{
+			var saleProducts = shop.Products.ToList();
+			// ViewData["RelatedProducts"] as List<Product>;
+			var tProducts = saleProducts?.Count ?? 0;
+			var tSlides = (int)Math.Ceiling((double)tProducts / productsPerSlide);
+		}
+
+		<div id="sale-products">
+			<h2 class="title text-center">Sale</h2>
+
+			<div id="sale-item-carousel" class="carousel slide" data-ride="carousel">
+				<div class="carousel-inner">
+					@for (int slideIndex = 0; slideIndex < tSlides; slideIndex++)
+					{
+						<div class="item @(slideIndex == 0 ? "active" : "")">
+							@for (int i = 0; i < productsPerSlide; i++)
+							{
+								int productIndex = slideIndex * productsPerSlide + i;
+								if (productIndex < tProducts)
+								{
+									var product = saleProducts[productIndex];
+									<div class="col-sm-3">
+										<div class="product-image-wrapper">
+											<div class="single-products">
+												<a asp-action="Details" asp-controller="Product" asp-route-Id="@product.Id">
+													<div class="productinfo text-center">
+														<img src="@product.Image" alt="@product.Name" />
+														<h2>$@product.Price</h2>
+														<p class="truncate" title="@product.Name">@product.Name</p>
+														<button type="button" class="btn btn-default add-to-cart">
+															<i class="fa fa-shopping-cart"></i>Add to cart
+														</button>
+													</div>
+												</a>
+											</div>
+										</div>
+									</div>
+								}
+							}
+						</div>
+					}
+				</div>
+				@if (tSlides > 1)
+				{
+					<a class="left recommended-item-control" href="#sale-item-carousel" data-slide="prev">
+						<i class="fa fa-angle-left"></i>
+					</a>
+					<a class="right recommended-item-control" href="#sale-item-carousel" data-slide="next">
+						<i class="fa fa-angle-right"></i>
+					</a>
+				}
+			</div>
+		</div>
+		<br />
+		<br />
+		<br />
+		<br />
+
+		<!-- Products -->
+		<div id="all-products">
+			<h2 class ="title text-center">Products</h2>
+			@if (shop.Products == null)
+			{
+				<div class="alert alert-warning">There are no products yet</div>
+			}
+			else
+			{
+				<div class="col-sm-3">
+					@Html.Partial("_SidebarPartial", categoriesL);
+				</div>
+
+				<div class="col-sm-9 padding-right">
+					@foreach (var product in shop.Products)
+					{
+						<div class="col-sm-4">
+							<div class="product-image-wrapper">
+
+								<div class="single-products">
+									<a asp-action="Details" asp-controller="Product" asp-route-Id="@product.Id">
+										<div class="productinfo text-center">
+											<img src="images/home/@product.Image" alt="" width="100%" />
+											<h2>@product.Price</h2>
+											<p>@product.Name</p>
+											<a href="#" class="btn btn-default add-to-cart"><i class="fa fa-shopping-cart"></i>Add to cart</a>
+										</div>
+
+									</a>
+								</div>
+								<div class="choose">
+									<ul class="nav nav-pills nav-justified">
+										<li><a href="#"><i class="fa fa-plus-square"></i>Add to wishlist</a></li>
+										<li><a href="#"><i class="fa fa-plus-square"></i>Add to compare</a></li>
+									</ul>
+								</div>
+							</div>
+						</div>
+					}
+				</div>
+			}
+		</div>
+
+
+
+	</div>
+
+	<script>
+				document.querySelectorAll('.shop-tabs a').forEach(link => {
+			link.addEventListener('click', function (e) {
+				e.preventDefault(); // Ngăn chặn hành vi mặc định của liên kết
+
+				const targetId = this.getAttribute('href').substring(1); // Lấy ID mục tiêu (bỏ dấu #)
+				const targetElement = document.getElementById(targetId); // Tìm phần tử với ID tương ứng
+
+				if (targetElement) {
+					targetElement.scrollIntoView({
+						behavior: 'smooth', // Cuộn mượt mà
+						block: 'start'      // Đưa mục tiêu lên đầu trang
+					});
+				}
+			});
+		});
+
+	</script>
 </body>
 </html>

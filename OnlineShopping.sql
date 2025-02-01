@@ -65,7 +65,7 @@ CREATE TABLE [Shop] (
   [ownerId] INT NOT NULL,
   [name] NVARCHAR(255) NOT NULL,
   [description] NVARCHAR(255) NOT NULL,
-  [createdAt] DATE NOT NULL,
+  [createdAt] DATETIME NOT NULL,
   [logo] VARCHAR(255) NOT NULL,
   [isDeleted] BIT NOT NULL,
   [deletedBy] INT,
@@ -156,3 +156,4 @@ ALTER TABLE [Report]
 ADD CONSTRAINT [report_productid_foreign] FOREIGN KEY ([productId]) REFERENCES [Product]([id]),
     CONSTRAINT [report_userid_foreign] FOREIGN KEY ([userId]) REFERENCES [User]([id])
 GO
+select * from Category c join Product p on c.id = p.categoryId join Shop s on s.id = p.sellerId

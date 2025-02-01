@@ -18,5 +18,21 @@ namespace OnlineMarketPlace.Repository
                                  .Where(r => r.ProductId == productId)
                                  .ToListAsync();
         }
+
+        public async Task<double?> GetAverageRatingByShopAsync(int shopId)
+        {
+            var ratings = await _context.RatingAndReviews
+                .Where(r => r.Product.SellerId == shopId)
+                .Select(r => r.Rating)
+                .ToListAsync();
+
+            if (!ratings.Any())
+            {
+                return null;
+            }
+
+            return ratings.Average();
+        }
+
     }
 }

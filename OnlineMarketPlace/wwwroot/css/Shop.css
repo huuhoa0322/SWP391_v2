@@ -1,4 +1,15 @@
-﻿.shop-container {
+﻿.truncate {
+    white-space: nowrap; /* Hiển thị trên một dòng */
+    overflow: hidden;    /* Ẩn phần văn bản vượt quá */
+    text-overflow: ellipsis; /* Hiển thị dấu "..." cho văn bản vượt quá */
+    display: block;      /* Đảm bảo thuộc tính hoạt động đúng */
+    width: 100%;         /* Chiếm toàn bộ chiều rộng phần tử cha */
+    text-align: center;  /* Canh giữa nội dung */
+}
+
+
+
+.shop-container {
     font-family: Arial, sans-serif;
     margin: 20px auto;
     max-width: 1200px;
@@ -133,3 +144,75 @@
     text-decoration: none;
     color: #ff5722;
 }
+
+
+
+h2.title.text-center {
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+
+
+/* ================== Header Section ================== */
+.shop-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #ddd;
+}
+
+.shop-logo img {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.shop-info h1 {
+    font-size: 28px;
+    color: #333;
+}
+
+.shop-info .chat-button {
+    margin-top: 10px;
+    background-color: #ff9800;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+    .shop-info .chat-button:hover {
+        background-color: #e67e00;
+    }
+
+/* ================== Tabs Section ================== */
+.shop-tabs ul {
+    display: flex;
+    justify-content: space-around;
+    padding: 10px 0;
+    border-bottom: 2px solid #ddd;
+    background-color: #f7f7f7;
+    margin: 0 -20px 20px;
+}
+
+    .shop-tabs ul li {
+        font-size: 16px;
+        font-weight: 500;
+        padding: 10px 15px;
+        cursor: pointer;
+    }
+
+        .shop-tabs ul li.active-tab {
+            border-bottom: 3px solid #ff5722;
+            color: #ff5722;
+            font-weight: bold;
+        }
+
+
+

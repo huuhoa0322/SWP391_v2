@@ -29,7 +29,6 @@ public partial class User
 
     public bool LoginBy { get; set; }
 
-    public string? Token { get; set; }
 
     public virtual ICollection<Cart> Carts { get; set; } = new List<Cart>();
 
