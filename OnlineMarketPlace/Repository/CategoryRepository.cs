@@ -18,7 +18,7 @@ namespace OnlineMarketPlace.Repository
             //_context = new();
             //_allcategory = _context.Categories.ToList();
         }
-
+  
         public async Task<List<CategoryModel>> GetCatgoryParent()
         {
             return await _context.Categories

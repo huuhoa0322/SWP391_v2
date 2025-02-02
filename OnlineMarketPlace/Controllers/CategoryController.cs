@@ -2,7 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using OnlineMarketPlace.Models;
 using OnlineMarketPlace.Repository;
-using OnlineMarketPlace.Models;
 using System.Threading.Tasks;
 using System.Linq;
 
@@ -43,5 +42,37 @@ namespace OnlineMarketPlace.Controllers
 
             return View();
         }
+        public async Task<IActionResult> Search(string searchString, int pageNumber = 1)
+{
+    var viewModel = new CategoriesList();
+
+    // Lấy danh mục cha và con (giữ nguyên phần này)
+    viewModel.CategoriesParent = await _categoryRepository.GetCatgoryParent();
+    var childCategoriesArray = await Task.WhenAll(
+        viewModel.CategoriesParent.Select(async parent =>
+        {
+            using (var context = new OnlineShoppingContext())
+            {
+                return await context.Categories
+                    .Where(c => c.ParentId == parent.Id)
+                    .ToListAsync();
+            }
+        })
+    );
+    viewModel.CategoriesChild = childCategoriesArray.ToList();
+    ViewData["CategoriesList"] = viewModel;
+
+    // Tìm kiếm sản phẩm theo tên
+    var products = await _productRepository.SearchProductsByNameAsync(searchString, pageNumber, Pagesize);
+    var totalProducts = await _productRepository.GetTotalProductsCountAsync(searchString);
+
+    ViewData["Products"] = products;
+    ViewData["CurrentPage"] = pageNumber;
+    ViewData["TotalPages"] = (int)Math.Ceiling(totalProducts / (double) Pagesize);
+    ViewData["SearchString"] = searchString;
+
+    return View("Index");
+}
+
     }
 }
