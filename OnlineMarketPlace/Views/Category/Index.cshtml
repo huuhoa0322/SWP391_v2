@@ -142,13 +142,12 @@
                         <a href="/Product/Details/@product.Id" class="btn btn-primary">View Detail</a>
                     </div>
                 }
-                @if (totalProducts > limit)
+                @if ((int)ViewData["TotalProducts"] > (int)ViewData["Limit"])
                 {
-                    <div class="text-center">
-                        <a asp-controller="Category" asp-action="Index" asp-route-limit="@(limit + 9) class="btn btn-default get">
-                            Xem thêm (@(totalProducts - limit))
-                        </a>
-                    </div>
+                    <form method="get" action="@Url.Action("Index", "Category")">
+                        <input type="hidden" name="limit" value="@( (int)ViewData["Limit"] + 9 )" />
+                        <button type="submit">See more</button>
+                    </form>
                 }
             }
 
