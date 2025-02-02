@@ -14,31 +14,43 @@ namespace OnlineMarketPlace.Controllers
         public RatingAndReviewController(ILogger<RatingAndReviewController> logger)
         {
             _logger = logger;
-        } 
+        }
 
         [HttpPost]
-        public async Task<IActionResult> SubmitReview(int ProductId, int Rating, string Review)
+        public async Task<IActionResult> SubmitReview(int productId, int rating, string review)
         {
             try
             {
+                int userId = int.Parse(HttpContext.Session.GetString("Id"));
                 // Tạo và lưu đánh giá
-                var ratingAndReview = new RatingAndReview
-                {
-                    ProductId = ProductId,
-                    Rating = Rating,
-                    Review = Review,
-                    CreatedBy = 1, // Ví dụ
-                    CreatedAt = DateTime.UtcNow
-                };
-
                 
+                var existRating = await _ratingAndReviewRepository.GetRatingByProductAndUserAsync(productId, userId);
+                if (existRating == null)
+                {
+                    var ratingAndReview = new RatingAndReview
+                    {
+                        ProductId = productId,
+                        Rating = rating,
+                        Review = review,
+                        CreatedBy = userId,
+                        CreatedAt = DateTime.UtcNow
+                    };
+                    await _ratingAndReviewRepository.AddAsync(ratingAndReview);
+                }
+                else
+                {
+                    await _ratingAndReviewRepository.UpdateRatingAndReview(existRating, rating, review);
+                }
+
+
+
                 // Phản hồi JSON thành công
-                return Json(new { success = true});
+                return Json(new { success = true });
             }
             catch (Exception ex)
             {
                 // Phản hồi JSON khi lỗi
-                return Json(new { success = false});
+                return Json(new { success = false });
             }
         }
 

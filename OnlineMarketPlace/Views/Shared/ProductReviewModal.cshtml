@@ -1,30 +1,29 @@
 ﻿<div id="productReviewModal" class="modal">
 	<div class="modal-content">
 		<span class="close-btn">&times;</span>
-		<h2>Đánh giá sản phẩm</h2>
+		<h2>Rate Product</h2>
 
 		<form id="reviewForm" asp-action="SubmitReview" asp-controller="RatingAndReview" method="POST">
 			@* <!-- Input hidden để lưu ProductId --> *@
-			<p><strong>Sản phẩm:</strong> <span id="productName"></span></p>
-			<input type="hidden" name="ProductId" value="" />
+			<p><strong>Product:</strong> <span id="productName"></span></p>
 			
-
-
-			<div class="rating" name="Rating">
+			<div class="rating" name="rating">
 				<!-- Số sao từ 1 đến 5 -->
-				<span data-value="1" class="star">&#9733;</span>
-				<span data-value="2" class="star">&#9733;</span>
-				<span data-value="3" class="star">&#9733;</span>
-				<span data-value="4" class="star">&#9733;</span>
-				<span data-value="5" class="star">&#9733;</span>
+				<span data-value="1" class="star" style="margin-top: 0px">&#9733;</span>
+				<span data-value="2" class="star" style="margin-top: 0px">&#9733;</span>
+				<span data-value="3" class="star" style="margin-top: 0px">&#9733;</span>
+				<span data-value="4" class="star" style="margin-top: 0px">&#9733;</span>
+				<span data-value="5" class="star" style="margin-top: 0px">&#9733;</span>
 			</div>
-			<input type="hidden" id="ratingValue" name="Rating" value="0" />
 
-			<label for="comment">Nhận xét:</label>
-			<textarea id="comment" name="Review" rows="4" cols="50" placeholder="Hãy chia sẻ ý kiến của bạn..."></textarea>
+			
+			<input type="hidden" name="productId" value="" />
+			<input type="hidden" id="ratingValue" name="rating" value="0" />
+
+			<textarea id="comment" name="review" rows="6" cols="30" placeholder="Share more thoughts on the product to help other buyers..."></textarea>
 			<br><br>
 
-			<button type="submit" class="btn btn-primary">Gửi đánh giá</button>
+			<button type="submit" class="btn btn-primary">SUBMIT</button>
 		</form>
 	</div>
 </div>
@@ -35,7 +34,7 @@
 		const modal = document.getElementById('productReviewModal');
 		const reviewButtons = document.querySelectorAll('.review'); // Nút mở modal
 		const closeBtn = modal.querySelector('.close-btn'); // Nút đóng modal
-		const productIdInput = modal.querySelector('input[name="ProductId"]'); // Input hidden ProductId
+		const productIdInput = modal.querySelector('input[name="productId"]'); // Input hidden ProductId
 		const productNameDisplay = modal.querySelector('#productName'); // Hiển thị tên sản phẩm
 		const stars = modal.querySelectorAll('.rating .star'); // Các ngôi sao
 		const ratingValue = document.getElementById('ratingValue'); // Giá trị sao
@@ -151,8 +150,8 @@
 
 	/* Rating stars */
 	.rating {
-		font-size: 24px;
-		margin: 10px 0;
+		font-size: 50px;
+		margin-bottom: 10px;
 		cursor: pointer;
 		display: inline-block;
 	}
