@@ -11,7 +11,7 @@ public partial class RatingAndReview
 
     public int Rating { get; set; }
 
-    public string Review { get; set; } = null!;
+    public string? Review { get; set; }
 
     public int CreatedBy { get; set; }
 

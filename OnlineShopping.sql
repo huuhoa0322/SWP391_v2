@@ -47,7 +47,7 @@ CREATE TABLE [RatingAndReview] (
   [id] INT PRIMARY KEY NOT NULL IDENTITY(1, 1),
   [productId] INT NOT NULL,
   [rating] INT NOT NULL,
-  [review] NVARCHAR(255) NOT NULL,
+  [review] NVARCHAR(255),
   [createdBy] INT NOT NULL,
   [createdAt] DATETIME NOT NULL
 )
@@ -157,3 +157,8 @@ ADD CONSTRAINT [report_productid_foreign] FOREIGN KEY ([productId]) REFERENCES [
     CONSTRAINT [report_userid_foreign] FOREIGN KEY ([userId]) REFERENCES [User]([id])
 GO
 select * from Category c join Product p on c.id = p.categoryId join Shop s on s.id = p.sellerId
+
+
+select * from RatingAndReview
+select * from Product
+select * from Shop
