@@ -14,7 +14,7 @@ namespace OnlineMarketPlace.Controllers
 
         private const int Pagesize = 9;
 
-        public async Task<IActionResult> Index(int limit = 10)
+        public async Task<IActionResult> Index(int limit = 9)
         {
             var viewModel = new CategoriesList();
 
