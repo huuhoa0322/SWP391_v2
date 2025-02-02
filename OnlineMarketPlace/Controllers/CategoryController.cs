@@ -16,12 +16,12 @@ namespace OnlineMarketPlace.Controllers
 
         public async Task<IActionResult> Index(int limit = 9)
         {
-            var viewModel = new CategoriesList();
+            var viewModel = new CategoriesList
+            {
+                CategoriesParent = await _categoryRepository.GetCatgoryParent()
+            };
 
-            // Retrieve all parent categories
-            viewModel.CategoriesParent = await _categoryRepository.GetCatgoryParent();
-
-            // Retrieve child categories for each parent
+            // Lấy danh mục con của từng danh mục cha
             var childCategoriesArray = await Task.WhenAll(
                 viewModel.CategoriesParent.Select(async parent =>
                 {
@@ -36,16 +36,18 @@ namespace OnlineMarketPlace.Controllers
             viewModel.CategoriesChild = childCategoriesArray.ToList();
             ViewData["CategoriesList"] = viewModel;
 
-            // Giới hạn số lượng sản phẩm hiển thị ban đầu
+            // Lấy danh sách sản phẩm và giới hạn số lượng hiển thị
             var products = await _productRepository.GetProductsAsync();
-            var limitedProducts = products.Take(limit).ToList();
+            ViewData["Products"] = products.Take(limit).ToList();
 
-            ViewData["Products"] = limitedProducts;
+            // Lưu total và limit để xử lý nút "Xem thêm"
             ViewData["TotalProducts"] = products.Count;
             ViewData["Limit"] = limit;
 
             return View();
         }
+
+
 
         public async Task<IActionResult> Search(string searchString, int pageNumber = 1)
         {
