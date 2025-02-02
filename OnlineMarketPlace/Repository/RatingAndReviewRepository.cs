@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using OnlineMarketPlace.Models;
 
 namespace OnlineMarketPlace.Repository
@@ -7,13 +8,10 @@ namespace OnlineMarketPlace.Repository
     {
         private OnlineShoppingContext _context;
 
-        public RatingAndReviewRepository()
-        {
-            _context = new OnlineShoppingContext();
-        }
 
         public async Task<List<RatingAndReview>> GetReviewsByProductIdAsync(int productId)
         {
+            _context = new();
             return await _context.RatingAndReviews
                                  .Where(r => r.ProductId == productId)
                                  .ToListAsync();
@@ -21,6 +19,7 @@ namespace OnlineMarketPlace.Repository
 
         public async Task<double?> GetAverageRatingByShopAsync(int shopId)
         {
+            _context = new();
             var ratings = await _context.RatingAndReviews
                 .Where(r => r.Product.SellerId == shopId)
                 .Select(r => r.Rating)
@@ -32,6 +31,14 @@ namespace OnlineMarketPlace.Repository
             }
 
             return ratings.Average();
+        }
+
+        //add
+        public async Task AddAsync(RatingAndReview review)
+        {
+            _context = new();
+            await _context.RatingAndReviews.AddAsync(review);
+            await _context.SaveChangesAsync();
         }
 
     }
