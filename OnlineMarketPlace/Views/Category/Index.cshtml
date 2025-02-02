@@ -5,8 +5,9 @@
         var products = ViewData["Products"] as List<OnlineMarketPlace.Models.Product>;
         int currentPage = ViewData["CurrentPage"] is int page ? page : 1;
         int totalPages = ViewData["TotalPages"] is int pages ? pages : 1;
+        int totalProducts = ViewData["TotalProducts"] is int total ? total : 0;
         string searchString = ViewData["SearchString"] as string ?? string.Empty;
-    
+        int limit = ViewData["Limit"] is int lim ? lim : 10;
 
 }
 
@@ -157,24 +158,20 @@
                         <a href="/Product/Details/@product.Id" class="btn btn-primary">View Detail</a>
                     </div>
                 }
+                @if (totalProducts > limit)
+                {
+                    <div class="text-center">
+                        <a asp-controller="Category" asp-action="Index" asp-route-limit="@(limit + 10)" class="btn btn-default get">
+                            Xem thêm (@(totalProducts - limit))
+                        </a>
+                    </div>
+                }
             }
+
         </div>
 
-        <!-- Phân trang -->
-        <div class="pagination">
-            @if (currentPage > 1)
-            {
-                <a href="@Url.Action("Search", new { searchString = searchString, pageNumber = currentPage - 1 })" class="btn btn-secondary">Previous</a>
-            }
-            @for (int i = 1; i <= totalPages; i++)
-            {
-                <a href="@Url.Action("Search", new { searchString = searchString, pageNumber = i })" class="btn @(i == currentPage ? "btn-primary" : "btn-outline-primary")">@i</a>
-            }
-            @if (currentPage < totalPages)
-            {
-                <a href="@Url.Action("Search", new { searchString = searchString, pageNumber = currentPage + 1 })" class="btn btn-secondary">Next</a>
-            }
-        </div>
+
+
     </main>
 </body>
 

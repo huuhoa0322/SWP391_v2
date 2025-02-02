@@ -14,7 +14,7 @@ namespace OnlineMarketPlace.Controllers
 
         private const int Pagesize = 9;
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int limit = 10)
         {
             var viewModel = new CategoriesList();
 
@@ -34,14 +34,19 @@ namespace OnlineMarketPlace.Controllers
                 })
             );
             viewModel.CategoriesChild = childCategoriesArray.ToList();
-            //CategoriesList categoriesList = new CategoriesList(categoriesParent, flattenedCategoriesChildList);
             ViewData["CategoriesList"] = viewModel;
 
+            // Giới hạn số lượng sản phẩm hiển thị ban đầu
             var products = await _productRepository.GetProductsAsync();
-            ViewData["Products"] = products;
+            var limitedProducts = products.Take(limit).ToList();
+
+            ViewData["Products"] = limitedProducts;
+            ViewData["TotalProducts"] = products.Count;
+            ViewData["Limit"] = limit;
 
             return View();
         }
+
         public async Task<IActionResult> Search(string searchString, int pageNumber = 1)
         {
             var viewModel = new CategoriesList();
