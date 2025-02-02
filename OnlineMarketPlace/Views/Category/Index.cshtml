@@ -1,14 +1,21 @@
 ﻿@{
-    ViewData["Title"] = "Danh mục sản phẩm";
-    var categories = ViewData["CategoriesList"] as OnlineMarketPlace.Models.CategoriesList;
-    var products = ViewData["Products"] as List<OnlineMarketPlace.Models.Product>;
+   
+        ViewData["Title"] = "Danh mục sản phẩm";
+        var categories = ViewData["CategoriesList"] as OnlineMarketPlace.Models.CategoriesList;
+        var products = ViewData["Products"] as List<OnlineMarketPlace.Models.Product>;
+        int currentPage = ViewData["CurrentPage"] is int page ? page : 1;
+        int totalPages = ViewData["TotalPages"] is int pages ? pages : 1;
+        int totalProducts = ViewData["TotalProducts"] is int total ? total : 0;
+        string searchString = ViewData["SearchString"] as string ?? string.Empty;
+        int limit = ViewData["Limit"] is int lim ? lim : 10;
+
 }
+
 <style>
     body {
         font-family: Arial, sans-serif;
         margin: 0;
         padding: 0;
-        background-color: #f8f8f8;
     }
 
     nav {
@@ -54,67 +61,65 @@
         cursor: pointer;
     }
 
-    .product-list {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 15px;
-        padding: 10px;
-    }
-
-    .product {
-        background-color: white;
-        padding: 15px;
-        border-radius: 5px;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        text-align: center;
-        width: 200px;
-    }
-
-        .product img {
-            max-width: 100%;
-            border-radius: 5px;
-        }
-
-    .price {
-        color: red;
-        font-weight: bold;
-    }
-
-    .old-price {
-        text-decoration: line-through;
-        color: gray;
-    }
-    /* new */
     .product-grid {
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
         gap: 20px;
+        padding: 10px;
     }
 
     .product-card {
         border: 1px solid #ddd;
         padding: 15px;
         text-align: center;
+        background-color: white;
+        border-radius: 5px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     }
 
     .product-image {
         max-width: 100%;
         height: auto;
+        border-radius: 5px;
+    }
+
+    .btn {
+        margin: 5px;
+        padding: 5px 15px;
+        border-radius: 4px;
+        text-decoration: none;
+    }
+
+    .btn-primary {
+        background-color: #007bff;
+        color: white;
+    }
+
+    .btn-outline-primary {
+        border: 1px solid #007bff;
+        color: #007bff;
+        background-color: white;
+    }
+
+    .btn-secondary {
+        background-color: #6c757d;
+        color: white;
+    }
+
+    .pagination {
+        text-align: center;
+        margin: 20px;
     }
 </style>
+
 <body>
     <main>
-        <section class="filters">
-            <h3>Filter by criteria</h3>
-            <div class="dropdown">
-                <button>Category ▼</button>
-                <div class="dropdown-content">
-                    <button>Fashion</button>
-                    <button>Electronics & Technology</button>
-                    <button>Toys</button>
-                    <button>Sports</button>
-                    <button>Mother & Baby</button>
-                </div>
+       
+            <div class="col-sm-3">
+                @{
+                    var categoriesL = ViewData["CategoriesList"] as OnlineMarketPlace.Models.CategoriesList;
+                }
+                @Html.Partial("_SidebarPartial", categoriesL);
             </div>
             <div class="dropdown">
                 <button>Price ▼</button>
@@ -124,28 +129,33 @@
                     <button>Above 100$</button>
                 </div>
             </div>
-        </section>
-        <section class="sorting">
-            <h3>Sort by</h3>
-            <button>Price High - Low</button>
-            <button>Price Low - High</button>
-            <button>Hot Promotions</button>
-            <button>Most Viewed</button>
-        </section>
-            <div class="product-grid">
-                @if (products != null)
+        <div class="product-grid">
+            @if (products != null)
+            {
+                @foreach (var product in products)
                 {
-                    @foreach (var product in products)
-                    {
-                        <div class="product-card">
-                            <img src="@product.Image" alt="@product.Name" class="product-image" />
-                            <h3>@product.Name</h3>
-                            <p>Price: @product.Price VND</p>
-                            <p>@product.Description</p>
-                            <a href="/Product/Details/@product.Id" class="btn btn-primary">View Detail</a>
-                        </div>
-                    }
+                    <div class="product-card">
+                        <img src="@product.Image" alt="@product.Name" class="product-image" />
+                        <h3>@product.Name</h3>
+                        <p>Price: @product.Price VND</p>
+                        <p>@product.Description</p>
+                        <a href="/Product/Details/@product.Id" class="btn btn-primary">View Detail</a>
+                    </div>
                 }
-            </div>
+                @if (totalProducts > limit)
+                {
+                    <div class="text-center">
+                        <a asp-controller="Category" asp-action="Index" asp-route-limit="@(limit + 9) class="btn btn-default get">
+                            Xem thêm (@(totalProducts - limit))
+                        </a>
+                    </div>
+                }
+            }
+
+        </div>
+       
+
+
     </main>
 </body>
+
