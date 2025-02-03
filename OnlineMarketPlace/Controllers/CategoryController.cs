@@ -2,7 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using OnlineMarketPlace.Models;
 using OnlineMarketPlace.Repository;
-using OnlineMarketPlace.Models;
 using System.Threading.Tasks;
 using System.Linq;
 
@@ -13,16 +12,15 @@ namespace OnlineMarketPlace.Controllers
         private readonly ProductRepository _productRepository = new();
         private readonly CategoryRepository _categoryRepository = new();
 
-        private const int Pagesize = 9;
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int limit = 9)
         {
-            var viewModel = new CategoriesList();
+            var viewModel = new CategoriesList
+            {
+                CategoriesParent = await _categoryRepository.GetCatgoryParent()
+            };
 
-            // Retrieve all parent categories
-            viewModel.CategoriesParent = await _categoryRepository.GetCatgoryParent();
-
-            // Retrieve child categories for each parent
+            // Lấy danh mục con của từng danh mục cha
             var childCategoriesArray = await Task.WhenAll(
                 viewModel.CategoriesParent.Select(async parent =>
                 {
@@ -35,13 +33,158 @@ namespace OnlineMarketPlace.Controllers
                 })
             );
             viewModel.CategoriesChild = childCategoriesArray.ToList();
-            //CategoriesList categoriesList = new CategoriesList(categoriesParent, flattenedCategoriesChildList);
             ViewData["CategoriesList"] = viewModel;
 
+            // Lấy danh sách sản phẩm và giới hạn số lượng hiển thị
             var products = await _productRepository.GetProductsAsync();
-            ViewData["Products"] = products;
+            ViewData["Products"] = products.Take(limit).ToList();
+
+            // Lưu total và limit để xử lý nút "Xem thêm"
+            ViewData["TotalProducts"] = products.Count;
+            ViewData["Limit"] = limit;
 
             return View();
+        }
+
+        public async Task<IActionResult> Search(string searchString)
+        {
+            var viewModel = new CategoriesList();
+
+            // Lấy danh mục cha và con (giữ nguyên phần này)
+            viewModel.CategoriesParent = await _categoryRepository.GetCatgoryParent();
+            var childCategoriesArray = await Task.WhenAll(
+                viewModel.CategoriesParent.Select(async parent =>
+                {
+                    using (var context = new OnlineShoppingContext())
+                    {
+                        return await context.Categories
+                            .Where(c => c.ParentId == parent.Id)
+                            .ToListAsync();
+                    }
+                })
+            );
+            viewModel.CategoriesChild = childCategoriesArray.ToList();
+            ViewData["CategoriesList"] = viewModel;
+
+            // Tìm kiếm sản phẩm theo tên (không giới hạn số lượng)
+            var products = await _productRepository.SearchProductsByNameAsync(searchString);
+
+            ViewData["Products"] = products;
+            ViewData["SearchString"] = searchString;
+
+            return View("Index");
+        }
+
+
+        public async Task<IActionResult> ProductsByCategory(int categoryId)
+        {
+            var viewModel = new CategoriesList
+            {
+                CategoriesParent = await _categoryRepository.GetCatgoryParent()
+            };
+
+            var childCategoriesArray = await Task.WhenAll(
+                viewModel.CategoriesParent.Select(async parent =>
+                {
+                    using var context = new OnlineShoppingContext();
+                    return await context.Categories
+                        .Where(c => c.ParentId == parent.Id)
+                        .ToListAsync();
+                })
+            );
+            viewModel.CategoriesChild = childCategoriesArray.ToList();
+            ViewData["CategoriesList"] = viewModel;
+
+            // Lọc sản phẩm theo danh mục
+            var products = await _productRepository.GetProductsByCategoryIdAsync(categoryId);
+            ViewData["Products"] = products;
+            ViewData["CategoryId"] = categoryId; // **Lưu categoryId để dùng cho Sort**
+
+            return View("Index");
+        }
+
+
+        [HttpGet("Category/FilterByPriceRange")]
+        public async Task<IActionResult> FilterByPrice(string price)
+        {
+            double minPrice = 0, maxPrice = double.MaxValue;
+
+            if (!string.IsNullOrEmpty(price))
+            {
+                var parts = price.Split('-');
+                if (parts.Length > 0 && double.TryParse(parts[0], out double min))
+                    minPrice = min;
+
+                if (parts.Length > 1 && double.TryParse(parts[1], out double max))
+                    maxPrice = max;
+            }
+
+            var viewModel = new CategoriesList
+            {
+                CategoriesParent = await _categoryRepository.GetCatgoryParent()
+            };
+
+            var childCategoriesArray = await Task.WhenAll(
+                viewModel.CategoriesParent.Select(async parent =>
+                {
+                    using (var context = new OnlineShoppingContext())
+                    {
+                        return await context.Categories
+                            .Where(c => c.ParentId == parent.Id)
+                            .ToListAsync();
+                    }
+                })
+            );
+            viewModel.CategoriesChild = childCategoriesArray.ToList();
+            ViewData["CategoriesList"] = viewModel;
+
+            // Lọc sản phẩm theo giá đã parse
+            var products = await _productRepository.GetProductsByPriceRangeAsync(minPrice, maxPrice);
+            ViewData["Products"] = products;
+
+            return View("Index");
+        }
+
+        [HttpGet("Category/Sort")]
+        public async Task<IActionResult> Sort(string sortBy, int? categoryId) // Cho phép categoryId = null
+        {
+            var viewModel = new CategoriesList
+            {
+                CategoriesParent = await _categoryRepository.GetCatgoryParent()
+            };
+
+            var childCategoriesArray = await Task.WhenAll(
+                viewModel.CategoriesParent.Select(async parent =>
+                {
+                    using var context = new OnlineShoppingContext();
+                    return await context.Categories
+                        .Where(c => c.ParentId == parent.Id)
+                        .ToListAsync();
+                })
+            );
+            viewModel.CategoriesChild = childCategoriesArray.ToList();
+            ViewData["CategoriesList"] = viewModel;
+
+            // Nếu categoryId có giá trị, lọc theo danh mục đó, nếu không, lấy tất cả sản phẩm
+            var products = categoryId.HasValue
+                ? await _productRepository.GetProductsByCategoryIdAsync(categoryId.Value)
+                : await _productRepository.GetProductsAsync(); // Lấy tất cả sản phẩm nếu categoryId = null
+
+            // Sắp xếp sản phẩm
+            products = sortBy switch
+            {
+                "price-asc" => products.OrderBy(p => p.Price).ToList(),
+                "price-desc" => products.OrderByDescending(p => p.Price).ToList(),
+                "name-asc" => products.OrderBy(p => p.Name).ToList(),
+                "name-desc" => products.OrderByDescending(p => p.Name).ToList(),
+                _ => products
+            };
+
+            ViewData["Products"] = products;
+            ViewData["SortBy"] = sortBy;
+            ViewData["CategoryId"] = categoryId; // Lưu để hiển thị lại trên giao diện
+
+            return View("Index");
         }
     }
 }
