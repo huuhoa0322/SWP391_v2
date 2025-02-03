@@ -3,12 +3,8 @@
         ViewData["Title"] = "Danh mục sản phẩm";
         var categories = ViewData["CategoriesList"] as OnlineMarketPlace.Models.CategoriesList;
         var products = ViewData["Products"] as List<OnlineMarketPlace.Models.Product>;
-        int currentPage = ViewData["CurrentPage"] is int page ? page : 1;
-        int totalPages = ViewData["TotalPages"] is int pages ? pages : 1;
         int totalProducts = ViewData["TotalProducts"] is int total ? total : 0;
-        string searchString = ViewData["SearchString"] as string ?? string.Empty;
-        // int limit = ViewData["Limit"] is int lim ? lim : 10;
-    int limit = ViewData["Limit"] != null ? Convert.ToInt32(ViewData["Limit"]) : 10;
+        int limit = ViewData["Limit"] != null ? Convert.ToInt32(ViewData["Limit"]) : 10;
 }
 <header>
 <style>
@@ -123,12 +119,19 @@
         <div class="dropdown">
             <button>Sort by ▼</button>
             <div class="dropdown-content">
-                <button value="price_asc">Price: Low to High</button>
-                <button value="price_desc">Price: High to Low</button>
-                <button value="name_asc">Name: A to Z</button>
-                <button value="name_desc">Name: Z to A</button>
+                <button onclick="sortProducts('price-asc')">Price: Low to High</button>
+                <button onclick="sortProducts('price-desc')">Price: High to Low</button>
+                <button onclick="sortProducts('name-asc')">Name: A to Z</button>
+                <button onclick="sortProducts('name-desc')">Name: Z to A</button>
             </div>
         </div>
+
+        <script>
+            function sortProducts(sortBy) {
+                window.location.href = "/Category/Sort?sortBy=" + sortBy;
+            }
+        </script>
+
         <div class="product-grid">
             @if (products != null)
             {
