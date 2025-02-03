@@ -7,10 +7,10 @@
         int totalPages = ViewData["TotalPages"] is int pages ? pages : 1;
         int totalProducts = ViewData["TotalProducts"] is int total ? total : 0;
         string searchString = ViewData["SearchString"] as string ?? string.Empty;
-        int limit = ViewData["Limit"] is int lim ? lim : 10;
-
+        // int limit = ViewData["Limit"] is int lim ? lim : 10;
+    int limit = ViewData["Limit"] != null ? Convert.ToInt32(ViewData["Limit"]) : 10;
 }
-
+<header>
 <style>
     body {
         font-family: Arial, sans-serif;
@@ -111,10 +111,9 @@
         margin: 20px;
     }
 </style>
-
+</header>
 <body>
     <main>
-       
             <div class="col-sm-3">
                 @{
                     var categoriesL = ViewData["CategoriesList"] as OnlineMarketPlace.Models.CategoriesList;
@@ -141,20 +140,16 @@
                         <p>@product.Description</p>
                         <a href="/Product/Details/@product.Id" class="btn btn-primary">View Detail</a>
                     </div>
-                }
-                @if ((int)ViewData["TotalProducts"] > (int)ViewData["Limit"])
+               }
+                @if (totalProducts > limit)
                 {
                     <form method="get" action="@Url.Action("Index", "Category")">
-                        <input type="hidden" name="limit" value="@( (int)ViewData["Limit"] + 9 )" />
+                        <input type="hidden" name="limit" value="@(limit + 9)" />
                         <button type="submit">See more</button>
                     </form>
                 }
             }
-
         </div>
-       
-
-
     </main>
 </body>
 

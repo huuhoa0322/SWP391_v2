@@ -49,6 +49,7 @@ namespace OnlineMarketPlace.Controllers
 
 
 
+
         public async Task<IActionResult> Search(string searchString, int pageNumber = 1)
         {
             var viewModel = new CategoriesList();
@@ -79,6 +80,33 @@ namespace OnlineMarketPlace.Controllers
             ViewData["SearchString"] = searchString;
 
             return View("Index");
+        }
+        public async Task<IActionResult> ProductsByCategory(int categoryId)
+        {
+            var viewModel = new CategoriesList
+            {
+                CategoriesParent = await _categoryRepository.GetCatgoryParent()
+            };
+
+            var childCategoriesArray = await Task.WhenAll(
+                viewModel.CategoriesParent.Select(async parent =>
+                {
+                    using (var context = new OnlineShoppingContext())
+                    {
+                        return await context.Categories
+                            .Where(c => c.ParentId == parent.Id)
+                            .ToListAsync();
+                    }
+                })
+            );
+            viewModel.CategoriesChild = childCategoriesArray.ToList();
+            ViewData["CategoriesList"] = viewModel;
+
+            // Lấy danh sách sản phẩm theo danh mục
+            var products = await _productRepository.GetProductsByCategoryIdAsync(categoryId);
+            ViewData["Products"] = products;
+
+            return View("Index"); // Điều hướng đến trang chính nhưng chỉ hiển thị sản phẩm thuộc danh mục
         }
 
     }

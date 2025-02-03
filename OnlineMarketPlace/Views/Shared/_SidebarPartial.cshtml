@@ -13,15 +13,14 @@
 
 					@if (Model.CategoriesChild[i] == null || !Model.CategoriesChild[i].Any())
 					{
-						<a data-toggle="collapse" data-parent="#accordian" href="#">
-								
-							@Model.CategoriesParent[i].Name
-						</a>
+							<a href="@Url.Action("ProductsByCategory", "Category", new { categoryId = Model.CategoriesParent[i].Id })">
+								@Model.CategoriesParent[i].Name
+							</a>
 					}else{
-						<a data-toggle="collapse" data-parent="#accordian" href="#@i.ToString()">
-							<span class="badge pull-right"><i class="fa fa-plus"></i></span>
-							@Model.CategoriesParent[i].Name
-						</a>
+							<a data-toggle="collapse" data-parent="#accordian" href="#@i.ToString()">
+								<span class="badge pull-right"><i class="fa fa-plus"></i></span>
+								@Model.CategoriesParent[i].Name
+							</a>
 					}
 					
 				</h4>
@@ -33,7 +32,11 @@
 						<ul>
 							@foreach (var child in Model.CategoriesChild[i])
 							{
-									<li> <a href="#"> @child.Name </a> </li>
+								<li>
+									<a href="@Url.Action("ProductsByCategory", "Category", new { categoryId = child.Id })">
+										@child.Name
+									</a>
+								</li>
 							}
 						</ul>
 					</div>
