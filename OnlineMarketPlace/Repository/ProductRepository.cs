@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using OnlineMarketPlace.Models;
 
 namespace OnlineMarketPlace.Repository
@@ -6,7 +7,6 @@ namespace OnlineMarketPlace.Repository
     public class ProductRepository
     {
         private OnlineShoppingContext _context;
-
         public async Task<List<Product>> GetProductsAsync()
         {
             _context = new();
@@ -80,5 +80,6 @@ namespace OnlineMarketPlace.Repository
                     .ToListAsync();
             }
         }
+
     }
 }

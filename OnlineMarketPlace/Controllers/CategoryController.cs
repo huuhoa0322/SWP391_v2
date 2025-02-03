@@ -46,7 +46,6 @@ namespace OnlineMarketPlace.Controllers
             return View();
         }
 
-
         public async Task<IActionResult> Search(string searchString)
         {
             var viewModel = new CategoriesList();
@@ -87,22 +86,21 @@ namespace OnlineMarketPlace.Controllers
             var childCategoriesArray = await Task.WhenAll(
                 viewModel.CategoriesParent.Select(async parent =>
                 {
-                    using (var context = new OnlineShoppingContext())
-                    {
-                        return await context.Categories
-                            .Where(c => c.ParentId == parent.Id)
-                            .ToListAsync();
-                    }
+                    using var context = new OnlineShoppingContext();
+                    return await context.Categories
+                        .Where(c => c.ParentId == parent.Id)
+                        .ToListAsync();
                 })
             );
             viewModel.CategoriesChild = childCategoriesArray.ToList();
             ViewData["CategoriesList"] = viewModel;
 
-            // Lấy danh sách sản phẩm theo danh mục
+            // Lọc sản phẩm theo danh mục
             var products = await _productRepository.GetProductsByCategoryIdAsync(categoryId);
             ViewData["Products"] = products;
+            ViewData["CategoryId"] = categoryId; // **Lưu categoryId để dùng cho Sort**
 
-            return View("Index"); // Điều hướng đến trang chính nhưng chỉ hiển thị sản phẩm thuộc danh mục
+            return View("Index");
         }
 
 
@@ -147,9 +145,8 @@ namespace OnlineMarketPlace.Controllers
             return View("Index");
         }
 
-
         [HttpGet("Category/Sort")]
-        public async Task<IActionResult> Sort(string sortBy)
+        public async Task<IActionResult> Sort(string sortBy, int? categoryId) // Cho phép categoryId = null
         {
             var viewModel = new CategoriesList
             {
@@ -168,14 +165,26 @@ namespace OnlineMarketPlace.Controllers
             viewModel.CategoriesChild = childCategoriesArray.ToList();
             ViewData["CategoriesList"] = viewModel;
 
-            // Lấy danh sách sản phẩm đã sắp xếp
-            var products = await _productRepository.GetSortedProductsAsync(sortBy);
+            // Nếu categoryId có giá trị, lọc theo danh mục đó, nếu không, lấy tất cả sản phẩm
+            var products = categoryId.HasValue
+                ? await _productRepository.GetProductsByCategoryIdAsync(categoryId.Value)
+                : await _productRepository.GetProductsAsync(); // Lấy tất cả sản phẩm nếu categoryId = null
+
+            // Sắp xếp sản phẩm
+            products = sortBy switch
+            {
+                "price-asc" => products.OrderBy(p => p.Price).ToList(),
+                "price-desc" => products.OrderByDescending(p => p.Price).ToList(),
+                "name-asc" => products.OrderBy(p => p.Name).ToList(),
+                "name-desc" => products.OrderByDescending(p => p.Name).ToList(),
+                _ => products
+            };
+
             ViewData["Products"] = products;
-            ViewData["SortBy"] = sortBy; // Lưu trạng thái lọc để cập nhật UI
+            ViewData["SortBy"] = sortBy;
+            ViewData["CategoryId"] = categoryId; // Lưu để hiển thị lại trên giao diện
 
             return View("Index");
         }
-
-
     }
 }
