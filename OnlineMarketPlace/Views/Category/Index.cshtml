@@ -120,14 +120,15 @@
                 }
                 @Html.Partial("_SidebarPartial", categoriesL);
             </div>
-            <div class="dropdown">
-                <button>Sort by ▼</button>
-                <div class="dropdown-content">
-                    <button>Below 100$</button>
-                    <button>5 - 30$</button>
-                    <button>Above 100$</button>
-                </div>
+        <div class="dropdown">
+            <button>Sort by ▼</button>
+            <div class="dropdown-content">
+                <button value="price_asc">Price: Low to High</button>
+                <button value="price_desc">Price: High to Low</button>
+                <button value="name_asc">Name: A to Z</button>
+                <button value="name_desc">Name: Z to A</button>
             </div>
+        </div>
         <div class="product-grid">
             @if (products != null)
             {
