@@ -7,14 +7,6 @@ namespace OnlineMarketPlace.Repository
     {
         private OnlineShoppingContext _context;
 
-
-        //public List<Product> GetProducts()
-        //{
-        //    _context = new();
-        //    return _context.Products.ToList();
-
-        //}
-
         public async Task<List<Product>> GetProductsAsync()
         {
             _context = new();
@@ -50,13 +42,29 @@ namespace OnlineMarketPlace.Repository
                 .Where(p => p.Name.Contains(searchString))
                 .CountAsync();
         }
-
-        //public async Task<List<Product>> GetProductsNumberAsync(int n)
+        //public async Task<List<Product>> GetProductsByPriceRangeAsync(double minPrice, double? maxPrice = null)
         //{
-        //    _context = new();
-        //    return await _context.Products.Take(n).ToListAsync();
+        //    using var context = new OnlineShoppingContext();
+
+        //    var query = context.Products
+        //        .Where(p => p.Price >= minPrice && p.IsDeleted == false);
+
+        //    if (maxPrice.HasValue)
+        //    {
+        //        query = query.Where(p => p.Price <= maxPrice.Value); // Không còn lỗi kiểu dữ liệu
+        //    }
+
+        //    return await query.ToListAsync();
         //}
-
-
+    
+    public async Task<List<Product>> GetProductsByPriceRangeAsync(double minPrice, double maxPrice)
+        {
+            using (var context = new OnlineShoppingContext())
+            {
+                return await context.Products
+                    .Where(p => p.Price >= minPrice && p.Price <= maxPrice)
+                    .ToListAsync();
+            }
+        }
     }
 }

@@ -108,6 +108,47 @@ namespace OnlineMarketPlace.Controllers
 
             return View("Index"); // Điều hướng đến trang chính nhưng chỉ hiển thị sản phẩm thuộc danh mục
         }
+        [HttpGet("Category/FilterByPriceRange")]
+        public async Task<IActionResult> FilterByPrice(string price)
+        {
+            double minPrice = 0, maxPrice = double.MaxValue;
+
+            if (!string.IsNullOrEmpty(price))
+            {
+                var parts = price.Split('-');
+                if (parts.Length > 0 && double.TryParse(parts[0], out double min))
+                    minPrice = min;
+
+                if (parts.Length > 1 && double.TryParse(parts[1], out double max))
+                    maxPrice = max;
+            }
+
+            var viewModel = new CategoriesList
+            {
+                CategoriesParent = await _categoryRepository.GetCatgoryParent()
+            };
+
+            var childCategoriesArray = await Task.WhenAll(
+                viewModel.CategoriesParent.Select(async parent =>
+                {
+                    using (var context = new OnlineShoppingContext())
+                    {
+                        return await context.Categories
+                            .Where(c => c.ParentId == parent.Id)
+                            .ToListAsync();
+                    }
+                })
+            );
+            viewModel.CategoriesChild = childCategoriesArray.ToList();
+            ViewData["CategoriesList"] = viewModel;
+
+            // Lọc sản phẩm theo giá đã parse
+            var products = await _productRepository.GetProductsByPriceRangeAsync(minPrice, maxPrice);
+            ViewData["Products"] = products;
+
+            return View("Index");
+        }
+
 
     }
 }
