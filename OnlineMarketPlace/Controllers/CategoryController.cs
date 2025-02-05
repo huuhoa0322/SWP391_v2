@@ -4,6 +4,7 @@ using OnlineMarketPlace.Models;
 using OnlineMarketPlace.Repository;
 using System.Threading.Tasks;
 using System.Linq;
+using Castle.Components.DictionaryAdapter.Xml;
 
 namespace OnlineMarketPlace.Controllers
 {
@@ -107,45 +108,68 @@ namespace OnlineMarketPlace.Controllers
 
         //Loc san pham theo gia
         [HttpGet("Category/FilterByPriceRange")]
-        public async Task<IActionResult> FilterByPrice(string price)
+        public async Task<IActionResult> FilterByPrice(string price, int? categoryId)
         {
             double minPrice = 0, maxPrice = double.MaxValue;
-            // Parse khoang gia tu tham so truyen vao
+
+            // Xử lý khoảng giá từ các radio button
             if (!string.IsNullOrEmpty(price))
-            { 
-                var parts = price.Split('-'); // Tach khoang gia theo dau '-'
+            {
+                var parts = price.Split('-');
+                // Kiểm tra và gán giá trị minPrice từ phần đầu của khoảng giá
                 if (parts.Length > 0 && double.TryParse(parts[0], out double min))
                     minPrice = min;
 
+                // Kiểm tra và gán giá trị maxPrice từ phần sau của khoảng giá
                 if (parts.Length > 1 && double.TryParse(parts[1], out double max))
                     maxPrice = max;
             }
 
+            // Khởi tạo viewModel để lưu các danh mục
             var viewModel = new CategoriesList
             {
-                CategoriesParent = await _categoryRepository.GetCatgoryParent()
+                CategoriesParent = await _categoryRepository.GetCatgoryParent() // Lấy danh mục cha
             };
 
+            // Lấy danh mục con cho từng danh mục cha
             var childCategoriesArray = await Task.WhenAll(
                 viewModel.CategoriesParent.Select(async parent =>
                 {
-                    using (var context = new OnlineShoppingContext())
+                    using (var context = new OnlineShoppingContext()) // Kết nối với cơ sở dữ liệu
                     {
                         return await context.Categories
-                            .Where(c => c.ParentId == parent.Id)
+                            .Where(c => c.ParentId == parent.Id) // Tìm danh mục con theo ParentId
                             .ToListAsync();
                     }
                 })
             );
-            viewModel.CategoriesChild = childCategoriesArray.ToList();
-            ViewData["CategoriesList"] = viewModel;
+            viewModel.CategoriesChild = childCategoriesArray.ToList(); // Gán danh mục con vào viewModel
+            ViewData["CategoriesList"] = viewModel; // Lưu danh mục vào ViewData để hiển thị
 
-            // Lọc sản phẩm theo giá đã parse
-            var products = await _productRepository.GetProductsByPriceRangeAsync(minPrice, maxPrice);
+            List<Product> products;
+
+            // Kiểm tra xem categoryId có được truyền vào không
+            if (categoryId.HasValue)
+            {
+                // Lọc sản phẩm theo danh mục được chọn và theo giá
+                products = await _productRepository.GetProductsByCategoryIdAsync(categoryId.Value);
+                products = products.Where(p => p.Price >= minPrice && p.Price <= maxPrice).ToList();
+            }
+            else
+            {
+                // Nếu không có categoryId, lọc tất cả sản phẩm theo giá
+                products = await _productRepository.GetProductsByPriceRangeAsync(minPrice, maxPrice);
+            }
+
+            // Truyền sản phẩm đã lọc vào ViewData để hiển thị
             ViewData["Products"] = products;
+            ViewData["MinPrice"] = minPrice;  // Lưu giá min
+            ViewData["MaxPrice"] = maxPrice;  // Lưu giá max
+            ViewData["CategoryId"] = categoryId;  // Lưu lại categoryId đã chọn
 
-            return View("Index");
+            return View("Index"); // Trả về view Index
         }
+
         // Sap xep san pham theo tieu chi
         [HttpGet("Category/Sort")]
         public async Task<IActionResult> Sort(string sortBy, int? categoryId) // Cho phep categoryId = null

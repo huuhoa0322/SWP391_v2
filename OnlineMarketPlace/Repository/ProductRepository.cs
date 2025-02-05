@@ -48,6 +48,5 @@ namespace OnlineMarketPlace.Repository
                     .ToListAsync(); //tra ve danh sach san pham thoa man
             }
         }
-
     }
 }
