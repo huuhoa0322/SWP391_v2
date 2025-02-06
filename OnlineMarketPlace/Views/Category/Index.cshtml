@@ -116,6 +116,7 @@
                 }
                 @Html.Partial("_SidebarPartial", categoriesL)
             </div>
+
         <div class="dropdown">
             <button>Sort by ▼</button>
             <div class="dropdown-content">
@@ -126,11 +127,14 @@
             </div>
         </div>
 
+
         <script>
             function sortProducts(sortBy) {
-                window.location.href = "/Category/Sort?sortBy=" + sortBy;
+                var categoryId = "@ViewData["CategoryId"]"; // Lấy categoryId từ backend
+                window.location.href = `/Category/Sort?sortBy=${sortBy}&categoryId=${categoryId}`;
             }
         </script>
+
 
         <div class="product-grid">
             @if (products != null)

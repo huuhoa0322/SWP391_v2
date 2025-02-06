@@ -14,12 +14,12 @@ using Microsoft.AspNetCore.Http;
 
 public class RegisterController : Controller
 {
-    private readonly ILogger<LoginController> _logger;
+    private readonly ILogger<RegisterController> _logger;
 
     private readonly UserRepository _userRepository = new();
     private const string CaptchaSessionKey = "CaptchaCode";
 
-    public RegisterController(ILogger<LoginController> logger)
+    public RegisterController(ILogger<RegisterController> logger)
     {
         _logger = logger;
     }

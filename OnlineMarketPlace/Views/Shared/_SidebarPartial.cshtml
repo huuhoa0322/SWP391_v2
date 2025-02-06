@@ -1,38 +1,42 @@
 ﻿@model OnlineMarketPlace.Models.CategoriesList
 
 <div class="left-sidebar">
-	<!--category-productsr-->
 	<h2>Category</h2>
 	<div class="panel-group category-products" id="accordian">
-	@for (int i = 0; i < Model.CategoriesParent.Count; i++)
-        {
-		
-		<div class="panel panel-default">
-			<div class="panel-heading">
-				<h4 class="panel-title">
-
-					@if (Model.CategoriesChild[i] == null || !Model.CategoriesChild[i].Any())
-					{
+		<!-- Vong lap qua cac danh muc cha -->
+		@for (int i = 0; i < Model.CategoriesParent.Count; i++)
+		{
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<h4 class="panel-title">
+						<!-- Kiem tra xem danh muc co con hay khong -->
+						@if (Model.CategoriesChild[i] == null || !Model.CategoriesChild[i].Any())
+						{
+							<!-- Neu khong co danh muc con, hien thi mot lien ket toi trang san pham cua danh muc -->
 							<a href="@Url.Action("ProductsByCategory", "Category", new { categoryId = Model.CategoriesParent[i].Id })">
 								@Model.CategoriesParent[i].Name
 							</a>
-					}else{
+						}
+						else
+						{
+							<!-- Neu co danh muc con, hien thi mot lien ket co the mo rong danh muc con -->
 							<a data-toggle="collapse" data-parent="#accordian" href="#@i.ToString()">
 								<span class="badge pull-right"><i class="fa fa-plus"></i></span>
 								@Model.CategoriesParent[i].Name
 							</a>
-					}
-					
-				</h4>
-			</div>
-				
+						}
+					</h4>
+				</div>
+
+				<!--chua danh muc con se mo rong khi nguoi dung nhap vao danh muc cha -->
 				<div id="@i.ToString()" class="panel-collapse collapse">
 					<div class="panel-body">
-
 						<ul>
+							<!-- Vong lap qua cac danh muc con cua danh muc cha -->
 							@foreach (var child in Model.CategoriesChild[i])
 							{
 								<li>
+									<!-- Lien ket toi trang san pham cua danh muc con -->
 									<a href="@Url.Action("ProductsByCategory", "Category", new { categoryId = child.Id })">
 										@child.Name
 									</a>
@@ -41,14 +45,19 @@
 						</ul>
 					</div>
 				</div>
-				
-		</div>
+			</div>
 		}
-		
 	</div>
+
+	<!-- Phan loc san pham theo gia -->
 	<h2>Filter by Price</h2>
 	<div class="radio-group">
+		<!-- Form gui yeu cau loc theo gia -->
 		<form method="get" action="@Url.Action("FilterByPriceRange", "Category")" id="priceFilterForm">
+			<!-- Truyen categoryId vao form de giu lai danh muc khi loc -->
+			<input type="hidden" name="categoryId" value="@ViewData["CategoryId"]" />
+
+			<!-- Cac tuy chon lua chon gia -->
 			<label>
 				<input type="radio" name="price" value="0-100" onchange="submitPriceFilter()"> Below 100$
 			</label>
@@ -60,7 +69,7 @@
 			</label>
 		</form>
 	</div>
-	</div>
+</div>
 
 
 <script>
@@ -69,19 +78,19 @@
 	}
 </script>
 
-	<style>
+<style>
 	.radio-group label {
-		display: block; /* Hiển thị các lựa chọn theo chiều dọc */
-		margin: 8px 0; /* Khoảng cách giữa các lựa chọn */
-		cursor: pointer; /* Con trỏ khi di chuột qua */
+		display: block;
+		margin: 8px 0;
+		cursor: pointer;
 	}
 
 	.radio-group input[type="radio"] {
-		margin-right: 10px; /* Khoảng cách giữa radio button và text */
+		margin-right: 10px;
 	}
 
 	.radio-group label {
-		display: flex; /* Hiển thị các lựa chọn theo chiều ngang */
-		margin-right: 15px; /* Khoảng cách giữa các lựa chọn */
+		display: flex;
+		margin-right: 15px;
 	}
-	</style>
+</style>

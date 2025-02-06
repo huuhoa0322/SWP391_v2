@@ -45,7 +45,6 @@
 
   <ItemGroup>
     <Folder Include="Views\NewFolder3\" />
-    <Folder Include="Views\Order\" />
   </ItemGroup>
 
 </Project>
