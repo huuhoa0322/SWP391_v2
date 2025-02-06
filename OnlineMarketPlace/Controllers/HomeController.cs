@@ -54,7 +54,10 @@ namespace OnlineMarketPlace.Controllers
         }
 
 
-
+        public IActionResult Contact()
+        {
+            return View();
+        }
 
 
         public IActionResult Privacy()
