@@ -17,11 +17,11 @@ namespace OnlineMarketPlace.Repository
                                  .ToListAsync();
         }
 
-        public async Task<double?> GetAverageRatingByShopAsync(int shopId)
+        public async Task<double?> GetAverageRatingByProductAsync(int productId)
         {
             _context = new();
             var ratings = await _context.RatingAndReviews
-                .Where(r => r.Product.SellerId == shopId)
+                .Where(r => r.ProductId == productId)
                 .Select(r => r.Rating)
                 .ToListAsync();
 
