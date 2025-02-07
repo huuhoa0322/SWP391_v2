@@ -28,7 +28,7 @@ namespace OnlineMarketPlace.Controllers
             //Console.WriteLine("ShopId: " + id + " | Time: " + DateTime.Now);
 
             var shop = await _shopRepository.GetShopByIdAsync(id);
-            var rating = await _ratingAndReviewRepository.GetAverageRatingByShopAsync(id);
+            var rating = await _ratingAndReviewRepository.GetAverageRatingByProductAsync(id);
 
             if (shop == null)
             {

@@ -52,10 +52,10 @@
                     <div>
 						<!-- Xếp hạng -->
 						<a href="#reviews" style="text-decoration: none; color: inherit;">
-							4.9 <img src="~/images/product-details/rating.png" alt="Rating" style="height: 16px;" />
+							@(((double)ViewData["AverageRating"]) > 0 ? ((double)ViewData["AverageRating"]).ToString("0.0") : "No ratings") <img src="~/images/product-details/rating.png" alt="Rating" style="height: 16px;" />
 						</a>
 						| <a href="#reviews" style="text-decoration: none; color: inherit;">
-							1,3k Review
+							@Model.RatingAndReviews.Count Review
 						</a>
 						| @Model.QuantitySold Selled
 						| <span style="color: #007bff; cursor: pointer;">Report</span>
