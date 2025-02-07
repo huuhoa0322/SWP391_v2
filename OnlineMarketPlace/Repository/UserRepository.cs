@@ -94,6 +94,14 @@ namespace OnlineMarketPlace.Repository
             }
         }
 
-
+        public async Task<List<Order>> GetOrdersByUserIdAsync(int userId)
+        {
+            _context = new();
+            return await _context.Orders
+                .Where(o => o.UserId == userId)
+                .Include(o => o.OrderDetails)
+                .ThenInclude(od => od.Product)
+                .ToListAsync();
+        }
     }
 }

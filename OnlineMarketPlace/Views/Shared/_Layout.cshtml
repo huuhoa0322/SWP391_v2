@@ -93,7 +93,7 @@
 								
 								<li><a href="#"><i class="fa fa-star"></i> Wishlist</a></li>
 								<li><a href="checkout.html"><i class="fa fa-crosshairs"></i> Checkout</a></li>
-								<li><a href="cart.html"><i class="fa fa-shopping-cart"></i> Cart</a></li>
+								
 								@{
 									var userName = Context.Session.GetString("Username");
 									var role = Context.Session.GetString("Role");
@@ -101,9 +101,13 @@
 								@if (!string.IsNullOrEmpty(userName))
 								{
 									<li><a href="#"><i class="fa fa-user"></i> Account</a></li>
+									<li><a asp-controller="Cart" asp-action="Cart"><i class="fa fa-shopping-cart"></i> Cart</a></li>
 									<li><a asp-controller="Login" asp-action="Logout"><i class="fa fa-lock"></i> Logout</a></li>
+									
 								}else{
+									<li><a asp-controller="Login" asp-action="Login" class="cart-link"><i class="fa fa-shopping-cart"></i> Cart</a></li>
 									<li><a asp-controller="Login" asp-action="Login"><i class="fa fa-lock"></i> Login</a></li>
+									
 								}
 								@if	(!string.IsNullOrEmpty(role) && role.ToLower().Equals("seller")){
 									<li><a asp-controller="Login" asp-action="Logout"><i class="fa fa-lock"></i> shop</a></li>
@@ -135,8 +139,7 @@
 								
 								<li><a>Checkout</a></li>
 								<li><a>Cart</a></li>
-								<li><a asp-action="Order" asp-controller="Order">Order</a></li>
-								<li><a href="contact-us.html">Contact</a></li>
+								<li><a asp-controller="Home" asp-action="Contact">Contact</a></li>
 							</ul>
 						</div>
 					</div>
@@ -334,5 +337,20 @@
 			popup.classList.toggle("show");
 		}
 	</script>
+
+
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<script>
+		$(document).ready(function(){
+			$(".cart-link").click(function(event){
+				event.preventDefault(); // Prevent navigation
+				alert("You need to log in first.");
+				window.location.href = "/Login/Login"; // Redirect manually
+			});
+		});
+	</script>
+
+
+
 </body>
 </html>

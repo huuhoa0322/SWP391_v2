@@ -70,7 +70,12 @@ namespace OnlineMarketPlace.Controllers
             var relatedProducts = await _productRepository.GetProductsByCategoryIdAsync(product.CategoryId);
             ViewData["RelatedProducts"] = relatedProducts;
 
+            var ratingRepo = new RatingAndReviewRepository();
+            ViewData["AverageRating"] = await ratingRepo.GetAverageRatingByProductAsync(id);
+
             return View(product);
+
+
         }
 
 
