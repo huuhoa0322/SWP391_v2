@@ -14,7 +14,7 @@ namespace OnlineMarketPlace.Controllers
             ViewData["Cart"] = cart;
             Console.WriteLine(id);
             Console.WriteLine(cart[0].Product.Name);
-
+            
             return View();
         }
     }

@@ -22,6 +22,7 @@
 	<link rel="apple-touch-icon-precomposed" sizes="114x114" href="images/ico/apple-touch-icon-114-precomposed.png">
 	<link rel="apple-touch-icon-precomposed" sizes="72x72" href="images/ico/apple-touch-icon-72-precomposed.png">
 	<link rel="apple-touch-icon-precomposed" href="images/ico/apple-touch-icon-57-precomposed.png">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 </head><!--/head-->
 
 <body>
@@ -69,9 +70,12 @@
 									</td>
 									<td class="cart_quantity">
 										<div class="cart_quantity_button">
-											<a class="cart_quantity_up" href=""> - </a>
+
+
+
+											<button class="cart_quantity_up" href=""> - </button>
 											<input class="cart_quantity_input" type="text" name="quantity" value="@item.Quantity" autocomplete="off" size="2"></input>
-											<a class="cart_quantity_down" href=""> + </a>
+											<button class="cart_quantity_down" href=""> + </button>
 										</div>
 									</td>
 
@@ -87,7 +91,9 @@
 							
 							} else{
 								
-								<tr>Your cart is empty now</tr>
+								<tr>
+									<td colspan="5">Your cart is empty now</td>
+								</tr>
 							}
 							
 

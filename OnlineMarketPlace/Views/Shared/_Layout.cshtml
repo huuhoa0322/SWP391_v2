@@ -105,7 +105,7 @@
 									<li><a asp-controller="Login" asp-action="Logout"><i class="fa fa-lock"></i> Logout</a></li>
 									
 								}else{
-									<li><a asp-controller="Login" asp-action="Login"><i class="fa fa-shopping-cart"></i> Cart</a></li>
+									<li><a asp-controller="Login" asp-action="Login" class="cart-link"><i class="fa fa-shopping-cart"></i> Cart</a></li>
 									<li><a asp-controller="Login" asp-action="Login"><i class="fa fa-lock"></i> Login</a></li>
 									
 								}
@@ -337,5 +337,20 @@
 			popup.classList.toggle("show");
 		}
 	</script>
+
+
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<script>
+		$(document).ready(function(){
+			$(".cart-link").click(function(event){
+				event.preventDefault(); // Prevent navigation
+				alert("You need to log in first.");
+				window.location.href = "/Login/Login"; // Redirect manually
+			});
+		});
+	</script>
+
+
+
 </body>
 </html>
