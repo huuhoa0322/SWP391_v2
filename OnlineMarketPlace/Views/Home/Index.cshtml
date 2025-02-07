@@ -1,130 +1,74 @@
-﻿@model List<OnlineMarketPlace.Models.Product>
-@using Microsoft.AspNetCore.Http
-
-
-<section id="slider">
-	<!--slider-->
-	<div class="container">
-		<div class="row">
-			<div class="col-sm-12">
-				<div id="slider-carousel" class="carousel slide" data-ride="carousel">
-					<ol class="carousel-indicators">
-						<li data-target="#slider-carousel" data-slide-to="0" class="active"></li>
-						<li data-target="#slider-carousel" data-slide-to="1"></li>
-						<li data-target="#slider-carousel" data-slide-to="2"></li>
-					</ol>
-					<!--chua co db-->
-					<div class="carousel-inner">
-						<div class="item active">
-							<div class="col-sm-6">
-								<h1><span>E</span>-SHOPPER</h1>
-								<h2>Free E-Commerce Template</h2>
-								<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. </p>
-								<button type="button" class="btn btn-default get">Get it now</button>
-							</div>
-							<div class="col-sm-6">
-								<img src="images/home/girl1.jpg" class="girl img-responsive" alt="" />
-								<img src="images/home/pricing.png" class="pricing" alt="" />
-							</div>
-						</div>
-						<div class="item">
-							<div class="col-sm-6">
-								<h1><span>E</span>-SHOPPER</h1>
-								<h2>100% Responsive Design</h2>
-								<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. </p>
-								<button type="button" class="btn btn-default get">Get it now</button>
-							</div>
-							<div class="col-sm-6">
-								<img src="images/home/girl2.jpg" class="girl img-responsive" alt="" />
-								<img src="images/home/pricing.png" class="pricing" alt="" />
-							</div>
-						</div>
-
-						<div class="item">
-							<div class="col-sm-6">
-								<h1><span>E</span>-SHOPPER</h1>
-								<h2>Free Ecommerce Template</h2>
-								<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. </p>
-								<button type="button" class="btn btn-default get">Get it now</button>
-							</div>
-							<div class="col-sm-6">
-								<img src="images/home/girl3.jpg" class="girl img-responsive" alt="" />
-								<img src="images/home/pricing.png" class="pricing" alt="" />
-							</div>
-						</div>
-
-					</div>
-
-					<a href="#slider-carousel" class="left control-carousel hidden-xs" data-slide="prev">
-						<i class="fa fa-angle-left"></i>
-					</a>
-					<a href="#slider-carousel" class="right control-carousel hidden-xs" data-slide="next">
-						<i class="fa fa-angle-right"></i>
-					</a>
-				</div>
-
-			</div>
-		</div>
-	</div>
-</section><!--/slider-->
-
-<h3>@ViewData["mailmesage"]</h3>
-
-
-
-
-<div class="col-sm-3">
-	@{
-		var categoriesL = ViewData["CategoriesList"] as OnlineMarketPlace.Models.CategoriesList;
-	}
-	@Html.Partial("_SidebarPartial", categoriesL)
+﻿<!-- Breadcrumb Start -->
+<div class="breadcrumb-wrap">
+    <div class="container">
+        <ul class="breadcrumb">
+            <li class="breadcrumb-item"><a href="#">Home</a></li>
+            <li class="breadcrumb-item"><a href="#">User</a></li>
+            <li class="breadcrumb-item active">Login</li>
+        </ul>
+    </div>
 </div>
+<!-- Breadcrumb End -->
+<!-- Login Start -->
+<div class="login">
+    <div class="container">
+        <div class="section-header">
+            <h3>User Registration & Login</h3>
+            <p>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec viverra at massa sit amet ultricies. Nullam consequat, mauris non interdum cursus
+            </p>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="login-form">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label>E-mail / Username</label>
+                            <input class="form-control" type="text" placeholder="First Name">
+                        </div>
+                        <div class="col-md-6">
+                            <label>Password</label>
+                            <input class="form-control" type="text" placeholder="Last Name">
+                        </div>
+                        <div class="col-md-12">
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" id="newaccount">
+                                <label class="custom-control-label" for="newaccount">Keep me signed in</label>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <button class="btn">Submit</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-
-<div class="col-sm-9 padding-right">
-	<div class="features_items">
-		<!--features_items-->
-		<h2 class="title text-center">Features Items</h2>
-		@{
-			//var userName = Context.Session.GetString("Username");
-			int limit = Convert.ToInt32(ViewData["limit"]);
-		}
-		@foreach (var product in Model.Take(limit))
-		{
-
-			<div class="col-sm-4">
-				<div class="product-image-wrapper">
-
-					<div class="single-products">
-						<a asp-action="Details" asp-controller="Product" asp-route-Id="@product.Id">
-							<div class="productinfo text-center">
-								<img src="images/home/@product.Image" alt="" width="100%" />
-								<h2>@product.Price</h2>
-								<p>@product.Name</p>
-								<a href="#" class="btn btn-default add-to-cart"><i class="fa fa-shopping-cart"></i>Add to cart</a>
-							</div>
-
-						</a>
-					</div>
-					<div class="choose">
-						<ul class="nav nav-pills nav-justified">
-							<li><a href="#"><i class="fa fa-plus-square"></i>Add to wishlist</a></li>
-							<li><a href="#"><i class="fa fa-plus-square"></i>Add to compare</a></li>
-						</ul>
-					</div>
-				</div>
-				
-			</div>
-		}
-		@if (Model.Count > limit)
-		{
-			<button type="button" class="btn btn-default get" id="see-more-button">
-				<a asp-controller="Home" asp-action="Index" asp-route-newlimit=@Model.Count>See More (@(Model.Count - limit))</a>
-			</button>
-		}
-
-	</div><!--features_items-->
-
-
-
+            <div class="col-md-6">
+                <div class="register-form">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label>First Name</label>
+                            <input class="form-control" type="text" placeholder="First Name">
+                        </div>
+                        <div class="col-md-6">
+                            <label>Last Name"</label>
+                            <input class="form-control" type="text" placeholder="Last Name">
+                        </div>
+                        <div class="col-md-6">
+                            <label>E-mail</label>
+                            <input class="form-control" type="text" placeholder="E-mail">
+                        </div>
+                        <div class="col-md-6">
+                            <label>Mobile No</label>
+                            <input class="form-control" type="text" placeholder="Mobile No">
+                        </div>
+                        <div class="col-md-12">
+                            <button class="btn">Submit</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+<!-- Login End -->
