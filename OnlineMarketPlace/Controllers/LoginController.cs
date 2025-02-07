@@ -55,7 +55,7 @@ public class LoginController : Controller
 
     }
 
-    [HttpPost]
+    [HttpGet]
     public async Task LoginByGoogle()
     {
         await HttpContext.ChallengeAsync(GoogleDefaults.AuthenticationScheme,
@@ -105,7 +105,7 @@ public class LoginController : Controller
         }
         else if (existUser.LoginBy == false) //Email da duoc dang ky bang Register
         {
-            ViewBag.ErrorMessage = "Email is existed";
+            TempData["ErrorMessage"] = "Email is existed";
             return View("Login");
         }
         else
@@ -162,15 +162,15 @@ public class LoginController : Controller
 
             if (remainTime.TotalMinutes < 1)
             {
-                TempData["error"] = $"Please wait {60 - (int)remainTime.TotalSeconds}s sending another password reset request.";
+                TempData["error"] = $"Please wait {60 - (int)remainTime.TotalSeconds}s to send another password reset request.";
                 return RedirectToAction("ForgetPass", "Login");
             }
         }
 
         var checkMail = await _userRepository.GetUserByEmail(email);
-        if (checkMail == null)
+        if (checkMail == null || checkMail.LoginBy == false)
         {
-            TempData["error"] = "Email not found";
+            TempData["error"] = "This email address is not registered.";
             return RedirectToAction("ForgetPass", "Login");
         }
 

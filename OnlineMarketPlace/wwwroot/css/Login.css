@@ -55,7 +55,7 @@
         color: red;
         font-size: 14px;
         margin-bottom: 10px;
-        text-align: center;
+        text-align: left;
     }
 
     .login-container .social-login {
@@ -85,6 +85,7 @@
                 background-color: #4285F4;
                 color: white;
                 border: none;
+                margin-right: 5px;
             }
 
                 .login-container .social-login button.google:hover {
