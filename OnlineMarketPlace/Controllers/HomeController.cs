@@ -16,6 +16,8 @@ namespace OnlineMarketPlace.Controllers
 
         private readonly CategoryRepository categoryRepository = new();
 
+        private readonly DiscountRepository discountRepository = new();
+
         private readonly ILogger<HomeController> _logger;
         public HomeController(ILogger<HomeController> logger)
         {
@@ -26,7 +28,7 @@ namespace OnlineMarketPlace.Controllers
         {
             if (newlimit == 0)
             {
-                newlimit = 6;
+                newlimit = 8;
             }
             var products = await productRepository.GetProductsAsync();
             var viewModel = new CategoriesList();
@@ -46,10 +48,14 @@ namespace OnlineMarketPlace.Controllers
                     }
                 })
             );
+
             viewModel.CategoriesChild = childCategoriesArray.ToList();
             //CategoriesList categoriesList = new CategoriesList(categoriesParent, flattenedCategoriesChildList);
             ViewData["CategoriesList"] = viewModel;
             ViewData["limit"] = newlimit;
+            var discounts = await discountRepository.GetProductDiscount();
+            ViewData["Discount"] = discounts;
+            Console.WriteLine(discounts[0]);
             return View(products);
         }
 

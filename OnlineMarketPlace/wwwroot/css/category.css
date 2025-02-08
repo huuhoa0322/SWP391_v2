@@ -1,0 +1,62 @@
+﻿
+.category-container {
+    display: flex;
+    justify-content: center; /* Căn giữa theo chiều ngang */
+    align-items: flex-start; /* Căn trên theo chiều dọc */
+    gap: 20px; /* Khoảng cách giữa các danh mục */
+    padding: 20px;
+    background-color: white;
+}
+
+.category {
+    background: #3F69AA;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 15px;
+    text-align: center;
+    width: 200px; /* Chiều rộng cố định cho mỗi danh mục */
+}
+
+    .category h3{
+        margin: 0;
+        font-size: 18px;
+        color: white;
+        cursor: pointer;
+    }
+
+    .category a {
+        margin: 0;
+        font-size: 18px;
+        color: white;
+        cursor: pointer;
+    }
+
+.subcategory {
+    list-style-type: none;
+    padding: 0;
+    margin: 10px 0 0 0;
+    display: none; /* Ẩn danh sách con ban đầu */
+}
+
+    .subcategory li {
+        background-color: white;
+        padding: 8px 0;
+        color: #555;
+        border-bottom: 5px solid #3F69AA;
+    }
+
+        .subcategory a {
+            margin: 0;
+            font-size: 18px;
+            color: black;
+            cursor: pointer;
+        }
+
+        .subcategory li:last-child {
+            border-bottom: none;
+        }
+
+.category:hover .subcategory,
+.category.active .subcategory {
+    display: block;
+}
