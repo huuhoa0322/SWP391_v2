@@ -1,74 +1,86 @@
-﻿<!-- Breadcrumb Start -->
+﻿<head>
+	<title>Login</title>
+	<link rel="stylesheet" href="~/css/style.css">
+</head>
+
+@await Html.PartialAsync("_ToastNotification")
+
+<!-- Breadcrumb Start -->
 <div class="breadcrumb-wrap">
-    <div class="container">
-        <ul class="breadcrumb">
-            <li class="breadcrumb-item"><a href="#">Home</a></li>
-            <li class="breadcrumb-item"><a href="#">User</a></li>
-            <li class="breadcrumb-item active">Login</li>
-        </ul>
-    </div>
+	<div class="container">
+		<ul class="breadcrumb">
+			<li class="breadcrumb-item"><a href="#">Home</a></li>
+			<li class="breadcrumb-item"><a href="#">User</a></li>
+			<li class="breadcrumb-item active">Login</li>
+		</ul>
+	</div>
 </div>
 <!-- Breadcrumb End -->
 <!-- Login Start -->
 <div class="login">
-    <div class="container">
-        <div class="section-header">
-            <h3>User Registration & Login</h3>
-            <p>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec viverra at massa sit amet ultricies. Nullam consequat, mauris non interdum cursus
-            </p>
-        </div>
-        <div class="row">
-            <div class="col-md-6">
-                <div class="login-form">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <label>E-mail / Username</label>
-                            <input class="form-control" type="text" placeholder="First Name">
-                        </div>
-                        <div class="col-md-6">
-                            <label>Password</label>
-                            <input class="form-control" type="text" placeholder="Last Name">
-                        </div>
-                        <div class="col-md-12">
-                            <div class="custom-control custom-checkbox">
-                                <input type="checkbox" class="custom-control-input" id="newaccount">
-                                <label class="custom-control-label" for="newaccount">Keep me signed in</label>
-                            </div>
-                        </div>
-                        <div class="col-md-12">
-                            <button class="btn">Submit</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
+	<div class="container">
+		<div class="row">
+			<div class="col-md-6">
+				<img src="~/images/login/login.png" class="img-fluid" alt="Phone image">
+			</div>
+			<div class="col-md-6">
+				<div class="login-form" style= "margin-right: 50px; margin-left: 20px;">
+					<form asp-action="CheckLogin" asp-controller="Login" method="post"  >
+						<div class="row">
+							<div class="col-md-12">
+								<label>Username</label>
+								<input class="form-control" type="text" placeholder="Username" name="username" required>
+							</div>
+							<div class="col-md-12" >
+								<label>Password</label>
+								<input class="form-control" type="text" placeholder="Password" name="password" style="margin: 0" required>
+							</div>
 
-            <div class="col-md-6">
-                <div class="register-form">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <label>First Name</label>
-                            <input class="form-control" type="text" placeholder="First Name">
-                        </div>
-                        <div class="col-md-6">
-                            <label>Last Name"</label>
-                            <input class="form-control" type="text" placeholder="Last Name">
-                        </div>
-                        <div class="col-md-6">
-                            <label>E-mail</label>
-                            <input class="form-control" type="text" placeholder="E-mail">
-                        </div>
-                        <div class="col-md-6">
-                            <label>Mobile No</label>
-                            <input class="form-control" type="text" placeholder="Mobile No">
-                        </div>
-                        <div class="col-md-12">
-                            <button class="btn">Submit</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+							<div class="col-md-12">
+								@if (ViewBag.ErrorMessage != null)
+								{
+									<div class="error-message" style="text-align: left">
+										@ViewBag.ErrorMessage
+										<a class="small text-muted" asp-action="ForgetPass" asp-controller="Login">Forgot password?</a>
+									</div>
+								}
+								else
+								{
+									<div class="error-message" style="text-align: left; margin-bottom: 10px">
+										<a class="small text-muted" asp-action="ForgetPass" asp-controller="Login">Forgot passsword?</a>
+									</div>
+								}
+							</div>
+
+							<div class="col-md-12">
+								<p>
+									Don't have an account? <a href="#!">Register here</a>
+								</p>
+							</div>
+
+							<div class="col-md-12">
+								<button type="submit" data-mdb-button-init data-mdb-ripple-init class="btn btn-primary btn-lg btn-block">Sign in</button>
+							</div>
+
+							<div class="col-md-12">
+								<div class="divider d-flex align-items-center my-4">
+									<p class="text-center fw-bold mx-3 mb-0 text-muted">OR</p>
+								</div>
+							</div>
+
+							<div class="col-md-12">
+								<a data-mdb-ripple-init class="btn btn-primary btn-lg btn-block" style="background-color: #c83c2c" href="#!" role="button" >
+									<img src="~/images/login/google-icon.png" alt="Google Icon" width="20">  Continue with Google
+								</a>
+							</div>
+
+						</div>
+					</form>
+				</div>
+			</div>
+
+
+		</div>
+	</div>
 </div>
 <!-- Login End -->

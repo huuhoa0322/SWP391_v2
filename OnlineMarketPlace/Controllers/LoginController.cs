@@ -38,11 +38,11 @@ public class LoginController : Controller
     [HttpPost]
     public async Task<IActionResult> CheckLogin(string username, string password)
     {
-
         var user = await _userRepository.GetUser(username, password);
         if (user == null)
         {
-            ViewBag.ErrorMessage = "Username or password is incorrect!";
+            TempData["Message"] = "Username or password is incorrect!";
+            TempData["MessageType"] = "error";
             return View("Login");
         }
         else
