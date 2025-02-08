@@ -2,7 +2,7 @@
 /********** General CSS ***********/
 /**********************************/
 body {
-    color: #666666;
+    color: black;
     font-family: 'Open Sans', sans-serif;
     font-weight: 400;
     background: #ffffff;
@@ -1560,8 +1560,15 @@ button.btn {
 .login {
     position: relative;
     padding: 60px 0;
-}
 
+}
+.divider:after,
+.divider:before {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: #eee;
+}
 
 
 /**********************************/

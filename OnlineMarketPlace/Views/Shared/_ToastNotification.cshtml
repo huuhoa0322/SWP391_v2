@@ -1,0 +1,47 @@
+﻿@{
+    var message = TempData["Message"]?.ToString();
+    var messageType = TempData["MessageType"]?.ToString();
+}
+
+@if (message != null)
+{
+    <div id="toast" class="toast @messageType">
+        <span>@message</span>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            document.getElementById('toast').classList.add('show');
+            setTimeout(function () {
+                document.getElementById('toast').classList.remove('show');
+            }, 5000); // Toast sẽ ẩn sau 5 giây
+        });
+
+    </script>
+}
+
+<style>
+    .toast {
+        visibility: hidden;
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background-color: #4CAF50; /* Màu thành công */
+         font-family: 'Open Sans', sans-serif;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 5px;
+        font-size: 16px;
+        transition: opacity 0.5s ease, visibility 0.5s ease;
+    }
+
+        .toast.error {
+            background-color: #f44336; /* Màu lỗi */
+        }
+
+        .toast.show {
+            visibility: visible;
+            opacity: 1;
+        }
+
+</style>

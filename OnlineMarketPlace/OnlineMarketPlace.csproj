@@ -8,9 +8,13 @@
 
   <ItemGroup>
     <Compile Remove="Views\NewFolder1\**" />
+    <Compile Remove="Views\NewFolder3\**" />
     <Content Remove="Views\NewFolder1\**" />
+    <Content Remove="Views\NewFolder3\**" />
     <EmbeddedResource Remove="Views\NewFolder1\**" />
+    <EmbeddedResource Remove="Views\NewFolder3\**" />
     <None Remove="Views\NewFolder1\**" />
+    <None Remove="Views\NewFolder3\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -41,10 +45,6 @@
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="8.0.1" />
     <PackageReference Include="System.Drawing.Common" Version="8.0.12" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Views\NewFolder3\" />
   </ItemGroup>
 
 </Project>

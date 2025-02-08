@@ -1,4 +1,9 @@
 ﻿<!-- Product Detail Start -->
+@{
+    var categoriesL = ViewData["CategoriesList"] as OnlineMarketPlace.Models.CategoriesList;
+}
+@Html.Partial("_SidebarPartial", categoriesL);
+
 <div class="product-detail">
     <div class="container">
         <div class="row">
@@ -13,18 +18,15 @@
                     </div>
                     <div class="col-md-7">
                         <div class="product-content">
-                            <div class="title"><h2>Phasellus Gravida</h2></div>
+                            <div class="title"><h2>@Model.Name</h2></div>
                             <div class="ratting">
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
+                                @* @(((double)ViewData["AverageRating"]) > 0 ? ((double)ViewData["AverageRating"]).ToString("0.0") : "No ratings") *@
+                                <i class="fa fa-star"></i>                               
                             </div>
-                            <div class="price">$22 <span>$25</span></div>
+                            <div class="price">@Model.Price</div>
                             <div class="details">
                                 <p>
-                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. In condimentum quam ac mi viverra dictum. In efficitur ipsum diam, at dignissim lorem tempor in. Vivamus tempor hendrerit finibus. Nulla tristique viverra nisl, sit amet bibendum ante suscipit non.
+                                    @Model.Description
                                 </p>
                             </div>
 
@@ -69,7 +71,7 @@
                             </div>
                             <div id="specification" class="container tab-pane fade">
                                 <br>
-                                <h4>Product specification</h4>
+                                <h4>Shop Information</h4>
                                 <ul>
                                     <li>Lorem ipsum dolor sit amet</li>
                                     <li>Lorem ipsum dolor sit amet</li>
