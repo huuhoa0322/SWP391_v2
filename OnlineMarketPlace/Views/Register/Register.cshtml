@@ -1,8 +1,6 @@
 ﻿@{
 	ViewData["Title"] = "Register";
 }
-
-<h2>Register New Account</h2>
 @if (ViewBag.Errors != null)
 {
 	<div class="alert alert-danger">
@@ -14,71 +12,138 @@
 		</ul>
 	</div>
 }
+<!-- Breadcrumb Start -->
+<div class="breadcrumb-wrap">
+	<div class="container">
+		<ul class="breadcrumb">
+			<li class="breadcrumb-item"><a href="#">Home</a></li>
+			<li class="breadcrumb-item active">Register</li>
+		</ul>
+	</div>
+</div>
+<!-- Breadcrumb End -->
+<link href="~/css/register.css" rel="stylesheet">
+@await Html.PartialAsync("_ToastNotification")
+<!-- Body -->
 
 <form asp-action="Register" method="post">
-	<div class="form-group">
-		<label for="name">Full Name</label>
-		<input type="text" class="form-control" id="name" name="name" placeholder="Enter your full name" required />
-	</div>
-	<div class="form-group">
-		<label for="username">Username</label>
-		<input type="text" class="form-control" id="username" name="username" placeholder="Enter a username" required />
-		<small id="usernameError" class="text-danger"></small>
-	</div>
+	<table style="width: 100%; background-color: #f9f9f9; padding: 20px;">
+		<tr>
+			<td colspan="2">
+				<small id="usernameError" class="text-danger"></small>
+				<small id="captchaError" class="text-danger"></small>
+				<small id="dobError" class="text-danger"></small>
+				<small id="emailError" class="text-danger"></small>
+				<small id="confirmPasswordError" class="text-danger"></small>
+				<small id="passwordError" class="text-danger"></small>
+			</td>
+		</tr>
+		</tr>
+		<tr>
+			<td style="text-align: left; padding-left: 10px;">
+				<label for="name">Full Name</label>
+				<input type="text" class="form-control" id="name" name="name" placeholder="Enter your full name" required />
+			</td>
+			<td style="text-align: left; padding-left: 10px;">
+				<label for="username">Username</label>
+				<input type="text" class="form-control" id="username" name="username" placeholder="Enter a username" required />
+			</td>
+		</tr>
+		<tr>
+		</tr>
+		<tr>
+			<td style="text-align: left; padding-left: 10px;">
+				<label for="password">Password</label>
+				<input type="password" class="form-control" id="password" name="password" placeholder="Enter a password" required />
+			</td>
+			<td style="text-align: left; padding-left: 10px;">
+				<label for="confirmPassword">Password Again</label>
+				<input type="password" class="form-control" id="confirmPassword" name="confirmPassword" placeholder="Enter the password again" required />
+			</td>
+		</tr>
 
-	<div class="form-group">
-		<label for="password">Password</label>
-		<input type="password" class="form-control" id="password" name="password" placeholder="Enter a password" required />
-	</div>
-
-	<div class="form-group">
-		<label for="gender">Gender</label>
-		<select class="form-control" id="gender" name="gender">
-			<option value="true">Male</option>
-			<option value="false">Female</option>
-		</select>
-	</div>
-
-	<div class="form-group">
-		<label for="email">Email</label>
-		<input type="email" class="form-control" id="email" name="email" placeholder="Enter your email" required />
-		<small id="emailError" class="text-danger"></small>
-	</div>
-
-	<input type="hidden" id="role" name="role" value="customer" />
-	<input type="hidden" id="loginBy" name="loginBy" value="false" />
-	<input type="hidden" id="token" name="token" value="" />
-	<div class="form-group">
-		<label for="dob">Date of Birth</label>
-		<input type="date" class="form-control" id="dob" name="dob" required />
-		<small id="dobError" class="text-danger"></small>
-	</div>
-	<div class="form-group">
-		<label for="captcha">Captcha</label>
-		<br>
-		<img src="@Url.Action("GenerateCaptcha", "Register")" alt="Captcha Image" class="mb-2" />     <br>
-		<input type="text" class="form-control" id="captcha" name="captcha" placeholder="Enter the text from the image" required />
-		<small id="capchalError" class="text-danger"></small>
-	</div>
-
-	<button type="submit" class="btn btn-primary">Register</button>
+		<tr>
+			<td style="text-align: left; padding-left: 10px;">
+				<label for="email">Email</label>
+				<input type="email" class="form-control" id="email" name="email" placeholder="Enter your email" required />
+			</td>
+			<td style="text-align: left; padding-left: 10px;">
+				<label for="dob">Date of Birth</label>
+				<input type="date" class="form-control" id="dob" name="dob" required />
+			</td>
+		</tr>
+		<tr>
+		<tr>
+			<td style="text-align: left; padding-left: 20px;">
+				<label for="gender">Gender</label>
+				<div style="display: inline-block;">
+					<input class="form-check-input" type="radio" name="gender" id="male" value="true">
+					<label class="form-check-label" for="male">Male</label>
+					<input class="form-check-input" type="radio" name="gender" id="female" value="false">
+					<label class="form-check-label" for="female">Female</label>
+				</div>
 
 
+			<td style="text-align: left; padding-left: 10px;">
+				<label for="captcha">Captcha</label>
+				<img src="@Url.Action("GenerateCaptcha", "Register")" alt="Captcha Image" class="mb-2" />
+				<input type="text" class="form-control" id="captcha" name="captcha" placeholder="Enter the text from the image" required />
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2">
+				<button type="submit" id="registerButton" class="btn btn-primary">Register</button>
+
+			</td>
+		</tr>
+	</table>
 </form>
+
+
+<!-- Body -->
+
 <script>
 	// Kiểm tra username
 	document.getElementById("username").addEventListener("input", async function () {
 		const username = this.value;
+		const errorElement = document.getElementById("usernameError");
 		if (username.length > 0) {
 			const response = await fetch(`/Register/CheckUsername?username=${username}`);
 			const result = await response.json();
-			const errorElement = document.getElementById("usernameError");
+			
 			if (!result.isValid) {
 				errorElement.textContent = result.message;
 			} else {
 				errorElement.textContent = "";
 			}
 		}
+	});
+	document.getElementById("password").addEventListener("input", async function () {
+			const password = this.value; 
+			if (password.length > 0) {
+			const response = await fetch(`/Register/Checkpassword?password=${password}`);
+			const result = await response.json();
+			const errorElement = document.getElementById("passwordError");
+			if (!result.isValid) {
+				errorElement.textContent = result.message;
+			} else {
+				errorElement.textContent = "";
+			}
+			}
+	});
+		document.getElementById("confirmPassword").addEventListener("input", async function () {
+		const confirmPassword = this.value; // Lấy giá trị của confirmPassword từ trường input này
+		const password = document.getElementById("password").value; // Lấy giá trị của trường password
+
+			const response = await fetch(`/Register/CheckconfirmPassword?password=${password}&confirmPassword=${confirmPassword}`);
+			const result = await response.json();
+			const errorElement = document.getElementById("confirmPasswordError");
+			if (!result.isValid) {
+				errorElement.textContent = result.message;
+			} else {
+				errorElement.textContent = "";
+			}
+
 	});
 	// Kiểm tra email
 	document.getElementById("email").addEventListener("input", async function () {
@@ -109,12 +174,12 @@
 			}
 		}
 	});
-	document.getElementById("capcha").addEventListener("input", async function () {
-		const capcha = this.value;
-		if (email.length > 0) {
-			const response = await fetch(`/Register/CheckCapcha?capcha=${capcha}`);
+	document.getElementById("captcha").addEventListener("input", async function () {
+		const captcha = this.value;
+		if (captcha.length > 4) {
+			const response = await fetch(`/Register/CheckCaptcha?captcha=${captcha}`);
 			const result = await response.json();
-			const errorElement = document.getElementById("capchalError");
+			const errorElement = document.getElementById("captchaError");
 			if (!result.isValid) {
 				errorElement.textContent = result.message;
 			} else {
@@ -122,4 +187,54 @@
 			}
 		}
 	});
+		// Lắng nghe sự kiện trên các trường nhập liệu
+	document.querySelectorAll("input").forEach(input => {
+		input.addEventListener("input", validateForm);
+	});
+
+		async function validateForm() {
+		const username = document.getElementById("username").value;
+		const password = document.getElementById("password").value;
+		const confirmPassword = document.getElementById("confirmPassword").value;
+		const email = document.getElementById("email").value;
+		const dob = document.getElementById("dob").value;
+		const captcha = document.getElementById("captcha").value;
+
+		const isUsernameValid = username.length > 0;
+		const isPasswordValid = password.length > 0;
+		const isConfirmPasswordValid = confirmPassword.length > 0 && confirmPassword === password;
+		const isEmailValid = email.length > 0;
+		const isDobValid = dob.length > 0;
+
+		let isCaptchaCorrect = false; // Khởi tạo biến kiểm tra captcha
+
+		// Kiểm tra captcha khi người dùng nhập
+		if (captcha.length > 4) {
+			const response = await fetch(`/Register/CheckCaptcha?captcha=${captcha}`);
+			const result = await response.json();
+			const errorElement = document.getElementById("captchaError");
+
+			if (!result.isValid) {
+				errorElement.textContent = result.message; // Hiển thị thông báo lỗi captcha
+			} else {
+				errorElement.textContent = ""; // Xóa thông báo lỗi captcha
+				isCaptchaCorrect = true; // Đánh dấu captcha đúng
+			}
+		}
+
+		// Kiểm tra tất cả các trường
+		if (isUsernameValid && isPasswordValid && isConfirmPasswordValid && isEmailValid && isDobValid && isCaptchaCorrect) {
+			// Kích hoạt nút Register nếu tất cả hợp lệ
+			document.getElementById("registerButton").classList.add("active");
+		} else {
+			// Mờ nút Register nếu có trường nào chưa hợp lệ
+			document.getElementById("registerButton").classList.remove("active");
+		}
+	}
+
+	// Gọi validateForm khi có sự thay đổi trong trường captcha
+	document.getElementById("captcha").addEventListener("input", validateForm);
+
+
+
 </script>

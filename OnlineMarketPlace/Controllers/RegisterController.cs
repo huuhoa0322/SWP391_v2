@@ -23,7 +23,7 @@ public class RegisterController : Controller
     {
         _logger = logger;
     }
-    
+
 
     [HttpGet]
     public IActionResult Register()
@@ -81,7 +81,8 @@ public class RegisterController : Controller
             // Add the user to the database asynchronously
             await _userRepository.AddAsync(user);
 
-            TempData["SuccessMessage"] = "Registration successful. Please log in!";
+            TempData["Message"] = "Registration successful. Please log in!";
+            TempData["MessageType"] = "success";
             return RedirectToAction("Login", "Login");
         }
 
@@ -92,19 +93,30 @@ public class RegisterController : Controller
     [HttpGet]
     public async Task<IActionResult> CheckUsername(string username)
     {
-        var exists = await _userRepository.checkUserName(username);
-        if (exists != null && !exists.IsDeleted)
+        if (username.Length < 8)
         {
-            return Json(new { isValid = false, message = "Username already exists. Please choose another." });
+            return Json(new { isValid = false, message = "Username need length more than 8 and contain at least one uppercase letter and one lowercase letter" });
         }
-
+        else
+        {
+            if (!username.Any(char.IsUpper) || !username.Any(char.IsLower))
+            {
+                return Json(new { isValid = false, message = "Username must contain at least one uppercase letter and one lowercase letter." });
+            }
+            var exists = await _userRepository.checkUserName(username);
+            if (exists != null && !exists.IsDeleted)
+            {
+                return Json(new { isValid = false, message = "Username already exists. Please choose another." });
+            }
+        }
         return Json(new { isValid = true });
     }
     [HttpGet]
     public async Task<IActionResult> CheckCaptcha(string captcha)
     {
+        Console.WriteLine(captcha);
         var sessionCaptcha = HttpContext.Session.GetString(CaptchaSessionKey);
-        if (string.IsNullOrEmpty(sessionCaptcha) || !sessionCaptcha.Equals(captcha, StringComparison.OrdinalIgnoreCase))
+        if (string.IsNullOrEmpty(sessionCaptcha) || !sessionCaptcha.Equals(captcha))
         {
             return Json(new { isValid = false, message = "Captcha is incorrect. Please try again." });
         }
@@ -126,14 +138,40 @@ public class RegisterController : Controller
     [HttpGet]
     public IActionResult ValidateDob(DateTime dob)
     {
-        if (dob > DateTime.Now)
+        if (dob > DateTime.Now || dob.Year<2024)
         {
-            return Json(new { isValid = false, message = "Date of birth cannot be in the future." });
+            return Json(new { isValid = false, message = "Date of birth Invald." });
         }
 
         return Json(new { isValid = true });
     }
 
+    [HttpGet]
+    public async Task<IActionResult> CheckPassword(string password)
+    {
+        Console.WriteLine(password);
+        if (password.Length < 8 )
+        {
+            return Json(new { isValid = false, message = "Passwords need to length more than 8 and contain at least one uppercase letter, one lowercase letter, and one digit." });
+        }
+        if (!password.Any(char.IsUpper) || !password.Any(char.IsLower) || !password.Any(char.IsDigit))
+        {
+            return Json(new { isValid = false, message = "Password must contain at least one uppercase letter, one lowercase letter, and one digit." });
+        }
+        return Json(new { isValid = true });
+    }
+    [HttpGet]
+    public async Task<IActionResult> CheckconfirmPassword(string password, string confirmPassword)
+    {
+        Console.WriteLine(password);
+        Console.WriteLine(confirmPassword);
+        if (confirmPassword != password)
+        {
+            return Json(new { isValid = false, message = "Passwords do not match." });
+        }
+
+        return Json(new { isValid = true });
+    }
     [HttpGet]
     public IActionResult GenerateCaptcha()
     {
@@ -179,7 +217,8 @@ public class RegisterController : Controller
 
     private string GenerateRandomCode(int length)
     {
-        const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        //const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        const string chars = "abcdefghijklmnopqrstuvwxyz0123456789";
         var random = new Random();
         return new string(Enumerable.Repeat(chars, length)
             .Select(s => s[random.Next(s.Length)]).ToArray());

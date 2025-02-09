@@ -422,7 +422,7 @@ button.btn {
 .section-header {
     position: relative;
     max-width: 700px;
-    margin: 0 auto 30px auto;
+    margin: 20px auto 30px auto;
 }
 
 .section-header h2,
@@ -507,6 +507,7 @@ button.btn {
     position: relative;
     background-color: #f7f7f7;
     padding-bottom: 15px;
+
 }
 
 .product-item .product-image {
@@ -1760,3 +1761,8 @@ button.btn {
         text-align: center; 
     } 
 }
+
+/**********************************/
+/******** category CSS *******/
+/**********************************/
+
