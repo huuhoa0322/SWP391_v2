@@ -96,3 +96,14 @@ td > div {
 tr {
     margin-bottom: 20px;
 }
+/* Nút Register khi chưa hợp lệ */
+#registerButton {
+    opacity: 0.5; /* Mờ */
+    pointer-events: none; /* Không cho phép nhấn khi không hợp lệ */
+}
+
+    /* Nút Register khi hợp lệ */
+    #registerButton.active {
+        opacity: 1; /* Đậm */
+        pointer-events: auto; /* Cho phép nhấn khi hợp lệ */
+    }

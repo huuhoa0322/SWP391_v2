@@ -23,6 +23,7 @@
 </div>
 <!-- Breadcrumb End -->
 <link href="~/css/register.css" rel="stylesheet">
+@await Html.PartialAsync("_ToastNotification")
 <!-- Body -->
 
 <form asp-action="Register" method="post">
@@ -34,7 +35,7 @@
 				<small id="dobError" class="text-danger"></small>
 				<small id="emailError" class="text-danger"></small>
 				<small id="confirmPasswordError" class="text-danger"></small>
-
+				<small id="passwordError" class="text-danger"></small>
 			</td>
 		</tr>
 		</tr>
@@ -50,18 +51,6 @@
 		</tr>
 		<tr>
 		</tr>
-		@* <tr> *@
-		@* 	<td style="text-align: left; padding-left: 10px;"> *@
-		@* 		<label for="name">Full Name</label> *@
-		@* 		<input type="text" class="form-control" id="name" name="name" placeholder="Enter your full name" required /> *@
-		@* 	</td> *@
-		@* 	<td style="text-align: left; padding-left: 10px;"> *@
-		@* 		<label for="p">Username</label> *@
-		@* 		<input type="text" class="form-control" id="p" name="p" placeholder="Enter a username" required /> *@
-		@* 	</td> *@
-		@* </tr> *@
-		@* <tr> *@
-		@* </tr> *@
 		<tr>
 			<td style="text-align: left; padding-left: 10px;">
 				<label for="password">Password</label>
@@ -103,7 +92,8 @@
 		</tr>
 		<tr>
 			<td colspan="2">
-				<button type="submit" class="btn btn-primary">Register</button>
+				<button type="submit" id="registerButton" class="btn btn-primary">Register</button>
+
 			</td>
 		</tr>
 	</table>
@@ -116,16 +106,30 @@
 	// Kiểm tra username
 	document.getElementById("username").addEventListener("input", async function () {
 		const username = this.value;
+		const errorElement = document.getElementById("usernameError");
 		if (username.length > 0) {
 			const response = await fetch(`/Register/CheckUsername?username=${username}`);
 			const result = await response.json();
-			const errorElement = document.getElementById("usernameError");
+			
 			if (!result.isValid) {
 				errorElement.textContent = result.message;
 			} else {
 				errorElement.textContent = "";
 			}
 		}
+	});
+	document.getElementById("password").addEventListener("input", async function () {
+			const password = this.value; 
+			if (password.length > 0) {
+			const response = await fetch(`/Register/Checkpassword?password=${password}`);
+			const result = await response.json();
+			const errorElement = document.getElementById("passwordError");
+			if (!result.isValid) {
+				errorElement.textContent = result.message;
+			} else {
+				errorElement.textContent = "";
+			}
+			}
 	});
 		document.getElementById("confirmPassword").addEventListener("input", async function () {
 		const confirmPassword = this.value; // Lấy giá trị của confirmPassword từ trường input này
@@ -170,12 +174,12 @@
 			}
 		}
 	});
-	document.getElementById("capcha").addEventListener("input", async function () {
-		const capcha = this.value;
-		if (capcha > 0) {
-			const response = await fetch(`/Register/CheckCapcha?capcha=${capcha}`);
+	document.getElementById("captcha").addEventListener("input", async function () {
+		const captcha = this.value;
+		if (captcha.length > 4) {
+			const response = await fetch(`/Register/CheckCaptcha?captcha=${captcha}`);
 			const result = await response.json();
-			const errorElement = document.getElementById("capchalError");
+			const errorElement = document.getElementById("captchaError");
 			if (!result.isValid) {
 				errorElement.textContent = result.message;
 			} else {
@@ -183,6 +187,54 @@
 			}
 		}
 	});
+		// Lắng nghe sự kiện trên các trường nhập liệu
+	document.querySelectorAll("input").forEach(input => {
+		input.addEventListener("input", validateForm);
+	});
+
+		async function validateForm() {
+		const username = document.getElementById("username").value;
+		const password = document.getElementById("password").value;
+		const confirmPassword = document.getElementById("confirmPassword").value;
+		const email = document.getElementById("email").value;
+		const dob = document.getElementById("dob").value;
+		const captcha = document.getElementById("captcha").value;
+
+		const isUsernameValid = username.length > 0;
+		const isPasswordValid = password.length > 0;
+		const isConfirmPasswordValid = confirmPassword.length > 0 && confirmPassword === password;
+		const isEmailValid = email.length > 0;
+		const isDobValid = dob.length > 0;
+
+		let isCaptchaCorrect = false; // Khởi tạo biến kiểm tra captcha
+
+		// Kiểm tra captcha khi người dùng nhập
+		if (captcha.length > 4) {
+			const response = await fetch(`/Register/CheckCaptcha?captcha=${captcha}`);
+			const result = await response.json();
+			const errorElement = document.getElementById("captchaError");
+
+			if (!result.isValid) {
+				errorElement.textContent = result.message; // Hiển thị thông báo lỗi captcha
+			} else {
+				errorElement.textContent = ""; // Xóa thông báo lỗi captcha
+				isCaptchaCorrect = true; // Đánh dấu captcha đúng
+			}
+		}
+
+		// Kiểm tra tất cả các trường
+		if (isUsernameValid && isPasswordValid && isConfirmPasswordValid && isEmailValid && isDobValid && isCaptchaCorrect) {
+			// Kích hoạt nút Register nếu tất cả hợp lệ
+			document.getElementById("registerButton").classList.add("active");
+		} else {
+			// Mờ nút Register nếu có trường nào chưa hợp lệ
+			document.getElementById("registerButton").classList.remove("active");
+		}
+	}
+
+	// Gọi validateForm khi có sự thay đổi trong trường captcha
+	document.getElementById("captcha").addEventListener("input", validateForm);
+
 
 
 </script>
