@@ -184,7 +184,8 @@ public class LoginController : Controller
         Console.WriteLine(checkMail);
         if (checkMail == null || checkMail.LoginBy == true)
         {
-            TempData["error"] = "This email address is not registered.";
+            TempData["Message"] = "This email address is not registered.";
+            TempData["MessageType"] = "error";
             return RedirectToAction("ForgetPass", "Login");
         }
 
@@ -213,7 +214,8 @@ public class LoginController : Controller
 
         await _emailService.SendEmailAsync(receiver, subject, message);
 
-        TempData["success"] = "An email has been sent to you to change password.";
+        TempData["Message"] = "An email has been sent to you to change password.";
+        TempData["MessageType"] = "success";
         return RedirectToAction("ForgetPass", "Login");
     }
 
@@ -224,7 +226,9 @@ public class LoginController : Controller
         var checkToken = HttpContext.Request.Cookies["Token"];
         if (string.IsNullOrEmpty(checkToken) || checkToken != token)
         {
-            TempData["error"] = "Token has expired or does not exist. Please resend your request.";
+
+            TempData["Message"] = "Token has expired or does not exist. Please resend your request.";
+            TempData["MessageType"] = "error";
             return RedirectToAction("ForgetPass", "Login");
         }
         else
@@ -250,19 +254,23 @@ public class LoginController : Controller
     }
 
     [HttpPost]
-    public async Task<IActionResult> ResetPass(string email, string pass)
+    public async Task<IActionResult> ResetPass(string email, string password)
     {   
         var checkMail = await _userRepository.GetUserByEmail(email);
         if (checkMail == null)
         {
-            TempData["error"] = "Email not found";
+
+            TempData["Message"] = "Email not found!";
+            TempData["MessageType"] = "error";
             return RedirectToAction("ForgetPass", "Login");
         }
         else
         {
-            checkMail.Password = ncryptpasswordmd5.HashPasswordMD5(pass);
+            checkMail.Password = ncryptpasswordmd5.HashPasswordMD5(password);
             await _userRepository.UpdateUserAsync(checkMail);
             HttpContext.Response.Cookies.Delete("Token"); //Xoa cookie
+            TempData["Message"] = "Reset password successfully!";
+            TempData["MessageType"] = "success";
             return RedirectToAction("Login", "Login");
         }
     }
