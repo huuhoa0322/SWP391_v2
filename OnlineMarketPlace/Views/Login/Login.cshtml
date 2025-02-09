@@ -9,8 +9,7 @@
 <div class="breadcrumb-wrap">
 	<div class="container">
 		<ul class="breadcrumb">
-			<li class="breadcrumb-item"><a href="#">Home</a></li>
-			<li class="breadcrumb-item"><a href="#">User</a></li>
+			<li class="breadcrumb-item"><a asp-action="Index" asp-controller="Home">Home</a></li>
 			<li class="breadcrumb-item active">Login</li>
 		</ul>
 	</div>
@@ -24,37 +23,27 @@
 				<img src="~/images/login/login.png" class="img-fluid" alt="Phone image">
 			</div>
 			<div class="col-md-6">
-				<div class="login-form" style= "margin-right: 50px; margin-left: 20px;">
-					<form asp-action="CheckLogin" asp-controller="Login" method="post"  >
+				<div class="login-form" style="margin-right: 50px; margin-left: 20px;">
+					<form asp-action="CheckLogin" asp-controller="Login" method="post">
 						<div class="row">
 							<div class="col-md-12">
 								<label>Username</label>
 								<input class="form-control" type="text" placeholder="Username" name="username" required>
 							</div>
-							<div class="col-md-12" >
+							<div class="col-md-12">
 								<label>Password</label>
 								<input class="form-control" type="text" placeholder="Password" name="password" style="margin: 0" required>
 							</div>
 
 							<div class="col-md-12">
-								@if (ViewBag.ErrorMessage != null)
-								{
-									<div class="error-message" style="text-align: left">
-										@ViewBag.ErrorMessage
-										<a class="small text-muted" asp-action="ForgetPass" asp-controller="Login">Forgot password?</a>
-									</div>
-								}
-								else
-								{
-									<div class="error-message" style="text-align: left; margin-bottom: 10px">
-										<a class="small text-muted" asp-action="ForgetPass" asp-controller="Login">Forgot passsword?</a>
-									</div>
-								}
+								<div class="error-message" style="text-align: left; margin-bottom: 10px">
+									<a class="small text-muted" asp-action="ForgetPass" asp-controller="Login">Forgot passsword?</a>
+								</div>
 							</div>
 
 							<div class="col-md-12">
 								<p>
-									Don't have an account? <a href="#!">Register here</a>
+									Don't have an account? <a asp-action="Register" asp-controller="Register">Register here</a>
 								</p>
 							</div>
 
@@ -69,8 +58,8 @@
 							</div>
 
 							<div class="col-md-12">
-								<a data-mdb-ripple-init class="btn btn-primary btn-lg btn-block" style="background-color: #c83c2c" href="#!" role="button" >
-									<img src="~/images/login/google-icon.png" alt="Google Icon" width="20">  Continue with Google
+								<a asp-controller="Login" asp-action="LoginByGoogle" data-mdb-ripple-init class="btn btn-primary btn-lg btn-block" style="background-color: #c83c2c;padding-top: 3px;padding-bottom: 3px;" role="button">
+									<img src="~/images/login/google-icon.png" alt="Google Icon" width="37" style="margin-right: 20px; border-radius: 2px;">  Continue with Google
 								</a>
 							</div>
 
