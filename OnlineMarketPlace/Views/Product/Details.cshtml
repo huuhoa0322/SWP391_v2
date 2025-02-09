@@ -1,19 +1,20 @@
 ﻿<!-- Product Detail Start -->
+@model OnlineMarketPlace.Models.Product
 @{
     var categoriesL = ViewData["CategoriesList"] as OnlineMarketPlace.Models.CategoriesList;
 }
-@Html.Partial("_SidebarPartial", categoriesL);
+@* @Html.Partial("_SidebarPartial", categoriesL); *@
 
 <div class="product-detail">
+
     <div class="container">
         <div class="row">
             <div class="col-lg-9">
                 <div class="row align-items-center product-detail-top">
                     <div class="col-md-5">
                         <div class="product-slider-single">
-                            <img src="img/product-1.png" alt="Product Image">
-                            <img src="img/product-2.png" alt="Product Image">
-                            <img src="img/product-3.png" alt="Product Image">
+                            <img src="~/images/@Model.Image" alt="Product Image">
+                            
                         </div>
                     </div>
                     <div class="col-md-7">
@@ -26,7 +27,15 @@
                             <div class="price">@Model.Price</div>
                             <div class="details">
                                 <p>
-                                    @Model.Description
+                                    <a href="#reviews" style="text-decoration: none; color: inherit;">
+                                        4.9 <i class="fa fa-star"></i>
+                                    </a>
+                                    | <a href="#reviews" style="text-decoration: none; color: inherit;">
+                                        @Model.RatingAndReviews.Count Review
+                                    </a>
+                                    | @Model.QuantitySold Selled
+                                    | <span style="color: #007bff; cursor: pointer;">Report</span>
+                                    
                                 </p>
                             </div>
 
@@ -54,10 +63,10 @@
                                 <a class="nav-link active" data-toggle="pill" href="#description">Description</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" data-toggle="pill" href="#specification">Specification</a>
+                                <a class="nav-link" data-toggle="pill" href="#specification">Shop Information</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" data-toggle="pill" href="#reviews">Reviews (1)</a>
+                                <a class="nav-link" data-toggle="pill" href="#reviews">Reviews (@Model.RatingAndReviews.Count)</a>
                             </li>
                         </ul>
 
@@ -66,7 +75,7 @@
                                 <br>
                                 <h4>Product description</h4>
                                 <p>
-                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. In condimentum quam ac mi viverra dictum. In efficitur ipsum diam, at dignissim lorem tempor in. Vivamus tempor hendrerit finibus. Nulla tristique viverra nisl, sit amet bibendum ante suscipit non. Praesent in faucibus tellus, sed gravida lacus. Vivamus eu diam eros. Aliquam et sapien eget arcu rhoncus scelerisque. Suspendisse sit amet neque neque. Praesent suscipit et magna eu iaculis. Donec arcu libero, commodo ac est a, malesuada finibus dolor. Aenean in ex eu velit semper fermentum. In leo dui, aliquet sit amet eleifend sit amet, varius in turpis. Maecenas fermentum ut ligula at consectetur. Nullam et tortor leo.
+                                    @Model.Description
                                 </p>
                             </div>
                             <div id="specification" class="container tab-pane fade">
@@ -91,8 +100,29 @@
                                         <i class="fa fa-star"></i>
                                         <i class="fa fa-star"></i>
                                     </div>
+                                    @{
+                                        var reviews = ViewData["rv"] as List<OnlineMarketPlace.Models.RatingAndReview>;
+                                    }
                                     <p>
-                                        Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam.
+                                        @if (reviews != null && reviews.Any())
+                                        {
+                                        @* <p>@($"Found {reviews.Count} reviews.")</p> <!-- Hiển thị số lượng phần tử --> *@
+                                        <ul>
+                                                @foreach (RatingAndReview review in reviews)
+                                                {
+                                                <li>
+
+                                                    @* <strong>Rating:</strong> @review.Rating <br /> *@
+                                                    @* <strong>Review:</strong>  *@
+                                                    @review.Review
+                                                </li>
+                                                }
+                                        </ul>
+                                        }
+                                        else
+                                        {
+                                        <p>No reviews available.</p>
+                                        }
                                     </p>
                                 </div>
                                 <div class="reviews-submit">
@@ -127,139 +157,82 @@
                 <div class="container">
                     <div class="section-header">
                         <h3>Related Products</h3>
-                        <p>
-                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec viverra at massa sit amet ultricies. Nullam consequat, mauris non interdum cursus
-                        </p>
                     </div>
                 </div>
 
-                <div class="row align-items-center product-slider product-slider-3">
-                    <div class="col-lg-3">
-                        <div class="product-item">
-                            <div class="product-image">
-                                <a href="product-detail.html">
-                                    <img src="img/product-1.png" alt="Product Image">
-                                </a>
-                                <div class="product-action">
-                                    <a href="#"><i class="fa fa-cart-plus"></i></a>
-                                    <a href="#"><i class="fa fa-heart"></i></a>
-                                    <a href="#"><i class="fa fa-search"></i></a>
+
+
+                @{
+                    var relatedProducts = ViewData["RelatedProducts"] as List<OnlineMarketPlace.Models.Product>;
+                    var currentProduct = Model as OnlineMarketPlace.Models.Product;
+                    var itemsPerPage = 3;
+                    var currentPage = 1;
+                    int.TryParse(Context.Request.Query["page"], out currentPage);
+                    if (currentPage < 1) currentPage = 1;
+                }
+
+                @if (relatedProducts != null && relatedProducts.Any(p => p.Id != currentProduct.Id))
+                {
+                    var filteredProducts = relatedProducts.Where(p => p.Id != currentProduct.Id).ToList();
+                    var totalPages = Math.Ceiling((decimal)filteredProducts.Count / itemsPerPage);
+                    var displayProducts = filteredProducts.Skip((currentPage - 1) * itemsPerPage).Take(itemsPerPage);
+
+                    <div class="row align-items-center product-slider product-slider-3">
+                        @foreach (var product in displayProducts)
+                        {
+                            <div class="col-lg-3">
+                                <div class="product-item">
+                                    <div class="product-image">
+                                        <a href="product-detail.html">
+                                            <img src="img/product-1.png" alt="Product Image">
+                                        </a>
+                                        <div class="product-action">
+                                            <a href="#"><i class="fa fa-cart-plus"></i></a>
+                                            <a href="#"><i class="fa fa-heart"></i></a>
+                                            <a href="#"><i class="fa fa-search"></i></a>
+                                        </div>
+                                    </div>
+                                    <div class="product-content">
+                                        <div class="title"><a href="#">@product.Name</a></div>
+                                        <div class="ratting">
+                                            <i class="fa fa-star"></i>
+                                            <i class="fa fa-star"></i>
+                                            <i class="fa fa-star"></i>
+                                            <i class="fa fa-star"></i>
+                                            <i class="fa fa-star"></i>
+                                        </div>
+                                        <div class="price">$@product.Price <span>$@(product.Price + 3)</span></div>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="product-content">
-                                <div class="title"><a href="#">Phasellus Gravida</a></div>
-                                <div class="ratting">
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
-                                </div>
-                                <div class="price">$22 <span>$25</span></div>
+                        }
+                    </div>
+
+                    @if (totalPages > 1)
+                    {
+                        <div class="row mt-4">
+                            <div class="col-12">
+                                <ul class="pagination justify-content-center">
+                                    @for (int i = 1; i <= totalPages; i++)
+                                    {
+                                        <li class="page-item @(i == currentPage ? "active" : "")">
+                                            <a class="page-link" href="?page=@i">@i</a>
+                                        </li>
+                                    }
+                                </ul>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-lg-3">
-                        <div class="product-item">
-                            <div class="product-image">
-                                <a href="product-detail.html">
-                                    <img src="img/product-2.png" alt="Product Image">
-                                </a>
-                                <div class="product-action">
-                                    <a href="#"><i class="fa fa-cart-plus"></i></a>
-                                    <a href="#"><i class="fa fa-heart"></i></a>
-                                    <a href="#"><i class="fa fa-search"></i></a>
-                                </div>
-                            </div>
-                            <div class="product-content">
-                                <div class="title"><a href="#">Phasellus Gravida</a></div>
-                                <div class="ratting">
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
-                                </div>
-                                <div class="price">$22 <span>$25</span></div>
-                            </div>
+                    }
+                }
+                else
+                {
+                    <div class="row">
+                        <div class="col-12 text-center">
+                            <p>No related product</p>
                         </div>
                     </div>
-                    <div class="col-lg-3">
-                        <div class="product-item">
-                            <div class="product-image">
-                                <a href="product-detail.html">
-                                    <img src="img/product-3.png" alt="Product Image">
-                                </a>
-                                <div class="product-action">
-                                    <a href="#"><i class="fa fa-cart-plus"></i></a>
-                                    <a href="#"><i class="fa fa-heart"></i></a>
-                                    <a href="#"><i class="fa fa-search"></i></a>
-                                </div>
-                            </div>
-                            <div class="product-content">
-                                <div class="title"><a href="#">Phasellus Gravida</a></div>
-                                <div class="ratting">
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
-                                </div>
-                                <div class="price">$22 <span>$25</span></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-3">
-                        <div class="product-item">
-                            <div class="product-image">
-                                <a href="product-detail.html">
-                                    <img src="img/product-4.png" alt="Product Image">
-                                </a>
-                                <div class="product-action">
-                                    <a href="#"><i class="fa fa-cart-plus"></i></a>
-                                    <a href="#"><i class="fa fa-heart"></i></a>
-                                    <a href="#"><i class="fa fa-search"></i></a>
-                                </div>
-                            </div>
-                            <div class="product-content">
-                                <div class="title"><a href="#">Phasellus Gravida</a></div>
-                                <div class="ratting">
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
-                                </div>
-                                <div class="price">$22 <span>$25</span></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-3">
-                        <div class="product-item">
-                            <div class="product-image">
-                                <a href="product-detail.html">
-                                    <img src="img/product-5.png" alt="Product Image">
-                                </a>
-                                <div class="product-action">
-                                    <a href="#"><i class="fa fa-cart-plus"></i></a>
-                                    <a href="#"><i class="fa fa-heart"></i></a>
-                                    <a href="#"><i class="fa fa-search"></i></a>
-                                </div>
-                            </div>
-                            <div class="product-content">
-                                <div class="title"><a href="#">Phasellus Gravida</a></div>
-                                <div class="ratting">
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
-                                </div>
-                                <div class="price">$22 <span>$25</span></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                }
+
             </div>
 
             <div class="col-lg-3">
