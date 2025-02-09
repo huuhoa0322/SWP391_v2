@@ -1,8 +1,6 @@
 ﻿@{
 	ViewData["Title"] = "Register";
 }
-
-<h2>Register New Account</h2>
 @if (ViewBag.Errors != null)
 {
 	<div class="alert alert-danger">
@@ -14,57 +12,106 @@
 		</ul>
 	</div>
 }
+<!-- Breadcrumb Start -->
+<div class="breadcrumb-wrap">
+	<div class="container">
+		<ul class="breadcrumb">
+			<li class="breadcrumb-item"><a href="#">Home</a></li>
+			<li class="breadcrumb-item active">Register</li>
+		</ul>
+	</div>
+</div>
+<!-- Breadcrumb End -->
+<link href="~/css/register.css" rel="stylesheet">
+<!-- Body -->
 
 <form asp-action="Register" method="post">
-	<div class="form-group">
-		<label for="name">Full Name</label>
-		<input type="text" class="form-control" id="name" name="name" placeholder="Enter your full name" required />
-	</div>
-	<div class="form-group">
-		<label for="username">Username</label>
-		<input type="text" class="form-control" id="username" name="username" placeholder="Enter a username" required />
-		<small id="usernameError" class="text-danger"></small>
-	</div>
+	<table style="width: 100%; background-color: #f9f9f9; padding: 20px;">
+		<tr>
+			<td colspan="2">
+				<small id="usernameError" class="text-danger"></small>
+				<small id="captchaError" class="text-danger"></small>
+				<small id="dobError" class="text-danger"></small>
+				<small id="emailError" class="text-danger"></small>
+				<small id="confirmPasswordError" class="text-danger"></small>
 
-	<div class="form-group">
-		<label for="password">Password</label>
-		<input type="password" class="form-control" id="password" name="password" placeholder="Enter a password" required />
-	</div>
+			</td>
+		</tr>
+		</tr>
+		<tr>
+			<td style="text-align: left; padding-left: 10px;">
+				<label for="name">Full Name</label>
+				<input type="text" class="form-control" id="name" name="name" placeholder="Enter your full name" required />
+			</td>
+			<td style="text-align: left; padding-left: 10px;">
+				<label for="username">Username</label>
+				<input type="text" class="form-control" id="username" name="username" placeholder="Enter a username" required />
+			</td>
+		</tr>
+		<tr>
+		</tr>
+		@* <tr> *@
+		@* 	<td style="text-align: left; padding-left: 10px;"> *@
+		@* 		<label for="name">Full Name</label> *@
+		@* 		<input type="text" class="form-control" id="name" name="name" placeholder="Enter your full name" required /> *@
+		@* 	</td> *@
+		@* 	<td style="text-align: left; padding-left: 10px;"> *@
+		@* 		<label for="p">Username</label> *@
+		@* 		<input type="text" class="form-control" id="p" name="p" placeholder="Enter a username" required /> *@
+		@* 	</td> *@
+		@* </tr> *@
+		@* <tr> *@
+		@* </tr> *@
+		<tr>
+			<td style="text-align: left; padding-left: 10px;">
+				<label for="password">Password</label>
+				<input type="password" class="form-control" id="password" name="password" placeholder="Enter a password" required />
+			</td>
+			<td style="text-align: left; padding-left: 10px;">
+				<label for="confirmPassword">Password Again</label>
+				<input type="password" class="form-control" id="confirmPassword" name="confirmPassword" placeholder="Enter the password again" required />
+			</td>
+		</tr>
 
-	<div class="form-group">
-		<label for="gender">Gender</label>
-		<select class="form-control" id="gender" name="gender">
-			<option value="true">Male</option>
-			<option value="false">Female</option>
-		</select>
-	</div>
-
-	<div class="form-group">
-		<label for="email">Email</label>
-		<input type="email" class="form-control" id="email" name="email" placeholder="Enter your email" required />
-		<small id="emailError" class="text-danger"></small>
-	</div>
-
-	<input type="hidden" id="role" name="role" value="customer" />
-	<input type="hidden" id="loginBy" name="loginBy" value="false" />
-	<input type="hidden" id="token" name="token" value="" />
-	<div class="form-group">
-		<label for="dob">Date of Birth</label>
-		<input type="date" class="form-control" id="dob" name="dob" required />
-		<small id="dobError" class="text-danger"></small>
-	</div>
-	<div class="form-group">
-		<label for="captcha">Captcha</label>
-		<br>
-		<img src="@Url.Action("GenerateCaptcha", "Register")" alt="Captcha Image" class="mb-2" />     <br>
-		<input type="text" class="form-control" id="captcha" name="captcha" placeholder="Enter the text from the image" required />
-		<small id="capchalError" class="text-danger"></small>
-	</div>
-
-	<button type="submit" class="btn btn-primary">Register</button>
+		<tr>
+			<td style="text-align: left; padding-left: 10px;">
+				<label for="email">Email</label>
+				<input type="email" class="form-control" id="email" name="email" placeholder="Enter your email" required />
+			</td>
+			<td style="text-align: left; padding-left: 10px;">
+				<label for="dob">Date of Birth</label>
+				<input type="date" class="form-control" id="dob" name="dob" required />
+			</td>
+		</tr>
+		<tr>
+		<tr>
+			<td style="text-align: left; padding-left: 20px;">
+				<label for="gender">Gender</label>
+				<div style="display: inline-block;">
+					<input class="form-check-input" type="radio" name="gender" id="male" value="true">
+					<label class="form-check-label" for="male">Male</label>
+					<input class="form-check-input" type="radio" name="gender" id="female" value="false">
+					<label class="form-check-label" for="female">Female</label>
+				</div>
 
 
+			<td style="text-align: left; padding-left: 10px;">
+				<label for="captcha">Captcha</label>
+				<img src="@Url.Action("GenerateCaptcha", "Register")" alt="Captcha Image" class="mb-2" />
+				<input type="text" class="form-control" id="captcha" name="captcha" placeholder="Enter the text from the image" required />
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2">
+				<button type="submit" class="btn btn-primary">Register</button>
+			</td>
+		</tr>
+	</table>
 </form>
+
+
+<!-- Body -->
+
 <script>
 	// Kiểm tra username
 	document.getElementById("username").addEventListener("input", async function () {
@@ -79,6 +126,20 @@
 				errorElement.textContent = "";
 			}
 		}
+	});
+		document.getElementById("confirmPassword").addEventListener("input", async function () {
+		const confirmPassword = this.value; // Lấy giá trị của confirmPassword từ trường input này
+		const password = document.getElementById("password").value; // Lấy giá trị của trường password
+
+			const response = await fetch(`/Register/CheckconfirmPassword?password=${password}&confirmPassword=${confirmPassword}`);
+			const result = await response.json();
+			const errorElement = document.getElementById("confirmPasswordError");
+			if (!result.isValid) {
+				errorElement.textContent = result.message;
+			} else {
+				errorElement.textContent = "";
+			}
+
 	});
 	// Kiểm tra email
 	document.getElementById("email").addEventListener("input", async function () {
@@ -111,7 +172,7 @@
 	});
 	document.getElementById("capcha").addEventListener("input", async function () {
 		const capcha = this.value;
-		if (email.length > 0) {
+		if (capcha > 0) {
 			const response = await fetch(`/Register/CheckCapcha?capcha=${capcha}`);
 			const result = await response.json();
 			const errorElement = document.getElementById("capchalError");
@@ -122,4 +183,6 @@
 			}
 		}
 	});
+
+
 </script>

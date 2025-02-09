@@ -133,7 +133,18 @@ public class RegisterController : Controller
 
         return Json(new { isValid = true });
     }
+    [HttpGet]
+    public async Task<IActionResult> CheckconfirmPassword(string password, string confirmPassword)
+    {
+        Console.WriteLine(password);
+        Console.WriteLine(confirmPassword);
+        if (confirmPassword != password)
+        {
+            return Json(new { isValid = false, message = "Passwords do not match." });
+        }
 
+        return Json(new { isValid = true });
+    }
     [HttpGet]
     public IActionResult GenerateCaptcha()
     {
