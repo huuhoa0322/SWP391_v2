@@ -27,7 +27,7 @@
 <!-- Body -->
 
 <form asp-action="Register" method="post">
-	<table style="width: 100%; background-color: #f9f9f9; padding: 20px;">
+	<table style="width: 100%; background-color: #f9f9f9; padding: 20px; ">
 		<tr>
 			<td colspan="2">
 				<small id="usernameError" class="text-danger"></small>
@@ -37,7 +37,6 @@
 				<small id="confirmPasswordError" class="text-danger"></small>
 				<small id="passwordError" class="text-danger"></small>
 			</td>
-		</tr>
 		</tr>
 		<tr>
 			<td style="text-align: left; padding-left: 10px;">
@@ -50,8 +49,6 @@
 			</td>
 		</tr>
 		<tr>
-		</tr>
-		<tr>
 			<td style="text-align: left; padding-left: 10px;">
 				<label for="password">Password</label>
 				<input type="password" class="form-control" id="password" name="password" placeholder="Enter a password" required />
@@ -61,7 +58,6 @@
 				<input type="password" class="form-control" id="confirmPassword" name="confirmPassword" placeholder="Enter the password again" required />
 			</td>
 		</tr>
-
 		<tr>
 			<td style="text-align: left; padding-left: 10px;">
 				<label for="email">Email</label>
@@ -72,7 +68,6 @@
 				<input type="date" class="form-control" id="dob" name="dob" required />
 			</td>
 		</tr>
-		<tr>
 		<tr>
 			<td style="text-align: left; padding-left: 20px;">
 				<label for="gender">Gender</label>
@@ -91,9 +86,16 @@
 			</td>
 		</tr>
 		<tr>
+			<td colspan="2" >
+				<div class="input-group">
+				<input type="checkbox" id="termsCheckbox" name="terms" required style="margin-right: 10px;" />
+					<p for="termsCheckbox" style="margin-bottom: 0px;">I fully agree to all the terms and policies of the system.</p>
+				</div>
+			</td>
+		</tr>
+		<tr>
 			<td colspan="2">
 				<button type="submit" id="registerButton" class="btn btn-primary">Register</button>
-
 			</td>
 		</tr>
 	</table>
@@ -199,7 +201,7 @@
 		const email = document.getElementById("email").value;
 		const dob = document.getElementById("dob").value;
 		const captcha = document.getElementById("captcha").value;
-
+		const termsCheckbox = document.getElementById('termsCheckbox');
 		const isUsernameValid = username.length > 0;
 		const isPasswordValid = password.length > 0;
 		const isConfirmPasswordValid = confirmPassword.length > 0 && confirmPassword === password;
@@ -223,7 +225,7 @@
 		}
 
 		// Kiểm tra tất cả các trường
-		if (isUsernameValid && isPasswordValid && isConfirmPasswordValid && isEmailValid && isDobValid && isCaptchaCorrect) {
+		if (isUsernameValid && isPasswordValid && isConfirmPasswordValid && isEmailValid && isDobValid && isCaptchaCorrect && termsCheckbox.checked) {
 			// Kích hoạt nút Register nếu tất cả hợp lệ
 			document.getElementById("registerButton").classList.add("active");
 		} else {

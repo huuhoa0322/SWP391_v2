@@ -11,6 +11,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using System.Text.RegularExpressions;
 
 public class RegisterController : Controller
 {
@@ -126,6 +127,15 @@ public class RegisterController : Controller
     [HttpGet]
     public async Task<IActionResult> CheckEmail(string email)
     {
+        // Kiểm tra nếu email không chứa '@' hoặc không kết thúc bằng .com hoặc .vn
+        string emailPattern = "^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$";
+
+        // Kiểm tra xem email có khớp với biểu thức chính quy không
+        if (!Regex.IsMatch(email, emailPattern, RegexOptions.IgnoreCase))
+        {
+            return Json(new { isValid = false, message = "Email không hợp lệ. Vui lòng nhập đúng định dạng." });
+        }
+
         var exists = await _userRepository.checkEmail(email);
         if (exists != null && !exists.IsDeleted)
         {
@@ -134,6 +144,7 @@ public class RegisterController : Controller
 
         return Json(new { isValid = true });
     }
+
 
     [HttpGet]
     public IActionResult ValidateDob(DateTime dob)
