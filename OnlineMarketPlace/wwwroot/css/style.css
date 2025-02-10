@@ -16,7 +16,7 @@ a {
 a:hover,
 a:active,
 a:focus {
-    color: #666666;
+    color: #333333;
     outline: none;
     text-decoration: none;
 }
@@ -32,7 +32,7 @@ h3,
 h4,
 h5,
 h6 {
-    color: #666666;
+    color: #333333;
     margin: 0 0 15px 0;
     padding: 0;
 }
@@ -69,7 +69,7 @@ h6 {
     width: 100%;
     height: 35px;
     padding: 0 15px;
-    color: #666666;
+    color: #333333;
     border: 1px solid #3F69AA;
     border-radius: 0;
     margin-bottom: 15px
@@ -125,7 +125,7 @@ button.btn {
     width: 100%;
     height: 40px;
     padding: 0 15px;
-    color: #666666;
+    color: #333333;
     border: 1px solid #3F69AA;
 }
 
@@ -170,7 +170,7 @@ button.btn {
 }
 
 .top-header .user .cart span {
-    color: #666666;
+    color: #333333;
     font-size: 14px;
 }
 
@@ -487,13 +487,13 @@ button.btn {
 }
 
 .feature .feature-content h2 {
-    color: #666666;
+    color: #333333;
     font-size: 20px;
     font-weight: 700;
 }
 
 .feature .feature-content p {
-    color: #666666;
+    color: #333333;
     font-size: 15px;
     margin: 0;
 }
@@ -612,7 +612,7 @@ button.btn {
     margin-left: 12px;
     text-decoration: line-through;
     font-weight: 700;
-    color: #666666;
+    color: #333333;
 }
 
 .product-slider.slick-slider:hover .slick-prev {
@@ -660,7 +660,7 @@ button.btn {
     width: 100%;
     height: 35px;
     padding: 0 15px;
-    color: #666666;
+    color: #333333;
     border: 1px solid #3F69AA;
 }
 
@@ -786,7 +786,7 @@ button.btn {
 }
 
 .product-detail .product-content .price span {
-    color: #666666;
+    color: #333333;
     text-decoration: line-through;
     margin-left: 12px;
 }
@@ -796,7 +796,7 @@ button.btn {
 }
 
 .product-detail .product-content .details p {
-    color: #666666;
+    color: #333333;
     font-size: 16px;
 }
 
@@ -806,7 +806,7 @@ button.btn {
 
 .product-detail .product-content .quantity h4 {
     display: inline-block;
-    color: #666666;
+    color: #333333;
     font-size: 18px;
     font-weight: 600;
     margin-right: 5px;
@@ -900,7 +900,7 @@ button.btn {
 }
 
 .product-detail .tab-content .reviewer span {
-    color: #666666;
+    color: #333333;
     font-size: 14px;
     font-weight: 400;
 }
@@ -918,7 +918,7 @@ button.btn {
     width: 100%;
     height: 35px;
     padding: 0 15px;
-    color: #666666;
+    color: #333333;
     background: #ffffff;
     border: none;
     margin-bottom: 15px;
@@ -928,7 +928,7 @@ button.btn {
     width: 100%;
     height: 80px;
     padding: 6px 15px;
-    color: #666666;
+    color: #333333;
     background: #ffffff;
     border: none;
     margin-bottom: 15px;
@@ -938,7 +938,7 @@ button.btn {
     display: inline-block;
     height: 35px;
     padding: 0 15px;
-    color: #666666;
+    color: #333333;
     background: #ffffff;
     border: none;
     margin-bottom: 15px;
@@ -1028,7 +1028,7 @@ button.btn {
 .sidebar-widget.category ul li span {
     display: inline-block;
     float: right;
-    color: #666666;
+    color: #333333;
     font-size: 14px;
     font-weight: 400;
 }
@@ -1090,7 +1090,7 @@ button.btn {
 }
 
 .cart-page .table td {
-    color: #666666;
+    color: #333333;
     font-size: 16px;
     font-weight: 600;
     vertical-align: middle;
@@ -1132,7 +1132,7 @@ button.btn {
     width: calc(100% - 135px);
     height: 50px;
     padding: 0 15px;
-    color: #666666;
+    color: #333333;
     background: #ffffff;
     border: 1px solid #3F69AA;
     margin-right: 10px;
@@ -1225,7 +1225,7 @@ button.btn {
 
 .checkout .billing-address h2,
 .checkout .shipping-address h2 {
-    color: #666666;
+    color: #333333;
     font-size: 30px;
     font-weight: 700;
 }
@@ -1242,7 +1242,7 @@ button.btn {
 
 .checkout .checkout-summary h2,
 .checkout .checkout-payment h2 {
-    color: #666666;
+    color: #333333;
     font-size: 30px;
     font-weight: 700;
 }
@@ -1348,7 +1348,7 @@ button.btn {
 }
 
 .my-account .tab-content .table td {
-    color: #666666;
+    color: #333333;
     font-size: 16px;
     font-weight: 400;
     vertical-align: middle;
@@ -1367,7 +1367,7 @@ button.btn {
     width: 100%;
     height: 35px;
     padding: 0 15px;
-    color: #666666;
+    color: #333333;
     background: #ffffff;
     border: 1px solid #ffffff;
     margin-bottom: 15px;
@@ -1406,7 +1406,7 @@ button.btn {
     width: 100%;
     height: 40px;
     padding: 0 15px;
-    color: #666666;
+    color: #333333;
     border: 1px solid #ffffff;
 }
 
@@ -1472,7 +1472,7 @@ button.btn {
 
 .contact .contact-info h4 {
     margin-bottom: 10px;
-    color: #666666;
+    color: #333333;
     font-size: 16px;
     font-weight: 400;
 }
@@ -1511,7 +1511,7 @@ button.btn {
 }
 
 .contact .form {
-    color: #666666;
+    color: #333333;
 }
 
 @media (max-width: 767.98px) {
@@ -1522,7 +1522,7 @@ button.btn {
 
 .contact .form input,
 .contact .form textarea {
-    color: #666666;
+    color: #333333;
     font-size: 16px;
     padding: 10px 15px;
     border: none;
@@ -1569,6 +1569,8 @@ button.btn {
     height: 1px;
     background: #eee;
 }
+
+
 
 
 /**********************************/
@@ -1737,7 +1739,7 @@ button.btn {
 
 .footer-bottom .copyright p,
 .footer-bottom .template-by p {
-    color: #666666;
+    color: #333333;
     font-weight: 400;
     margin: 0;
 }

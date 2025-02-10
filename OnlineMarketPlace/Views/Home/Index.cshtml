@@ -80,6 +80,7 @@
             {
                 <div class="col-lg-3">
                     <div class="product-item">
+                        <a asp-action="Details" asp-controller="Product" asp-route-Id="@item.Product.Id">
                         <div class="product-image">
                             <a>
                                 <img src="~/images/@item.Product.Image" alt="Product Image" class="img-fluid">
@@ -102,8 +103,10 @@
                                 double dprice = Math.Round(item.Product.Price * (100 + item.Value) / 100,2);
                             }
                             <div class="price">@dprice <span>@item.Product.Price</span></div>
-                        </div>
+                            </div>
+                        </a>
                     </div>
+                    
                 </div>
             }
             
@@ -128,17 +131,18 @@
         @foreach (var product in Model.Take(limit))
         {
         <div class="col-lg-3">
+                
             <div class="product-item">
-                <div class="product-image">
-                    <a href="product-detail.html">
+                    
+                <div class="product-image">                   
                         <img src="~/images/@product.Image" alt="Product Image">
-                    </a>
                     <div class="product-action">
                         <a href="#"><i class="fa fa-cart-plus"></i></a>
                         <a href="#"><i class="fa fa-heart"></i></a>
                     </div>
                 </div>
                 <div class="product-content">
+
                         <div class="title"><a asp-action="Details" asp-controller="Product" asp-route-Id="@product.Id">@product.Name</a></div>
                     <div class="ratting">
                         <i class="fa fa-star"></i>
@@ -149,7 +153,8 @@
                     </div>
                     <div class="price">$@product.Price</div>
                 </div>
-            </div>
+                    
+            </div>               
         </div>
         }
         @if (Model.Count > limit)

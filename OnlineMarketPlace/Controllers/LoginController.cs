@@ -26,12 +26,14 @@ public class LoginController : Controller
     [HttpGet]
     public IActionResult Login()
     {
+        HttpContext.Session.SetString("url", "Login/Login");
         return View();
     }
 
     [HttpGet]
     public IActionResult ForgetPass()
     {
+        HttpContext.Session.SetString("url", "Login/ForgetPass");
         return View();
     }
 
@@ -105,7 +107,16 @@ public class LoginController : Controller
         }
         else if (existUser.LoginBy == false) //Email da duoc dang ky bang Register
         {
-            TempData["ErrorMessage"] = "Email is existed";
+            TempData["Message"] = "Cannot login! Email is existed.";
+            TempData["MessageType"] = "error";
+
+            Console.WriteLine("ủl:" + HttpContext.Session.GetString("url"));
+            var previousUrl = Request.Headers["Referer"].ToString().Trim() + HttpContext.Session.GetString("url");
+            Console.WriteLine("pre" + previousUrl);
+            if (!string.IsNullOrEmpty(previousUrl))
+            {
+                return Redirect(previousUrl);
+            }
             return View("Login");
         }
         else
@@ -162,15 +173,19 @@ public class LoginController : Controller
 
             if (remainTime.TotalMinutes < 1)
             {
-                TempData["error"] = $"Please wait {60 - (int)remainTime.TotalSeconds}s to send another password reset request.";
+                TempData["Message"] = $"Please wait {60 - (int)remainTime.TotalSeconds}s to send another password reset request.";
+                TempData["MessageType"] = "error";
+                Console.WriteLine("kkkkk");
                 return RedirectToAction("ForgetPass", "Login");
             }
         }
 
         var checkMail = await _userRepository.GetUserByEmail(email);
-        if (checkMail == null || checkMail.LoginBy == false)
+        Console.WriteLine(checkMail);
+        if (checkMail == null || checkMail.LoginBy == true)
         {
-            TempData["error"] = "This email address is not registered.";
+            TempData["Message"] = "This email address is not registered.";
+            TempData["MessageType"] = "error";
             return RedirectToAction("ForgetPass", "Login");
         }
 
@@ -199,7 +214,8 @@ public class LoginController : Controller
 
         await _emailService.SendEmailAsync(receiver, subject, message);
 
-        TempData["success"] = "An email has been sent to you to change password.";
+        TempData["Message"] = "An email has been sent to you to change password.";
+        TempData["MessageType"] = "success";
         return RedirectToAction("ForgetPass", "Login");
     }
 
@@ -210,7 +226,9 @@ public class LoginController : Controller
         var checkToken = HttpContext.Request.Cookies["Token"];
         if (string.IsNullOrEmpty(checkToken) || checkToken != token)
         {
-            TempData["error"] = "Token has expired or does not exist. Please resend your request.";
+
+            TempData["Message"] = "Token has expired or does not exist. Please resend your request.";
+            TempData["MessageType"] = "error";
             return RedirectToAction("ForgetPass", "Login");
         }
         else
@@ -236,19 +254,23 @@ public class LoginController : Controller
     }
 
     [HttpPost]
-    public async Task<IActionResult> ResetPass(string email, string pass)
+    public async Task<IActionResult> ResetPass(string email, string password)
     {   
         var checkMail = await _userRepository.GetUserByEmail(email);
         if (checkMail == null)
         {
-            TempData["error"] = "Email not found";
+
+            TempData["Message"] = "Email not found!";
+            TempData["MessageType"] = "error";
             return RedirectToAction("ForgetPass", "Login");
         }
         else
         {
-            checkMail.Password = ncryptpasswordmd5.HashPasswordMD5(pass);
+            checkMail.Password = ncryptpasswordmd5.HashPasswordMD5(password);
             await _userRepository.UpdateUserAsync(checkMail);
             HttpContext.Response.Cookies.Delete("Token"); //Xoa cookie
+            TempData["Message"] = "Reset password successfully!";
+            TempData["MessageType"] = "success";
             return RedirectToAction("Login", "Login");
         }
     }

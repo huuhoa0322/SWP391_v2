@@ -1,25 +1,188 @@
 ﻿<!DOCTYPE html>
-<html>
 <head>
-    <title>Reset Password</title>
-    <link rel="stylesheet" href="~/css/Login.css">
+	<title>Reset Password</title>
+	<link rel="stylesheet" href="~/css/style.css">
 </head>
-<body>
-    <div class="forgetpass-container">
-        <h2>Reset Password</h2>
-        <form asp-action="ResetPass" asp-controller="Login">
-            <div>
-                <label for="email">Email:</label>
-                <input type="text" id="email" name="email" readonly value="@ViewBag.Email" />
-            </div>
-            <div>
-                <label for="pass">Password:</label>
-                <input type="password" id="pass" name="pass" required />
-            </div>
-            <br />
-            <div>
-            <button type="submit">Send</button>
-            </div>
-        </form>
-    </div>
-</body>
+
+@await Html.PartialAsync("_ToastNotification")
+
+<!-- Breadcrumb Start -->
+<div class="breadcrumb-wrap">
+	<div class="container">
+		<ul class="breadcrumb">
+			<li class="breadcrumb-item"><a asp-action="Index" asp-controller="Home">Home</a></li>
+			<li class="breadcrumb-item"><a asp-action="ForgetPass" asp-controller="Login">Forgot Password</a></li>
+			<li class="breadcrumb-item active">Reset Password</li>
+		</ul>
+	</div>
+</div>
+
+
+
+<div class="container">
+	<div class="card border-light-subtle shadow-sm">
+		<div class="row g-0">
+			<div class="col-12 col-md-8 mx-auto">
+				<div class="card-body p-3 p-md-4 p-xl-5">
+					<div class="row">
+						<div class="col-12">
+							<div class="mb-5">
+								<h2 class="h3" style="font-weight: bold;">Reset Password</h2>
+								<p class="fs-6 fw-normal text-secondary m-0">
+									Strong passwords include length more than 8 and contain uppercase letter, lowercase letter, and digit.
+								</p>
+							</div>
+							<div>
+								<small id="confirmPasswordError" class="text-danger"></small>
+							</div>
+							<div>
+								<small id="passwordError" class="text-danger"></small>
+							</div>
+						</div>
+					</div>
+					<form asp-action="ResetPass" asp-controller="Login" method="post">
+						<input type="hidden" name="email" value="@ViewBag.Email">
+						<div class="row gy-3 gy-md-4 overflow-hidden">
+							<div class="col-12">
+								<label for="password">Password<span class="text-danger">*</span></label>
+								<div class="input-group mb-3">
+									<input type="password" class="form-control" id="password" name="password" placeholder="Enter a password" required />
+									<div class="input-group-append">
+										<span class="input-group-text" onclick="password_show_hide();">
+											<i class="fa fa-eye-slash" id="show_eye"></i>
+											<i class="fa fa-eye d-none" id="hide_eye"></i>
+										</span>
+									</div>
+								</div>
+							</div>
+
+							<div class="col-12">
+								<label for="confirmPassword">Password Again<span class="text-danger">*</span></label>
+								<div class="input-group mb-3">
+									<input type="password" class="form-control" id="confirmPassword" name="confirmPassword" placeholder="Enter the password again" required />
+									<div class="input-group-append">
+										<span class="input-group-text" onclick="confirmPassword_show_hide();">
+											<i class="fa fa-eye-slash" id="cfshow_eye"></i>
+											<i class="fa fa-eye d-none" id="cfhide_eye"></i>
+										</span>
+									</div>
+								</div>
+							</div>
+
+							<div class="col-12">
+								<div class="d-grid">
+									<button class="btn bsb-btn-xl btn-primary" type="submit" id="submitButton">Reset Password</button>
+								</div>
+							</div>
+						</div>
+					</form>
+					<div class="row">
+						<div class="col-12">
+							<hr class="mt-5 mb-4 border-secondary-subtle">
+							<div class="d-flex gap-2 gap-md-4 flex-column flex-md-row justify-content-md-end">
+								<a asp-action="Login" asp-controller="Login" class="link-secondary text-decoration-none" style="margin-right: 3%">Login</a>
+								<a asp-action="Register" asp-controller="Register" class="link-secondary text-decoration-none">Register</a>
+							</div>
+						</div>
+					</div>
+					<div class="row" style="margin-top: 20px">
+						<div class="col-12">
+							<div class="d-flex gap-3 flex-column flex-xl-row">
+								<p style="margin-bottom: 7px; margin-top: 7px; margin-right: 10px;"> Or sign in with</p>
+
+								<a asp-controller="Login" asp-action="LoginByGoogle" class="btn bsb-btn-xl btn-outline-primary">
+									<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-google" viewBox="0 0 16 16">
+										<path d="M15.545 6.558a9.42 9.42 0 0 1 .139 1.626c0 2.434-.87 4.492-2.384 5.885h.002C11.978 15.292 10.158 16 8 16A8 8 0 1 1 8 0a7.689 7.689 0 0 1 5.352 2.082l-2.284 2.284A4.347 4.347 0 0 0 8 3.166c-2.087 0-3.86 1.408-4.492 3.304a4.792 4.792 0 0 0 0 3.063h.003c.635 1.893 2.405 3.301 4.492 3.301 1.078 0 2.004-.276 2.722-.764h-.003a3.702 3.702 0 0 0 1.599-2.431H8v-3.08h7.545z" />
+									</svg>
+									<span class="ms-2 fs-6">Google</span>
+
+								</a>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<style>
+	.login_oueter {
+		width: 360px;
+		max-width: 100%;
+	}
+
+	.logo_outer {
+		text-align: center;
+	}
+
+		.logo_outer img {
+			width: 120px;
+			margin-bottom: 40px;
+		}
+</style>
+
+<script>
+	function password_show_hide() {
+	  var x = document.getElementById("password");
+	  var show_eye = document.getElementById("show_eye");
+	  var hide_eye = document.getElementById("hide_eye");
+	  hide_eye.classList.remove("d-none");
+	  if (x.type === "password") {
+		x.type = "text";
+		show_eye.style.display = "none";
+		hide_eye.style.display = "block";
+	  } else {
+		x.type = "password";
+		show_eye.style.display = "block";
+		hide_eye.style.display = "none";
+	  }
+	}
+
+	function confirmPassword_show_hide() {
+	  var x = document.getElementById("confirmPassword");
+	  var show_eye = document.getElementById("cfshow_eye");
+	  var hide_eye = document.getElementById("cfhide_eye");
+	  hide_eye.classList.remove("d-none");
+	  if (x.type === "password") {
+		x.type = "text";
+		show_eye.style.display = "none";
+		hide_eye.style.display = "block";
+	  } else {
+		x.type = "password";
+		show_eye.style.display = "block";
+		hide_eye.style.display = "none";
+	  }
+	}
+
+
+	document.getElementById("password").addEventListener("input", async function () {
+			const password = this.value;
+			if (password.length > 0) {
+			const response = await fetch(`/Register/Checkpassword?password=${password}`);
+			const result = await response.json();
+			const errorElement = document.getElementById("passwordError");
+			if (!result.isValid) {
+				errorElement.textContent = result.message;
+			} else {
+				errorElement.textContent = "";
+			}
+			}
+	});
+		document.getElementById("confirmPassword").addEventListener("input", async function () {
+		const confirmPassword = this.value; // Lấy giá trị của confirmPassword từ trường input này
+		const password = document.getElementById("password").value; // Lấy giá trị của trường password
+
+			const response = await fetch(`/Register/CheckconfirmPassword?password=${password}&confirmPassword=${confirmPassword}`);
+			const result = await response.json();
+			const errorElement = document.getElementById("confirmPasswordError");
+			if (!result.isValid) {
+				errorElement.textContent = result.message;
+			} else {
+				errorElement.textContent = "";
+			}
+
+	});
+
+</script>
+
