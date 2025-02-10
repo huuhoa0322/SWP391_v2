@@ -20,14 +20,11 @@
                     <div class="col-md-7">
                         <div class="product-content">
                             <div class="title"><h2>@Model.Name</h2></div>
-                            <div class="ratting">
-                                @* @(((double)ViewData["AverageRating"]) > 0 ? ((double)ViewData["AverageRating"]).ToString("0.0") : "No ratings") *@
-                                <i class="fa fa-star"></i>                               
-                            </div>
                             <div class="price">@Model.Price</div>
                             <div class="details">
                                 <p>
                                     <a href="#reviews" style="text-decoration: none; color: inherit;">
+                                        @* @(((double)ViewData["AverageRating"]) > 0 ? ((double)ViewData["AverageRating"]).ToString("0.0") : "No ratings") *@
                                         4.9 <i class="fa fa-star"></i>
                                     </a>
                                     | <a href="#reviews" style="text-decoration: none; color: inherit;">
@@ -37,6 +34,7 @@
                                     | <span style="color: #007bff; cursor: pointer;">Report</span>
                                     
                                 </p>
+                                <p>Availability: @Model.Inventory</p>
                             </div>
 
                             <div class="quantity">
@@ -164,7 +162,7 @@
                 @{
                     var relatedProducts = ViewData["RelatedProducts"] as List<OnlineMarketPlace.Models.Product>;
                     var currentProduct = Model as OnlineMarketPlace.Models.Product;
-                    var itemsPerPage = 3;
+                    var itemsPerPage = 4;
                     var currentPage = 1;
                     int.TryParse(Context.Request.Query["page"], out currentPage);
                     if (currentPage < 1) currentPage = 1;
@@ -183,7 +181,7 @@
                                 <div class="product-item">
                                     <div class="product-image">
                                         <a href="product-detail.html">
-                                            <img src="img/product-1.png" alt="Product Image">
+                                            <img src="~/images/product-1.png" alt="Product Image">
                                         </a>
                                         <div class="product-action">
                                             <a href="#"><i class="fa fa-cart-plus"></i></a>
@@ -193,14 +191,7 @@
                                     </div>
                                     <div class="product-content">
                                         <div class="title"><a href="#">@product.Name</a></div>
-                                        <div class="ratting">
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                        </div>
-                                        <div class="price">$@product.Price <span>$@(product.Price)</span></div>
+                                        <div class="price">$@product.Price</div>
                                     </div>
                                 </div>
                             </div>
