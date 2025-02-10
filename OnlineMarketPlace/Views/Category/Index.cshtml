@@ -10,13 +10,14 @@
 <div class="product-view">
     <div class="container">
         <div class="row">
+            <!-- Phần sản phẩm -->
             <div class="col-md-9">
                 <div class="row">
                     <div class="col-lg-12">
                         <div class="row">
                             <div class="col-md-8">
                                 <div class="product-search">
-                                    <input type="email" value="Search">
+                                    <input type="text" placeholder="Search">
                                     <button><i class="fa fa-search"></i></button>
                                 </div>
                             </div>
@@ -35,12 +36,12 @@
                             </div>
                         </div>
                     </div>
+
+                    <!-- Danh sách sản phẩm -->
                     <div class="row">
-                        <!-- Bao tất cả sản phẩm trong một hàng -->
                         @foreach (var product in products)
                         {
                             <div class="col-lg-4 col-md-6 mb-4">
-                                <!-- Chia đều cột -->
                                 <div class="product-item">
                                     <div class="product-image">
                                         <a href="/Product/Detail/@product.Id">
@@ -67,35 +68,31 @@
                             </div>
                         }
                     </div>
-                <div class="col-lg-12">
-                    <nav aria-label="Page navigation">
-                        <ul class="pagination justify-content-center">
-                            <li class="page-item @(ViewBag.CurrentPage == 1 ? "disabled" : "")">
-                                <a class="page-link" href="@Url.Action("Index", new { page = ViewBag.CurrentPage - 1 })" tabindex="-1">Previous</a>
-                            </li>
-                            @for (int i = 1; i <= ViewBag.TotalPages; i++)
-                            {
-                                <li class="page-item @(ViewBag.CurrentPage == i ? "active" : "")">
-                                    <a class="page-link" href="@Url.Action("Index", new { page = i })">@i</a>
+                    <div class="col-lg-12">
+                        <nav aria-label="Page navigation">
+                            <ul class="pagination justify-content-center">
+                                <li class="page-item @(ViewBag.CurrentPage == 1 ? "disabled" : "")">
+                                    <a class="page-link" href="@Url.Action("Index", new { page = ViewBag.CurrentPage - 1 })" tabindex="-1">Previous</a>
                                 </li>
-                            }
-                            <li class="page-item @(ViewBag.CurrentPage == ViewBag.TotalPages ? "disabled" : "")">
-                                <a class="page-link" href="@Url.Action("Index", new { page = ViewBag.CurrentPage + 1 })">Next</a>
-                            </li>
-                        </ul>
-                    </nav>
+                                @for (int i = 1; i <= ViewBag.TotalPages; i++)
+                                {
+                                    <li class="page-item @(ViewBag.CurrentPage == i ? "active" : "")">
+                                        <a class="page-link" href="@Url.Action("Index", new { page = i })">@i</a>
+                                    </li>
+                                }
+                                <li class="page-item @(ViewBag.CurrentPage == ViewBag.TotalPages ? "disabled" : "")">
+                                    <a class="page-link" href="@Url.Action("Index", new { page = ViewBag.CurrentPage + 1 })">Next</a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
                 </div>
             </div>
 
-            @model OnlineMarketPlace.Models.Product
-            @{
-                var categoriesL = ViewData["CategoriesList"] as OnlineMarketPlace.Models.CategoriesList;
-            }
-
-            <div class="col-sm-9">
-                @Html.Partial("_SidebarPartial", categoriesL)
+            <!-- Sidebar nằm bên phải -->
+            <div class="col-md-3">
+                @Html.Partial("_SidebarPartial", categories)
             </div>
         </div>
-    </div>
 </div>
 <!-- Product List End -->
