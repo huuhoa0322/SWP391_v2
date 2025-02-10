@@ -1,75 +1,92 @@
 ﻿@model OnlineMarketPlace.Models.CategoriesList
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
-<div class="left-sidebar">
-	<h2>Category</h2>
-	<div class="panel-group category-products" id="accordian">
-		<!-- Vong lap qua cac danh muc cha -->
-		@for (int i = 0; i < Model.CategoriesParent.Count; i++)
-		{
-			<div class="panel panel-default">
-				<div class="panel-heading">
-					<h4 class="panel-title">
-						<!-- Kiem tra xem danh muc co con hay khong -->
-						@if (Model.CategoriesChild[i] == null || !Model.CategoriesChild[i].Any())
-						{
-							<!-- Neu khong co danh muc con, hien thi mot lien ket toi trang san pham cua danh muc -->
-							<a href="@Url.Action("ProductsByCategory", "Category", new { categoryId = Model.CategoriesParent[i].Id })">
-								@Model.CategoriesParent[i].Name
-							</a>
-						}
-						else
-						{
-							<!-- Neu co danh muc con, hien thi mot lien ket co the mo rong danh muc con -->
-							<a data-toggle="collapse" data-parent="#accordian" href="#@i.ToString()">
-								<span class="badge pull-right"><i class="fa fa-plus"></i></span>
-								@Model.CategoriesParent[i].Name
-							</a>
-						}
-					</h4>
-				</div>
 
-				<!--chua danh muc con se mo rong khi nguoi dung nhap vao danh muc cha -->
-				<div id="@i.ToString()" class="panel-collapse collapse">
-					<div class="panel-body">
-						<ul>
-							<!-- Vong lap qua cac danh muc con cua danh muc cha -->
-							@foreach (var child in Model.CategoriesChild[i])
-							{
-								<li>
-									<!-- Lien ket toi trang san pham cua danh muc con -->
-									<a href="@Url.Action("ProductsByCategory", "Category", new { categoryId = child.Id })">
-										@child.Name
-									</a>
-								</li>
-							}
-						</ul>
-					</div>
-				</div>
-			</div>
-		}
-	</div>
+<script>
+        $(document).ready(function () {
+        // Xử lý sự kiện khi một phần tử được mở rộng
+        $('.panel-collapse').on('show.bs.collapse', function () {
+            var icon = $(this).prev('.panel-heading').find('.fa-plus');
+            icon.css('transform', 'rotate(45deg)');
+        });
 
-	<!-- Phan loc san pham theo gia -->
-	<h2>Filter by Price</h2>
-	<div class="radio-group">
-		<!-- Form gui yeu cau loc theo gia -->
-		<form method="get" action="@Url.Action("FilterByPriceRange", "Category")" id="priceFilterForm">
-			<!-- Truyen categoryId vao form de giu lai danh muc khi loc -->
-			<input type="hidden" name="categoryId" value="@ViewData["CategoryId"]" />
+        // Xử lý sự kiện khi một phần tử được thu gọn
+        $('.panel-collapse').on('hide.bs.collapse', function () {
+            var icon = $(this).prev('.panel-heading').find('.fa-plus');
+            icon.css('transform', 'rotate(0deg)');
+        });
+    });
+</script>
+    <div class="sidebar-widget category">
+        <h2 class="title">Category</h2>
+    @for (int i = 0; i < Model.CategoriesParent.Count; i++)
+    {
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">
+                    <!-- Kiểm tra xem danh mục có con hay không -->
+                    @if (Model.CategoriesChild[i] == null || !Model.CategoriesChild[i].Any())
+                    {
+                        <!-- Nếu không có danh mục con, hiển thị một liên kết tới trang sản phẩm của danh mục -->
+                        <a href="@Url.Action("ProductsByCategory", "Category", new { categoryId = Model.CategoriesParent[i].Id })">
+                            @Model.CategoriesParent[i].Name
+                        </a>
+                    }
+                    else
+                    {
+                        <!-- Nếu có danh mục con, hiển thị dropdown -->
+                        <div class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                                @Model.CategoriesParent[i].Name <span class="caret"></span>
+                            </a>
+                            <ul class="dropdown-menu">
+                                @foreach (var child in Model.CategoriesChild[i])
+                                {
+                                    <li>
+                                        <a href="@Url.Action("ProductsByCategory", "Category", new { categoryId = child.Id })">
+                                            @child.Name
+                                        </a>
+                                    </li>
+                                }
+                            </ul>
+                        </div>
+                    }
+                </h4>
+            </div>
+        </div>
+    }
 
-			<!-- Cac tuy chon lua chon gia -->
-			<label>
-				<input type="radio" name="price" value="0-100" onchange="submitPriceFilter()"> Below 100$
-			</label>
-			<label>
-				<input type="radio" name="price" value="5-30" onchange="submitPriceFilter()"> 5 - 30$
-			</label>
-			<label>
-				<input type="radio" name="price" value="100-" onchange="submitPriceFilter()"> Above 100$
-			</label>
-		</form>
-	</div>
-</div>
+    </div>
+
+    <div class="sidebar-widget brands">
+        <h2 class="title">Our Brands</h2>
+        <ul>
+            <li><a href="#">Nulla </a><span>(45)</span></li>
+            <li><a href="#">Curabitur </a><span>(34)</span></li>
+            <li><a href="#">Nunc </a><span>(67)</span></li>
+            <li><a href="#">Ullamcorper</a><span>(74)</span></li>
+            <li><a href="#">Fusce </a><span>(89)</span></li>
+            <li><a href="#">Sagittis</a><span>(28)</span></li>
+        </ul>
+    </div>
+
+    <div class="sidebar-widget tag">
+        <h2 class="title">Tags Cloud</h2>
+        <a href="#">Lorem ipsum</a>
+        <a href="#">Vivamus</a>
+        <a href="#">Phasellus</a>
+        <a href="#">pulvinar</a>
+        <a href="#">Curabitur</a>
+        <a href="#">Fusce</a>
+        <a href="#">Sem quis</a>
+        <a href="#">Mollis metus</a>
+        <a href="#">Sit amet</a>
+        <a href="#">Vel posuere</a>
+        <a href="#">orci luctus</a>
+        <a href="#">Nam lorem</a>
+    </div>
 
 
 <script>
@@ -77,20 +94,3 @@
 		document.getElementById("priceFilterForm").submit();
 	}
 </script>
-
-<style>
-	.radio-group label {
-		display: block;
-		margin: 8px 0;
-		cursor: pointer;
-	}
-
-	.radio-group input[type="radio"] {
-		margin-right: 10px;
-	}
-
-	.radio-group label {
-		display: flex;
-		margin-right: 15px;
-	}
-</style>

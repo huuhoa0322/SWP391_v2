@@ -50,11 +50,10 @@ namespace OnlineMarketPlace.Controllers
             );
 
             viewModel.CategoriesChild = childCategoriesArray.ToList();
-            //CategoriesList categoriesList = new CategoriesList(categoriesParent, flattenedCategoriesChildList);
             ViewData["CategoriesList"] = viewModel;
             ViewData["limit"] = newlimit;
-            //var discounts = await discountRepository.GetProductDiscount();
-            //ViewData["Discount"] = discounts;
+            var discounts = await discountRepository.GetProductDiscount();
+            ViewData["Discount"] = discounts;
             //Console.WriteLine(discounts[0]);
             return View(products);
         }
