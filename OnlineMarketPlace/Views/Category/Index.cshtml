@@ -16,10 +16,13 @@
                     <div class="col-lg-12">
                         <div class="row">
                             <div class="col-md-8">
-                                <div class="product-search">
-                                    <input type="text" placeholder="Search">
-                                    <button><i class="fa fa-search"></i></button>
+                                <div class="product-search search_box pull-right">
+                                    <form asp-controller="Category" asp-action="Search" method="get">
+                                        <input type="text" name="searchString" placeholder="Search">
+                                        <button type="submit"><i class="fa fa-search"></i></button>
+                                    </form>
                                 </div>
+                                
                             </div>
                             <div class="col-md-4">
                                 <div class="product-short">
