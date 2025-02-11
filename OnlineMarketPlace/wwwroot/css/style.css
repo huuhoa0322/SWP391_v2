@@ -883,9 +883,9 @@ button.btn {
 }
 
 .product-detail .tab-content ul li::before {
-    content: '\f061';
+/*    content: '\f061';
     font-family: 'FontAwesome';
-    padding-right: 5px;
+    padding-right: 5px;*/
 }
 
 .product-detail .tab-content .reviews-submitted {
