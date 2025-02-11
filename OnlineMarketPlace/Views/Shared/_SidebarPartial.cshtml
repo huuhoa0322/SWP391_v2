@@ -3,94 +3,73 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
-
-<script>
+    <script>
         $(document).ready(function () {
-        // Xử lý sự kiện khi một phần tử được mở rộng
-        $('.panel-collapse').on('show.bs.collapse', function () {
-            var icon = $(this).prev('.panel-heading').find('.fa-plus');
-            icon.css('transform', 'rotate(45deg)');
-        });
+            // Toggle dropdown menu on click
+            $('.dropdown-toggle').click(function (e) {
+                e.preventDefault();
+                var $this = $(this);
+                var $dropdownMenu = $this.next('.dropdown-menu');
+                $dropdownMenu.toggle();
+            });
 
-        // Xử lý sự kiện khi một phần tử được thu gọn
-        $('.panel-collapse').on('hide.bs.collapse', function () {
-            var icon = $(this).prev('.panel-heading').find('.fa-plus');
-            icon.css('transform', 'rotate(0deg)');
+            // Toggle dropdown menu on hover
+            $('.dropdown').hover(function () {
+                var $this = $(this);
+                var $dropdownMenu = $this.find('.dropdown-menu');
+                $dropdownMenu.show();
+            }, function () {
+                var $this = $(this);
+                var $dropdownMenu = $this.find('.dropdown-menu');
+                $dropdownMenu.hide();
+            });
+
+            // Close dropdown menu when clicking outside
+            $(document).click(function (e) {
+                if (!$(e.target).closest('.dropdown').length) {
+                    $('.dropdown-menu').hide();
+                }
+            });
         });
-    });
-</script>
-    <div class="sidebar-widget category">
-        <h2 class="title">Category</h2>
+    </script>
+
+<div class="sidebar-widget category">
+    <h2 class="title">Category</h2>
     @for (int i = 0; i < Model.CategoriesParent.Count; i++)
     {
         <div class="panel panel-default">
             <div class="panel-heading">
-                <h4 class="panel-title">
-                    <!-- Kiểm tra xem danh mục có con hay không -->
-                    @if (Model.CategoriesChild[i] == null || !Model.CategoriesChild[i].Any())
-                    {
+                <!-- Kiểm tra xem danh mục có con hay không -->
+                @if (Model.CategoriesChild[i] == null || !Model.CategoriesChild[i].Any())
+                {
+                    <h4 class="panel-title">
                         <!-- Nếu không có danh mục con, hiển thị một liên kết tới trang sản phẩm của danh mục -->
                         <a href="@Url.Action("ProductsByCategory", "Category", new { categoryId = Model.CategoriesParent[i].Id })">
                             @Model.CategoriesParent[i].Name
                         </a>
-                    }
-                    else
-                    {
-                        <!-- Nếu có danh mục con, hiển thị dropdown -->
-                        <div class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-                                @Model.CategoriesParent[i].Name <span class="caret"></span>
-                            </a>
-                            <ul class="dropdown-menu">
-                                @foreach (var child in Model.CategoriesChild[i])
-                                {
-                                    <li>
-                                        <a href="@Url.Action("ProductsByCategory", "Category", new { categoryId = child.Id })">
-                                            @child.Name
-                                        </a>
-                                    </li>
-                                }
-                            </ul>
-                        </div>
-                    }
-                </h4>
+                    </h4>
+                }
+                else
+                {
+                    <!-- Nếu có danh mục con, hiển thị dropdown -->
+                    <div class="dropdown">
+                        <a href="#" class="dropdown-toggle" role="button" aria-haspopup="true" aria-expanded="false">
+                            @Model.CategoriesParent[i].Name <span class="caret"></span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            @foreach (var child in Model.CategoriesChild[i])
+                            {
+                                <li>
+                                    <a href="@Url.Action("ProductsByCategory", "Category", new { categoryId = child.Id })">
+                                        @child.Name
+                                    </a>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                }
             </div>
         </div>
     }
+</div>
 
-    </div>
-
-    <div class="sidebar-widget brands">
-        <h2 class="title">Our Brands</h2>
-        <ul>
-            <li><a href="#">Nulla </a><span>(45)</span></li>
-            <li><a href="#">Curabitur </a><span>(34)</span></li>
-            <li><a href="#">Nunc </a><span>(67)</span></li>
-            <li><a href="#">Ullamcorper</a><span>(74)</span></li>
-            <li><a href="#">Fusce </a><span>(89)</span></li>
-            <li><a href="#">Sagittis</a><span>(28)</span></li>
-        </ul>
-    </div>
-
-    <div class="sidebar-widget tag">
-        <h2 class="title">Tags Cloud</h2>
-        <a href="#">Lorem ipsum</a>
-        <a href="#">Vivamus</a>
-        <a href="#">Phasellus</a>
-        <a href="#">pulvinar</a>
-        <a href="#">Curabitur</a>
-        <a href="#">Fusce</a>
-        <a href="#">Sem quis</a>
-        <a href="#">Mollis metus</a>
-        <a href="#">Sit amet</a>
-        <a href="#">Vel posuere</a>
-        <a href="#">orci luctus</a>
-        <a href="#">Nam lorem</a>
-    </div>
-
-
-<script>
-	function submitPriceFilter() {
-		document.getElementById("priceFilterForm").submit();
-	}
-</script>

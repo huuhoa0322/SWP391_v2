@@ -27,19 +27,24 @@
                             <div class="col-md-4">
                                 <div class="product-short">
                                     <div class="dropdown">
-                                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Product short by</a>
-                                        <div class="dropdown-menu dropdown-menu-right">
-                                            <a href="@Url.Action("Sort", new { sortBy = "price-asc" })" class="dropdown-item">Price: Low to High</a>
-                                            <a href="@Url.Action("Sort", new { sortBy = "price-desc" })" class="dropdown-item">Price: High to Low</a>
-                                            <a href="@Url.Action("Sort", new { sortBy = "name-asc" })" class="dropdown-item">Name: A-Z</a>
-                                            <a href="@Url.Action("Sort", new { sortBy = "name-desc" })" class="dropdown-item">Name: Z-A</a>
+                                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Sort by</a>
+                                        <div class="dropdown-content dropdown-menu dropdown-menu-right">
+                                            <button onclick="sortProducts('price-asc')">Price: Low to High</button>
+                                            <button onclick="sortProducts('price-desc')">Price: High to Low</button>
+                                            <button onclick="sortProducts('name-asc')">Name: A to Z</button>
+                                            <button onclick="sortProducts('name-desc')">Name: Z to A</button>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-
+                    <script>
+                        function sortProducts(sortBy) {
+                            var categoryId = "@ViewData["CategoryId"]"; // Lấy categoryId từ backend
+                            window.location.href = `/Category/Sort?sortBy=${sortBy}&categoryId=${categoryId}`;
+                        }
+                    </script>
                     <!-- Danh sách sản phẩm -->
                     <div class="row">
                         @foreach (var product in products)
@@ -70,25 +75,32 @@
                                 </div>
                             </div>
                         }
+                        @if (totalProducts > limit)
+                        {
+                            <form method="get" action="@Url.Action("Index", "Category")">
+                                <input type="hidden" name="limit" value="@(limit + 9)" />
+                                <button type="submit">See more</button>
+                            </form>
+                        }
                     </div>
-                    <div class="col-lg-12">
-                        <nav aria-label="Page navigation">
-                            <ul class="pagination justify-content-center">
-                                <li class="page-item @(ViewBag.CurrentPage == 1 ? "disabled" : "")">
-                                    <a class="page-link" href="@Url.Action("Index", new { page = ViewBag.CurrentPage - 1 })" tabindex="-1">Previous</a>
-                                </li>
-                                @for (int i = 1; i <= ViewBag.TotalPages; i++)
-                                {
-                                    <li class="page-item @(ViewBag.CurrentPage == i ? "active" : "")">
-                                        <a class="page-link" href="@Url.Action("Index", new { page = i })">@i</a>
-                                    </li>
-                                }
-                                <li class="page-item @(ViewBag.CurrentPage == ViewBag.TotalPages ? "disabled" : "")">
-                                    <a class="page-link" href="@Url.Action("Index", new { page = ViewBag.CurrentPage + 1 })">Next</a>
-                                </li>
-                            </ul>
-                        </nav>
-                    </div>
+                    @* <div class="col-lg-12"> *@
+                    @*     <nav aria-label="Page navigation"> *@
+                    @*         <ul class="pagination justify-content-center"> *@
+                    @*             <li class="page-item @(ViewBag.CurrentPage == 1 ? "disabled" : "")"> *@
+                    @*                 <a class="page-link" href="@Url.Action("Index", new { page = ViewBag.CurrentPage - 1 })" tabindex="-1">Previous</a> *@
+                    @*             </li> *@
+                    @*             @for (int i = 1; i <= ViewBag.TotalPages; i++) *@
+                    @*             { *@
+                    @*                 <li class="page-item @(ViewBag.CurrentPage == i ? "active" : "")"> *@
+                    @*                     <a class="page-link" href="@Url.Action("Index", new { page = i })">@i</a> *@
+                    @*                 </li> *@
+                    @*             } *@
+                    @*             <li class="page-item @(ViewBag.CurrentPage == ViewBag.TotalPages ? "disabled" : "")"> *@
+                    @*                 <a class="page-link" href="@Url.Action("Index", new { page = ViewBag.CurrentPage + 1 })">Next</a> *@
+                    @*             </li> *@
+                    @*         </ul> *@
+                    @*     </nav> *@
+                    @* </div> *@
                 </div>
             </div>
 
