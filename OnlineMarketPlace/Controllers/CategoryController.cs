@@ -49,7 +49,7 @@ namespace OnlineMarketPlace.Controllers
             return View();
         }
         //search theo ten
-        public async Task<IActionResult> Search(string searchString)
+        public async Task<IActionResult> Search(string searchString, string price = null, string sortBy = null, int? categoryId = null, int limit = 9)
         {
             var viewModel = new CategoriesList();
 
@@ -69,11 +69,44 @@ namespace OnlineMarketPlace.Controllers
             viewModel.CategoriesChild = childCategoriesArray.ToList();
             ViewData["CategoriesList"] = viewModel;
 
-            // Tim kiem san pham theo ten
+            // Tìm kiếm sản phẩm theo tên
             var products = await _productRepository.SearchProductsByNameAsync(searchString);
 
-            ViewData["Products"] = products;
+            // Áp dụng filter theo category nếu có
+            if (categoryId.HasValue)
+            {
+                products = products.Where(p => p.CategoryId == categoryId.Value).ToList();
+            }
+
+            // Áp dụng filter theo giá nếu có
+            if (!string.IsNullOrEmpty(price))
+            {
+                var parts = price.Split('-');
+                if (parts.Length == 2 && 
+                    double.TryParse(parts[0], out double minPrice) && 
+                    double.TryParse(parts[1], out double maxPrice))
+                {
+                    products = products.Where(p => p.Price >= minPrice && p.Price <= maxPrice).ToList();
+                }
+            }
+
+            // Áp dụng sắp xếp nếu có
+            products = sortBy switch
+            {
+                "price-asc" => products.OrderBy(p => p.Price).ToList(),
+                "price-desc" => products.OrderByDescending(p => p.Price).ToList(),
+                "name-asc" => products.OrderBy(p => p.Name).ToList(),
+                "name-desc" => products.OrderByDescending(p => p.Name).ToList(),
+                _ => products
+            };
+
+            ViewData["Products"] = products.Take(limit).ToList();
+            ViewData["TotalProducts"] = products.Count;
+            ViewData["Limit"] = limit;
             ViewData["SearchString"] = searchString;
+            ViewData["CategoryId"] = categoryId;
+            ViewData["SelectedPrice"] = price;
+            ViewData["SortBy"] = sortBy;
 
             return View("Index");
         }
@@ -108,7 +141,7 @@ namespace OnlineMarketPlace.Controllers
 
         //Loc san pham theo gia
         [HttpGet("Category/FilterByPriceRange")]
-        public async Task<IActionResult> FilterByPrice(string price, int? categoryId)
+        public async Task<IActionResult> FilterByPrice(string price, int? categoryId, int limit = 9)
         {
             double minPrice = 0, maxPrice = double.MaxValue;
 
@@ -125,10 +158,9 @@ namespace OnlineMarketPlace.Controllers
                     maxPrice = max;
             }
 
-            // Khởi tạo viewModel để lưu các danh mục
             var viewModel = new CategoriesList
             {
-                CategoriesParent = await _categoryRepository.GetCatgoryParent() // Lấy danh mục cha
+                CategoriesParent = await _categoryRepository.GetCatgoryParent()
             };
 
             // Lấy danh mục con cho từng danh mục cha
@@ -151,64 +183,94 @@ namespace OnlineMarketPlace.Controllers
             // Kiểm tra xem categoryId có được truyền vào không
             if (categoryId.HasValue)
             {
-                // Lọc sản phẩm theo danh mục được chọn và theo giá
                 products = await _productRepository.GetProductsByCategoryIdAsync(categoryId.Value);
                 products = products.Where(p => p.Price >= minPrice && p.Price <= maxPrice).ToList();
             }
             else
             {
-                // Nếu không có categoryId, lọc tất cả sản phẩm theo giá
                 products = await _productRepository.GetProductsByPriceRangeAsync(minPrice, maxPrice);
             }
 
-            // Truyền sản phẩm đã lọc vào ViewData để hiển thị
-            ViewData["Products"] = products;
-            ViewData["MinPrice"] = minPrice;  // Lưu giá min
-            ViewData["MaxPrice"] = maxPrice;  // Lưu giá max
-            ViewData["CategoryId"] = categoryId;  // Lưu lại categoryId đã chọn
+            // Lưu tổng số sản phẩm và limit để xử lý "see more"
+            ViewData["TotalProducts"] = products.Count;
+            ViewData["Limit"] = limit;
+            
+            // Chỉ lấy số lượng sản phẩm theo limit
+            ViewData["Products"] = products.Take(limit).ToList();
+            
+            ViewData["MinPrice"] = minPrice;
+            ViewData["MaxPrice"] = maxPrice;
+            ViewData["CategoryId"] = categoryId;
+            ViewData["SelectedPrice"] = price; // Lưu giá trị price đã chọn
 
-            return View("Index"); // Trả về view Index
+            return View("Index");
         }
 
         // Sap xep san pham theo tieu chi
         [HttpGet("Category/Sort")]
-        public async Task<IActionResult> Sort(string sortBy, int? categoryId) // Cho phep categoryId = null
+        public async Task<IActionResult> Sort(string sortBy, int? categoryId, string price, int limit = 9)
         {
+            double minPrice = 0, maxPrice = double.MaxValue;
+
+            // Xử lý khoảng giá nếu có
+            if (!string.IsNullOrEmpty(price))
+            {
+                var parts = price.Split('-');
+                if (parts.Length > 0 && double.TryParse(parts[0], out double min))
+                    minPrice = min;
+                if (parts.Length > 1 && double.TryParse(parts[1], out double max))
+                    maxPrice = max;
+            }
+
+            // Lấy danh mục như cũ
             var viewModel = new CategoriesList
             {
                 CategoriesParent = await _categoryRepository.GetCatgoryParent()
             };
 
+            // Lấy danh muc con cua tung danh muc cha
             var childCategoriesArray = await Task.WhenAll(
                 viewModel.CategoriesParent.Select(async parent =>
                 {
-                    using var context = new OnlineShoppingContext();
-                    return await context.Categories
-                        .Where(c => c.ParentId == parent.Id)
-                        .ToListAsync();
+                    using (var context = new OnlineShoppingContext()) //ket noi voi CSDL
+                    {
+                        return await context.Categories
+                            .Where(c => c.ParentId == parent.Id) // Tim danh muc con theo ParentId
+                            .ToListAsync(); // Chuyen ket qua sang danh sach
+                    }
                 })
             );
+            // Gop cac danh muc con vao viewModel
             viewModel.CategoriesChild = childCategoriesArray.ToList();
-            ViewData["CategoriesList"] = viewModel;
+            ViewData["CategoriesList"] = viewModel; // Luu danh muc vao ViewData de hien thi
 
-            // Neu categoryId co gia tri, loc theo danh muc, neu khong, lay tat ca san pham
+            // Lấy sản phẩm theo category (nếu có)
             var products = categoryId.HasValue
                 ? await _productRepository.GetProductsByCategoryIdAsync(categoryId.Value)
-                : await _productRepository.GetProductsAsync(); // Lay tat ca san pham neu categoryId = null
+                : await _productRepository.GetProductsAsync();
 
-            // Sap xep san pham theo tieu chi
+            // Áp dụng lọc giá nếu có
+            if (!string.IsNullOrEmpty(price))
+            {
+                products = products.Where(p => p.Price >= minPrice && p.Price <= maxPrice).ToList();
+            }
+
+            // Áp dụng sắp xếp
             products = sortBy switch
             {
                 "price-asc" => products.OrderBy(p => p.Price).ToList(),
                 "price-desc" => products.OrderByDescending(p => p.Price).ToList(),
                 "name-asc" => products.OrderBy(p => p.Name).ToList(),
                 "name-desc" => products.OrderByDescending(p => p.Name).ToList(),
-                _ => products // Mac dinh: khong sap xep
+                _ => products
             };
-            // Luu san pham da sap xep vao ViewData
-            ViewData["Products"] = products;
+
+            ViewData["TotalProducts"] = products.Count;
+            ViewData["Limit"] = limit;
+            ViewData["Products"] = products.Take(limit).ToList();
             ViewData["SortBy"] = sortBy;
-            ViewData["CategoryId"] = categoryId; // Lưu để hiển thị lại trên giao diện
+            ViewData["CategoryId"] = categoryId;
+            ViewData["SelectedPrice"] = price;
 
             return View("Index");
         }
