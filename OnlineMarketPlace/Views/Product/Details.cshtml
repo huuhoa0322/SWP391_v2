@@ -3,7 +3,7 @@
 @{
     var categoriesL = ViewData["CategoriesList"] as OnlineMarketPlace.Models.CategoriesList;
 }
-@* @Html.Partial("_SidebarPartial", categoriesL); *@
+ @*@Html.Partial("_SidebarPartial", categoriesL); *@
 
 <div class="product-detail">
 
@@ -14,29 +14,42 @@
                     <div class="col-md-5">
                         <div class="product-slider-single">
                             <img src="~/images/@Model.Image" alt="Product Image">
-                            
+
                         </div>
                     </div>
                     <div class="col-md-7">
                         <div class="product-content">
                             <div class="title"><h2>@Model.Name</h2></div>
-                            <div class="ratting">
-                                @* @(((double)ViewData["AverageRating"]) > 0 ? ((double)ViewData["AverageRating"]).ToString("0.0") : "No ratings") *@
-                                <i class="fa fa-star"></i>                               
-                            </div>
                             <div class="price">@Model.Price</div>
                             <div class="details">
                                 <p>
                                     <a href="#reviews" style="text-decoration: none; color: inherit;">
-                                        4.9 <i class="fa fa-star"></i>
+                                        @{
+                                            var rating = ViewData["AverageRating"] != null ? (double)ViewData["AverageRating"] : 0.0;
+                                            var roundedRating = Math.Round(rating, 1);
+                                        }                                       
+                                            <span>(@roundedRating)</span>
+                                            @for (int i = 1; i <= 5; i++)
+                                            {
+                                                if (i <= Math.Round(rating))
+                                                {
+                                                    <i class="fa fa-star"></i>
+                                                }
+                                                else
+                                                {
+                                                    <i class="fa fa-star-o"></i>
+                                                }
+                                            }
+                                        
                                     </a>
                                     | <a href="#reviews" style="text-decoration: none; color: inherit;">
                                         @Model.RatingAndReviews.Count Review
                                     </a>
                                     | @Model.QuantitySold Selled
                                     | <span style="color: #007bff; cursor: pointer;">Report</span>
-                                    
+
                                 </p>
+                                <p>Availability: @Model.Inventory</p>
                             </div>
 
                             <div class="quantity">
@@ -46,6 +59,7 @@
                                     <input type="text" value="1">
                                     <button class="btn-plus"><i class="fa fa-plus"></i></button>
                                 </div>
+
                             </div>
                             <div class="action">
                                 <a href="#"><i class="fa fa-cart-plus"></i></a>
@@ -105,18 +119,18 @@
                                     <p>
                                         @if (reviews != null && reviews.Any())
                                         {
-                                        @* <p>@($"Found {reviews.Count} reviews.")</p> <!-- Hiển thị số lượng phần tử --> *@
-                                        <ul>
+                                            @* <p>@($"Found {reviews.Count} reviews.")</p> <!-- Hiển thị số lượng phần tử --> *@
+                                            <ul>
                                                 @foreach (RatingAndReview review in reviews)
                                                 {
-                                                <li>
+                                                    <li>
 
-                                                    @* <strong>Rating:</strong> @review.Rating <br /> *@
-                                                    @* <strong>Review:</strong>  *@
-                                                    @review.Review
-                                                </li>
+                                                        @* <strong>Rating:</strong> @review.Rating <br /> *@
+                                                        @* <strong>Review:</strong>  *@
+                                                        @review.Review
+                                                    </li>
                                                 }
-                                        </ul>
+                                            </ul>
                                         }
                                         else
                                         {
@@ -163,27 +177,18 @@
 
                 @{
                     var relatedProducts = ViewData["RelatedProducts"] as List<OnlineMarketPlace.Models.Product>;
-                    var currentProduct = Model as OnlineMarketPlace.Models.Product;
-                    var itemsPerPage = 3;
-                    var currentPage = 1;
-                    int.TryParse(Context.Request.Query["page"], out currentPage);
-                    if (currentPage < 1) currentPage = 1;
                 }
 
-                @if (relatedProducts != null && relatedProducts.Any(p => p.Id != currentProduct.Id))
-                {
-                    var filteredProducts = relatedProducts.Where(p => p.Id != currentProduct.Id).ToList();
-                    var totalPages = Math.Ceiling((decimal)filteredProducts.Count / itemsPerPage);
-                    var displayProducts = filteredProducts.Skip((currentPage - 1) * itemsPerPage).Take(itemsPerPage);
-
-                    <div class="row align-items-center product-slider product-slider-3">
-                        @foreach (var product in displayProducts)
+                <div class="row align-items-center product-slider product-slider-3">
+                    @if (relatedProducts != null && relatedProducts.Any())
+                    {
+                        foreach (var product in relatedProducts)
                         {
                             <div class="col-lg-3">
                                 <div class="product-item">
                                     <div class="product-image">
-                                        <a href="product-detail.html">
-                                            <img src="img/product-1.png" alt="Product Image">
+                                        <a href="@Url.Action("Details", "Product", new { id = product.Id })">
+                                            <img src="@product.Image" alt="@product.Name">
                                         </a>
                                         <div class="product-action">
                                             <a href="#"><i class="fa fa-cart-plus"></i></a>
@@ -192,52 +197,36 @@
                                         </div>
                                     </div>
                                     <div class="product-content">
-                                        <div class="title"><a href="#">@product.Name</a></div>
-                                        <div class="ratting">
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
+                                        <div class="title">
+                                            <a href="@Url.Action("Details", "Product", new { id = product.Id })">@product.Name</a>
                                         </div>
-                                        <div class="price">$@product.Price <span>$@(product.Price)</span></div>
+
+                                        <div class="price">
+                                            $@product.Price
+                                            @if (product.Price > product.Price)
+                                            {
+                                                <span>$@product.Price</span>
+                                            }
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         }
-                    </div>
-
-                    @if (totalPages > 1)
+                    }
+                    else
                     {
-                        <div class="row mt-4">
-                            <div class="col-12">
-                                <ul class="pagination justify-content-center">
-                                    @for (int i = 1; i <= totalPages; i++)
-                                    {
-                                        <li class="page-item @(i == currentPage ? "active" : "")">
-                                            <a class="page-link" href="?page=@i">@i</a>
-                                        </li>
-                                    }
-                                </ul>
-                            </div>
+                        <div class="col-12 text-center">
+                            <p>Không có sản phẩm liên quan</p>
                         </div>
                     }
-                }
-                else
-                {
-                    <div class="row">
-                        <div class="col-12 text-center">
-                            <p>No related product</p>
-                        </div>
-                    </div>
-                }
+                </div>
 
             </div>
 
             
             <!-- siderbar -->
             <div class="col-sm-3">
-                @Html.Partial("_SidebarPartial", categoriesL)
+                 @Html.Partial("_SidebarPartial", categoriesL)
             </div>
         </div>
     </div>
