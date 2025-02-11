@@ -67,10 +67,13 @@
                                 </div>
                             }
                         </div>
+
+                        
+
 						@if (string.IsNullOrEmpty(userName))
 						{
 							//<a asp-controller="Login" asp-action="Login" class="btn">Login</a>
-                            <div class="cart" onclick="window.location.href='/Login/Login';" style="cursor: pointer;">
+                            <div class="nonlogin cart" onclick="window.location.href='/Login/Login';" style="cursor: pointer;">
                                 <i class="fa fa-cart-plus"></i>
                                 <span>(0)</span>
                             </div>
@@ -81,7 +84,6 @@
                                 <i class="fa fa-cart-plus"></i>
                                 <span>(0)</span>
                             </div>
-							
 						}
 						
 					</div>
@@ -229,15 +231,16 @@
     <script src="~/lib/slick/slick.min.js"></script>
 
 
+
     <!-- Template Javascript -->
     <script src="~/js/main.js"></script>
     
     <script>
         $(document).ready(function(){
-            $(".cart").click(function(event){
-                event.preventDefault(); // Prevent navigation
-                alert("You need to log in first.");
-                window.location.href = "/Login/Login"; // Redirect manually
+            $(".nonlogin").click(function(event){
+                    event.preventDefault(); // Prevent navigation
+                    alert("You need to log in first.");
+                    window.location.href = "/Login/Login"; // Redirect manually
             });
         });
     </script>
