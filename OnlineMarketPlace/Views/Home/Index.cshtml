@@ -92,16 +92,21 @@
                         </div>
                         <div class="product-content">
                             <div class="title"><a asp-action="Details" asp-controller="Product" asp-route-Id="@item.Product.Id">@item.Product.Name> </a></div>
-                            <div class="ratting">
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                            </div>
+                            
                             @{
                                 double dprice = Math.Round(item.Product.Price * (100 + item.Value) / 100,2);
+                                    var ratingRepo = new OnlineMarketPlace.Repository.RatingAndReviewRepository();
+                                    double? a = await ratingRepo.GetAverageRatingByProductAsync(item.Product.Id);
                             }
+                                @if(a == null){
+                                    <p>no rating yet</p>
+                                } else{
+                                    <div class="ratting">
+                                        <p>@a?.ToString("0.0")</p>
+                                        <i class="fa fa-star"></i>
+                                    </div>
+                                }
+                                
                                 <div class="price">@item.Product.Price <span>@dprice</span></div>
                             </div>
                         </a>
@@ -130,7 +135,7 @@
     <div class="row align-items-center">
         @foreach (var product in Model.Take(limit))
         {
-        <div class="col-lg-3">
+        <div class="col-lg-3" style="margin-top: 10px;">
                 
             <div class="product-item">
                     
@@ -144,13 +149,21 @@
                 <div class="product-content">
 
                         <div class="title"><a asp-action="Details" asp-controller="Product" asp-route-Id="@product.Id">@product.Name</a></div>
-                    <div class="ratting">
-                        <i class="fa fa-star"></i>
-                        <i class="fa fa-star"></i>
-                        <i class="fa fa-star"></i>
-                        <i class="fa fa-star"></i>
-                        <i class="fa fa-star"></i>
-                    </div>
+                        @{
+                            var ratingRepo = new OnlineMarketPlace.Repository.RatingAndReviewRepository();
+                            double? a = await ratingRepo.GetAverageRatingByProductAsync(product.Id);
+                        }
+                        @if (a == null)
+                        {
+                            <p>no rating yet</p>
+                        }
+                        else
+                        {
+                            <div class="ratting">
+                                <p>@a?.ToString("0.0")</p>
+                                <i class="fa fa-star"></i>
+                            </div>
+                        }
                     <div class="price">$@product.Price</div>
                 </div>
                     
