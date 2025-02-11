@@ -28,18 +28,8 @@
                                             var rating = ViewData["AverageRating"] != null ? (double)ViewData["AverageRating"] : 0.0;
                                             var roundedRating = Math.Round(rating, 1);
                                         }                                       
-                                            <span>(@roundedRating)</span>
-                                            @for (int i = 1; i <= 5; i++)
-                                            {
-                                                if (i <= Math.Round(rating))
-                                                {
-                                                    <i class="fa fa-star"></i>
-                                                }
-                                                else
-                                                {
-                                                    <i class="fa fa-star-o"></i>
-                                                }
-                                            }
+                                        <span>(@roundedRating)</span>
+                                        <i class="fa fa-star"></i>
                                         
                                     </a>
                                     | <a href="#reviews" style="text-decoration: none; color: inherit;">
