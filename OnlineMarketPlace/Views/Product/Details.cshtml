@@ -23,21 +23,11 @@
                             <div class="price">@Model.Price</div>
                             <div class="details">
                                 <p>
-                                    <<a href="#reviews" style="text-decoration: none; color: inherit;">
+                                    <a href="#reviews" style="text-decoration: none; color: inherit;">
                                         @{
-                                            var rating = (double)ViewData["AverageRating"];
+                                            var rating = ViewData["AverageRating"] != null ? (double)ViewData["AverageRating"] : 0.0;
                                             var roundedRating = Math.Round(rating, 1);
-                                        }
-                                        @if (rating == 0)
-                                        {
-                                            <span>(0)</span>
-                                            @for (int i = 1; i <= 5; i++)
-                                            {
-                                                <i class="fa fa-star-o"></i>
-                                            }
-                                        }
-                                        else
-                                        {
+                                        }                                       
                                             <span>(@roundedRating)</span>
                                             @for (int i = 1; i <= 5; i++)
                                             {
@@ -50,7 +40,7 @@
                                                     <i class="fa fa-star-o"></i>
                                                 }
                                             }
-                                        }
+                                        
                                     </a>
                                     | <a href="#reviews" style="text-decoration: none; color: inherit;">
                                         @Model.RatingAndReviews.Count Review
