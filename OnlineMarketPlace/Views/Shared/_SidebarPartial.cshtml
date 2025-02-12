@@ -9,7 +9,14 @@
             $('.dropdown-toggle').click(function (e) {
                 e.preventDefault();
                 var $this = $(this);
+                var $icon = $this.find('i');
                 var $dropdownMenu = $this.next('.dropdown-menu');
+                
+                if ($dropdownMenu.is(':visible')) {
+                    $icon.removeClass('fa-minus').addClass('fa-plus');
+                } else {
+                    $icon.removeClass('fa-plus').addClass('fa-minus');
+                }
                 $dropdownMenu.toggle();
             });
 
@@ -27,7 +34,14 @@
             // Close dropdown menu when clicking outside
             $(document).click(function (e) {
                 if (!$(e.target).closest('.dropdown').length) {
-                    $('.dropdown-menu').hide();
+                    $('.dropdown-menu').each(function() {
+                        var $menu = $(this);
+                        // Chỉ đóng menu không chứa category đã chọn
+                        if (!$menu.find('.selected-category').length) {
+                            $menu.hide();
+                            $menu.prev('.dropdown-toggle').find('i').removeClass('fa-minus').addClass('fa-plus');
+                        }
+                    });
                 }
             });
         });
@@ -73,30 +87,155 @@
     }
 </div>
 
-<div class="sidebar-widget brands">
-    <h2 class="title">Our Brands</h2>
-    <ul>
-        <li><a href="#">Nulla </a><span>(45)</span></li>
-        <li><a href="#">Curabitur </a><span>(34)</span></li>
-        <li><a href="#">Nunc </a><span>(67)</span></li>
-        <li><a href="#">Ullamcorper</a><span>(74)</span></li>
-        <li><a href="#">Fusce </a><span>(89)</span></li>
-        <li><a href="#">Sagittis</a><span>(28)</span></li>
-    </ul>
+<!-- Thêm phần filter giá -->
+<div class="sidebar-widget price-filter">
+    <h2 class="title">Price Range</h2>
+    <form id="priceFilterForm" method="get" action="@Url.Action("FilterByPriceRange", "Category")">
+        @if (ViewData["CategoryId"] != null)
+    {
+        <input type="hidden" name="categoryId" value="@ViewData["CategoryId"]" />
+    }
+    @if (ViewData["SortBy"] != null)
+    {
+        <input type="hidden" name="sortBy" value="@ViewData["SortBy"]" />
+    }
+    @if (ViewData["SearchString"] != null)
+    {
+        <input type="hidden" name="searchString" value="@ViewData["SearchString"]" />
+    }
+        @if (ViewData["CategoryId"] != null)
+        {
+            <input type="hidden" name="categoryId" value="@ViewData["CategoryId"]" />
+        }
+        @if (ViewData["SortBy"] != null)
+        {
+            <input type="hidden" name="sortBy" value="@ViewData["SortBy"]" />
+        }
+        @if (ViewData["SearchString"] != null)
+        {
+            <input type="hidden" name="searchString" value="@ViewData["SearchString"]" />
+        }
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name="price" id="price1" value="0-100">
+            <label class="form-check-label" for="price1">$0 - $100</label>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name="price" id="price2" value="100-500">
+            <label class="form-check-label" for="price2">$100 - $500</label>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name="price" id="price3" value="500-1000">
+            <label class="form-check-label" for="price3">$500 - $1000</label>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name="price" id="price4" value="1000-5000">
+            <label class="form-check-label" for="price4">$1000 - $5000</label>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name="price" id="price5" value="5000-999999">
+            <label class="form-check-label" for="price5">$5000+</label>
+        </div>
+        <button type="submit" class="btn btn-primary mt-3">Apply</button>
+    </form>
 </div>
 
-<div class="sidebar-widget tag">
-    <h2 class="title">Tags Cloud</h2>
-    <a href="#">Lorem ipsum</a>
-    <a href="#">Vivamus</a>
-    <a href="#">Phasellus</a>
-    <a href="#">pulvinar</a>
-    <a href="#">Curabitur</a>
-    <a href="#">Fusce</a>
-    <a href="#">Sem quis</a>
-    <a href="#">Mollis metus</a>
-    <a href="#">Sit amet</a>
-    <a href="#">Vel posuere</a>
-    <a href="#">orci luctus</a>
-    <a href="#">Nam lorem</a>
-</div>
+<style>
+    .sidebar-widget {
+        padding: 15px;
+        background: #fff;
+        margin-bottom: 30px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+    }
+
+    .sidebar-widget .title {
+        margin-bottom: 15px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #ddd;
+    }
+
+    .price-filter .form-check {
+        margin-bottom: 10px;
+    }
+
+    /* Thêm style cho category */
+    .category .panel {
+        margin-bottom: 10px;
+    }
+
+    .category .panel-title {
+        margin: 0;
+    }
+
+    .category .panel-title a,
+    .category .dropdown-toggle {
+        color: #666;
+        text-decoration: none;
+        display: block;
+        padding: 5px 0;
+    }
+
+    .category .dropdown-menu {
+        padding: 5px 15px;
+        margin-left: 15px;
+        border: none;
+        box-shadow: none;
+        position: static;
+        float: none;
+    }
+
+    .category .dropdown-menu li {
+        margin-bottom: 5px;
+    }
+
+    .category .dropdown-menu a {
+        color: #666;
+        text-decoration: none;
+    }
+
+    .category .dropdown-menu a:hover {
+        color: #007bff;
+    }
+
+    .selected-category {
+        color: #007bff !important;
+        font-weight: bold;
+    }
+
+    .category .dropdown-menu {
+        display: none; /* Ẩn mặc định */
+    }
+
+    /* Hiển thị dropdown-menu khi có selected-category */
+    .dropdown-menu:has(.selected-category) {
+        display: block !important;
+    }
+</style>
+
+<script>
+    $(document).ready(function() {
+        // Lưu trạng thái price range đã chọn
+        var urlParams = new URLSearchParams(window.location.search);
+        var priceParam = urlParams.get('price');
+        var categoryId = urlParams.get('categoryId');
+
+        // Đánh dấu price range đã chọn
+        if (priceParam) {
+            $(`input[name="price"][value="${priceParam}"]`).prop('checked', true);
+        }
+
+        // Mở và đánh dấu category đã chọn
+        if (categoryId) {
+            var selectedCategory = $(`a[href*="categoryId=${categoryId}"]`);
+            selectedCategory.addClass('selected-category');
+            
+            // Nếu là subcategory, mở parent category của nó
+            var parentDropdown = selectedCategory.closest('.dropdown-menu').prev('.dropdown-toggle');
+            if (parentDropdown.length) {
+                parentDropdown.next('.dropdown-menu').show();
+                parentDropdown.find('i').removeClass('fa-plus').addClass('fa-minus');
+            }
+        }
+    });
+</script>
+
