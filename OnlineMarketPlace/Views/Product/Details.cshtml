@@ -48,21 +48,29 @@
 									<button class="btn-minus"><i class="fa fa-minus"></i></button>
 									<input type="text" value="1">
 									<button class="btn-plus"><i class="fa fa-plus"></i></button>
+									
 								</div>
-
+								
 							</div>
+							@Html.Partial("ProductReviewModal")
 							<div class="action">
-								<a href="#"><i class="fa fa-cart-plus"></i></a>
-								<a href="#"><i class="fa fa-heart"></i></a>
-
-								@Html.Partial("ProductReviewModal")
-								<button type="button" class="btn btn-fefault review" data-product-id="@Model.Id" data-product-name="@Model.Name">
-									Rate
+								<button type="button" class="btn btn-default get">									
+										<i class="fa fa-cart-plus"></i>
+                                     Add to cart 
 								</button>
-
-								<a href="#" title="Add to cart"><i class="fa fa-cart-plus"></i></a>
-								<a href="#" title="Add to wishlist"><i class="fa fa-heart"></i></a>
-								<a href="#" title="Buy now"><i class="fa fa-shopping-bag"></i></a>
+								<button type="button" class="btn btn-default get">
+									<i class="fa fa-shopping-bag"></i> Buy now
+								</button>
+								
+							<br>
+							<br>
+								<button type="button" class="btn btn-default get">
+									<i class="fa fa-heart"></i>
+									Add to wishlist
+								</button>
+								<button type="button" class="btn btn-default review" data-product-id="@Model.Id" data-product-name="@Model.Name">
+									<i class="fa fa-star"></i> Rate
+								</button>
 							</div>
 						</div>
 					</div>
@@ -72,12 +80,12 @@
 					<div class="col-lg-12">
 						<div class="tab-content">
 							<div id="description">
-								<br>
-								<h4>Product description</h4>
+                                <h3>Product description</h3><hr>
 								<p>
 									@Model.Description
 								</p>
 							</div>
+							
 						</div>
 					</div>
 				</div>
@@ -89,16 +97,24 @@
 					<div class="col-lg-12">
 						<div class="tab-content">
 							<div id="specification">
-								<br>
-								<h4>Shop Information</h4>
+
+                                <h3>Shop Information</h3><hr>
 								<div class="row">
 									<div class="col-md-2">
 										<img src="@company.Logo" alt="@company.Name Logo" class="img-fluid rounded-circle mb-3" />
 									</div>
 									<div class="col-md-4">
 										<h4>@company.Name</h4>
-										<a href="#">Chat ngay</a>
-										<a asp-action="Shop" asp-controller="Shop" asp-route-id="@company.Id">View Shop</a>
+										<button type="button" class="btn btn-default get">
+											<a href="#" style="color:white">
+												<i class="fa fa-comments"></i>  Chat
+											</a>
+										</button>
+										<button type="button" class="btn btn-default get">
+											<a asp-action="Shop" asp-controller="Shop" asp-route-id="@company.Id" style="color:white">
+												<i class="fa fa-store"></i> View Shop
+											</a>
+										</button>
 									</div>
 									<div class="col-md-6">
 										<p><strong>Joined:</strong> @company.CreatedAt.ToString("dd MMM yyyy")</p>
@@ -118,8 +134,9 @@
 					<div class="col-lg-12">
 						<div class="tab-content">
 							<div id="reviews">
-								<br>
-								<h4>Reviews (@Model.RatingAndReviews.Count)</h4>
+								<h3>Reviews (@Model.RatingAndReviews.Count)</h3>
+								<hr>
+
 								<div class="reviews-submitted">
 									@if (reviews != null && reviews.Any())
 									{
@@ -127,7 +144,7 @@
 											@foreach (var review in reviews)
 											{
 												<li>
-													<div class="reviewer">@review.CreatedByNavigation.Username - <span>@review.CreatedAt.ToString("dd MMM yyyy")</span></div>
+													<div class="reviewer">@review.CreatedByNavigation.Username - <span>@review.CreatedAt.ToString("dd MMM yyyy - HH:mm:ss")</span></div>
 													<div class="ratting">
 														@for (int i = 0; i < review.Rating; i++)
 														{
@@ -140,6 +157,7 @@
 													</div>
 													<p>@review.Review</p>
 												</li>
+												<hr>
 											}
 										</ul>
 									}
@@ -148,30 +166,7 @@
 										<p>No reviews available.</p>
 									}
 								</div>
-								<div class="reviews-submit">
-									<h4>Give your Review:</h4>
-									<div class="ratting">
-										<i class="fa fa-star-o"></i>
-										<i class="fa fa-star-o"></i>
-										<i class="fa fa-star-o"></i>
-										<i class="fa fa-star-o"></i>
-										<i class="fa fa-star-o"></i>
-									</div>
-									<div class="row form">
-										<div class="col-sm-6">
-											<input type="text" placeholder="Name">
-										</div>
-										<div class="col-sm-6">
-											<input type="email" placeholder="Email">
-										</div>
-										<div class="col-sm-12">
-											<textarea placeholder="Review"></textarea>
-										</div>
-										<div class="col-sm-12">
-											<button>Submit</button>
-										</div>
-									</div>
-								</div>
+
 							</div>
 						</div>
 					</div>
