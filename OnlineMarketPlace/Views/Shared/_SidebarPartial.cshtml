@@ -47,6 +47,45 @@
         });
     </script>
 
+@* <div class="sidebar-widget category"> *@
+@*     <h2 class="title">Category</h2> *@
+@*     @for (int i = 0; i < Model.CategoriesParent.Count; i++) *@
+@*     { *@
+@*         <div class="panel panel-default"> *@
+@*             <div class="panel-heading"> *@
+@*                 <!-- Kiểm tra xem danh mục có con hay không --> *@
+@*                 @if (Model.CategoriesChild[i] == null || !Model.CategoriesChild[i].Any()) *@
+@*                 { *@
+@*                     <h4 class="panel-title"> *@
+@*                         <!-- Nếu không có danh mục con, hiển thị một liên kết tới trang sản phẩm của danh mục --> *@
+@*                         <a href="@Url.Action("ProductsByCategory", "Category", new { categoryId = Model.CategoriesParent[i].Id })"> *@
+@*                             @Model.CategoriesParent[i].Name *@
+@*                         </a> *@
+@*                     </h4> *@
+@*                 } *@
+@*                 else *@
+@*                 { *@
+@*                     <!-- Nếu có danh mục con, hiển thị dropdown --> *@
+@*                     <div class="dropdown"> *@
+@*                         <a href="#" class="dropdown-toggle" role="button" aria-haspopup="true" aria-expanded="false"> *@
+@*                             @Model.CategoriesParent[i].Name <span class="caret"></span> *@
+@*                         </a> *@
+@*                         <ul class="dropdown-menu"> *@
+@*                             @foreach (var child in Model.CategoriesChild[i]) *@
+@*                             { *@
+@*                                 <li> *@
+@*                                     <a href="@Url.Action("ProductsByCategory", "Category", new { categoryId = child.Id })"> *@
+@*                                         @child.Name *@
+@*                                     </a> *@
+@*                                 </li> *@
+@*                             } *@
+@*                         </ul> *@
+@*                     </div> *@
+@*                 } *@
+@*             </div> *@
+@*         </div> *@
+@*     } *@
+@* </div> *@
 <div class="sidebar-widget category">
     <h2 class="title">Category</h2>
     @for (int i = 0; i < Model.CategoriesParent.Count; i++)
@@ -58,7 +97,7 @@
                 {
                     <h4 class="panel-title">
                         <!-- Nếu không có danh mục con, hiển thị một liên kết tới trang sản phẩm của danh mục -->
-                        <a href="@Url.Action("ProductsByCategory", "Category", new { categoryId = Model.CategoriesParent[i].Id })">
+                        <a href="@Url.Action("ProductsByCategory", "Category", new { categoryId = Model.CategoriesParent[i].Id, page = 1, limit = 9 })">
                             @Model.CategoriesParent[i].Name
                         </a>
                     </h4>
@@ -74,7 +113,7 @@
                             @foreach (var child in Model.CategoriesChild[i])
                             {
                                 <li>
-                                    <a href="@Url.Action("ProductsByCategory", "Category", new { categoryId = child.Id })">
+                                    <a href="@Url.Action("ProductsByCategory", "Category", new { categoryId = child.Id, page = 1, limit = 9 })">
                                         @child.Name
                                     </a>
                                 </li>
