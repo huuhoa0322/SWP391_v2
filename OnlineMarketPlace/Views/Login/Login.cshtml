@@ -32,7 +32,15 @@
 							</div>
 							<div class="col-md-12">
 								<label>Password</label>
-								<input class="form-control" type="text" placeholder="Password" name="password" style="margin: 0" required>
+								<div class="input-group mb-3">
+									<input type="password" class="form-control" id="password" name="password" placeholder="Enter a password" required />
+									<div class="input-group-append">
+										<span class="input-group-text" onclick="password_show_hide();">
+											<i class="fa fa-eye-slash" id="show_eye"></i>
+											<i class="fa fa-eye d-none" id="hide_eye"></i>
+										</span>
+									</div>
+								</div>
 							</div>
 
 							<div class="col-md-12">
@@ -72,4 +80,20 @@
 		</div>
 	</div>
 </div>
-<!-- Login End -->
+<script>
+	function password_show_hide() {
+	  var x = document.getElementById("password");
+	  var show_eye = document.getElementById("show_eye");
+	  var hide_eye = document.getElementById("hide_eye");
+	  hide_eye.classList.remove("d-none");
+	  if (x.type === "password") {
+		x.type = "text";
+		show_eye.style.display = "none";
+		hide_eye.style.display = "block";
+	  } else {
+		x.type = "password";
+		show_eye.style.display = "block";
+		hide_eye.style.display = "none";
+	  }
+	}
+	</script>

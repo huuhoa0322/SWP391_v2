@@ -28,6 +28,7 @@
 								<h2 class="h3" style="font-weight: bold;">Forgot Password</h2>
 								<p class="fs-6 fw-normal text-secondary m-0">Provide the email address associated with your account to recover your password.</p>
 							</div>
+							<div><small id="emailError" class="text-danger"></small></div>
 						</div>
 					</div>
 					<form asp-action="SendMailForgetPass" asp-controller="Login" method="post">
@@ -72,6 +73,23 @@
 		</div>
 	</div>
 </div>
+
+<script>
+	// Kiểm tra email
+	document.getElementById("email").addEventListener("input", async function () {
+		const email = this.value;
+		if (email.length > 0) {
+			const response = await fetch(`/Register/CheckEmail?email=${email}`);
+			const result = await response.json();
+			const errorElement = document.getElementById("emailError");
+			if (!result.isValid) {
+				errorElement.textContent = result.message;
+			} else {
+				errorElement.textContent = "";
+			}
+		}
+	});
+</script>
 
 
 

@@ -1,32 +1,38 @@
 ﻿<div id="productReviewModal" class="modal">
 	<div class="modal-content">
-		<span class="close-btn">&times;</span>
-		<h2>Rate Product</h2>
-
-		<form id="reviewForm" asp-action="SubmitReview" asp-controller="RatingAndReview" method="POST">
-			@* <!-- Input hidden để lưu ProductId --> *@
-			<p><strong>Product:</strong> <span id="productName"></span></p>
-			
-			<div class="rating" name="rating">
-				<!-- Số sao từ 1 đến 5 -->
-				<span data-value="1" class="star" style="margin-top: 0px">&#9733;</span>
-				<span data-value="2" class="star" style="margin-top: 0px">&#9733;</span>
-				<span data-value="3" class="star" style="margin-top: 0px">&#9733;</span>
-				<span data-value="4" class="star" style="margin-top: 0px">&#9733;</span>
-				<span data-value="5" class="star" style="margin-top: 0px">&#9733;</span>
+		<div class="col">
+			<div class="col-md-12">
+				<span class="close-btn">&times;</span>
+				<h2>Rate Product</h2>
 			</div>
+			<div class="col-md-12">
+				<form id="reviewForm" asp-action="SubmitReview" asp-controller="RatingAndReview" method="POST">
+					@* <!-- Input hidden để lưu ProductId --> *@
+					<p><strong>Product:</strong> <span id="productName"></span></p>
 
-			
-			<input type="hidden" name="productId" value="" />
-			<input type="hidden" id="ratingValue" name="rating" value="0" />
+					<div class="rating" name="rating">
+						<!-- Số sao từ 1 đến 5 -->
+						<span data-value="1" class="star" style="margin-top: 0px">&#9733;</span>
+						<span data-value="2" class="star" style="margin-top: 0px">&#9733;</span>
+						<span data-value="3" class="star" style="margin-top: 0px">&#9733;</span>
+						<span data-value="4" class="star" style="margin-top: 0px">&#9733;</span>
+						<span data-value="5" class="star" style="margin-top: 0px">&#9733;</span>
 
-			<textarea id="comment" name="review" rows="6" cols="30" placeholder="Share more thoughts on the product to help other buyers..."></textarea>
-			<br><br>
+						<input type="hidden" name="productId" value="" />
+						<input type="hidden" id="ratingValue" name="rating" value="0" />
+					</div>
 
-			<button type="submit" class="btn btn-primary">SUBMIT</button>
-		</form>
+
+					<textarea id="comment" name="review" class="form-control" rows="5" placeholder="Share more thoughts on the product to help other buyers..."></textarea>
+
+					<button type="submit" class="btn btn-primary">SUBMIT</button>
+				</form>
+			</div>
+		</div>
 	</div>
 </div>
+
+
 
 <script>
 		document.addEventListener('DOMContentLoaded', () => {
@@ -100,17 +106,23 @@
 			})
 			.then(response => response.json())
 			.then(result => {
+				if (result.success) {
 				console.log('Gửi đánh giá thành công:', result);
 				alert('Cảm ơn bạn đã đánh giá sản phẩm!');
 				modal.style.display = 'none'; // Đóng modal sau khi gửi thành công
 				form.reset(); // Reset form
 				ratingValue.value = "0"; // Reset giá trị sao
 				stars.forEach(s => s.classList.remove('selected')); // Reset trạng thái sao
+			}else{
+				alert('Đánh giá không thành công! ' + (result.message || 'Vui lòng thử lại.'));
+				}
 			})
+
 			.catch(error => {
 				console.error('Lỗi khi gửi đánh giá:', error);
 				alert('Đã xảy ra lỗi. Vui lòng thử lại!');
 			});
+
 		});
 	});
 

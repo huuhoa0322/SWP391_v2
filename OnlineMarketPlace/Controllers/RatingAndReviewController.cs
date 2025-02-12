@@ -19,14 +19,20 @@ namespace OnlineMarketPlace.Controllers
         [HttpPost]
         public async Task<IActionResult> SubmitReview(int productId, int rating, string review)
         {
-            try
-            {
+            try {
+                Console.WriteLine("-----------------");
+                Console.WriteLine("kkkk");
+
                 int userId = int.Parse(HttpContext.Session.GetString("Id"));
+                Console.WriteLine(HttpContext.Session.GetString("Id"));
+                Console.WriteLine(userId);
+
                 // Tạo và lưu đánh giá
                 
                 var existRating = await _ratingAndReviewRepository.GetRatingByProductAndUserAsync(productId, userId);
                 if (existRating == null)
                 {
+                    Console.WriteLine("hehehe");
                     var ratingAndReview = new RatingAndReview
                     {
                         ProductId = productId,
@@ -47,8 +53,9 @@ namespace OnlineMarketPlace.Controllers
                 // Phản hồi JSON thành công
                 return Json(new { success = true });
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
+                Console.WriteLine("loi");
                 // Phản hồi JSON khi lỗi
                 return Json(new { success = false });
             }

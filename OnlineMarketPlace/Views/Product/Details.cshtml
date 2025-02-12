@@ -54,6 +54,12 @@
                             <div class="action">
                                 <a href="#"><i class="fa fa-cart-plus"></i></a>
                                 <a href="#"><i class="fa fa-heart"></i></a>
+
+                                @Html.Partial("ProductReviewModal")
+                                <button type="button" class="btn btn-fefault review" data-product-id="@Model.Id" data-product-name="@Model.Name">
+                                    Rate
+                                </button>
+
                             </div>
                         </div>
                     </div>
