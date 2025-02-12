@@ -146,13 +146,13 @@
 												<li>
 													<div class="reviewer">@review.CreatedByNavigation.Username - <span>@review.CreatedAt.ToString("dd MMM yyyy - HH:mm:ss")</span></div>
 													<div class="ratting">
-														@for (int i = 0; i < review.Rating; i++)
+														@for (int i = 1; i <= review.Rating; i++)
 														{
 															<i class="fa fa-star"></i>
 														}
-														@for (int i = review.Rating; i < 5; i++)
+														@for (int i = review.Rating; i <= 5; i++)
 														{
-															<i class="fa fa-star-o"></i>
+															<i class="fa fa-star-fill"></i>
 														}
 													</div>
 													<p>@review.Review</p>
