@@ -99,10 +99,12 @@
                                     double? a = await ratingRepo.GetAverageRatingByProductAsync(item.Product.Id);
                             }
                                 @if(a == null){
-                                    <p>no rating yet</p>
+                                    <div class="ratting" style="color: #3F69AA">
+                                        <i>no rating yet</i>
+                                    </div>
                                 } else{
-                                    <div class="ratting">
-                                        <p>@a?.ToString("0.0")</p>
+                                    <div class="ratting" style="color: #3F69AA">
+                                        <i>@a?.ToString("0.0")</i>
                                         <i class="fa fa-star"></i>
                                     </div>
                                 }
@@ -155,12 +157,14 @@
                         }
                         @if (a == null)
                         {
-                            <p>no rating yet</p>
+                            <div class="ratting" style="color: #3F69AA">
+                                <i>no rating yet</i>
+                            </div>
                         }
                         else
                         {
-                            <div class="ratting">
-                                <p>@a?.ToString("0.0")</p>
+                            <div class="ratting" style="color: #3F69AA">
+                                <i>@a?.ToString("0.0")</i>
                                 <i class="fa fa-star"></i>
                             </div>
                         }
