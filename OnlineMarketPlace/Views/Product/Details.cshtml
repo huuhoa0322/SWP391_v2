@@ -53,25 +53,29 @@
 								
 							</div>
 							@Html.Partial("ProductReviewModal")
-							<div class="action">
-								<button type="button" class="btn btn-default get">									
-										<i class="fa fa-cart-plus"></i>
-                                     Add to cart 
-								</button>
+							@* <div class="action"> *@
+
 								<button type="button" class="btn btn-default get">
-									<i class="fa fa-shopping-bag"></i> Buy now
+                                <a href="#" title="" style="color: white"><i class="fa fa-cart-plus"></i> Add to cart</a> 
+								</button>
+
+								<button type="button" class="btn btn-default get">
+								<a href="#" title="" style="color: white"><i class="fa fa-shopping-bag"></i> Buy now</a>
 								</button>
 								
 							<br>
 							<br>
 								<button type="button" class="btn btn-default get">
-									<i class="fa fa-heart"></i>
-									Add to wishlist
+                                <a href="#" title="" style="color: white"><i class="fa fa-heart"></i> Add to wishlist</a>
 								</button>
+
 								<button type="button" class="btn btn-default review" data-product-id="@Model.Id" data-product-name="@Model.Name">
 									<i class="fa fa-star"></i> Rate
 								</button>
-							</div>
+
+								
+							
+							@* </div> *@
 						</div>
 					</div>
 				</div>

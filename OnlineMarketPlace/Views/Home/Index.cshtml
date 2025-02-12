@@ -86,12 +86,13 @@
                                 <img src="~/images/@item.Product.Image" alt="Product Image" class="img-fluid">
                             </a>
                             <div class="product-action">
-                                <a href="#"><i class="fa fa-cart-plus"></i></a>
-                                <a href="#"><i class="fa fa-heart"></i></a>
+                                    <a href="#" title="Add to cart"><i class="fa fa-cart-plus"></i></a>
+                                    <a href="#" title="Add to wishlist"><i class="fa fa-heart"></i></a>
+                                    <a href="#" title="Buy now"><i class="fa fa-shopping-bag"></i></a>
                             </div>
                         </div>
                         <div class="product-content">
-                            <div class="title"><a asp-action="Details" asp-controller="Product" asp-route-Id="@item.Product.Id">@item.Product.Name> </a></div>
+                            <div class="title"><a asp-action="Details" asp-controller="Product" asp-route-Id="@item.Product.Id">@item.Product.Name </a></div>
                             
                             @{
                                 double dprice = Math.Round(item.Product.Price * (100 + item.Value) / 100,2);
@@ -100,7 +101,7 @@
                             }
                                 @if(a == null){
                                     <div class="ratting" style="color: #3F69AA">
-                                        <i>no rating yet</i>
+                                        <i>No rating yet</i>
                                     </div>
                                 } else{
                                     <div class="ratting" style="color: #3F69AA">
@@ -144,8 +145,9 @@
                 <div class="product-image">                   
                         <img src="~/images/@product.Image" alt="Product Image">
                     <div class="product-action">
-                        <a href="#"><i class="fa fa-cart-plus"></i></a>
-                        <a href="#"><i class="fa fa-heart"></i></a>
+                            <a href="#" title="Add to cart"><i class="fa fa-cart-plus"></i></a>
+                            <a href="#" title="Add to wishlist"><i class="fa fa-heart"></i></a>
+                            <a href="#" title="Buy now"><i class="fa fa-shopping-bag"></i></a>
                     </div>
                 </div>
                 <div class="product-content">
@@ -158,7 +160,7 @@
                         @if (a == null)
                         {
                             <div class="ratting" style="color: #3F69AA">
-                                <i>no rating yet</i>
+                                <i>No rating yet</i>
                             </div>
                         }
                         else
