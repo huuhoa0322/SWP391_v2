@@ -14,105 +14,7 @@ namespace OnlineMarketPlace.Controllers
         private readonly CategoryRepository _categoryRepository = new();
 
         //Hien thi danh sach danh muc va san pham, gioi han so luong san pham hien thi
-        public async Task<IActionResult> Index(int limit = 9)
-        {
-            var viewModel = new CategoriesList
-            {
-                // Lay danh muc cha
-                CategoriesParent = await _categoryRepository.GetCatgoryParent()
-            };
-
-            // Lay danh muc con cua tung danh muc cha
-            var childCategoriesArray = await Task.WhenAll(
-                viewModel.CategoriesParent.Select(async parent =>
-                {
-                    using (var context = new OnlineShoppingContext()) //ket noi voi CSDL
-                    {
-                        return await context.Categories
-                            .Where(c => c.ParentId == parent.Id) // Tim danh muc con theo ParentId
-                            .ToListAsync(); // Chuyen ket qua sang danh sach
-                    }
-                })
-            );
-            // Gop cac danh muc con vao viewModel
-            viewModel.CategoriesChild = childCategoriesArray.ToList();
-            ViewData["CategoriesList"] = viewModel; // Luu danh muc vao ViewData de hien thi
-
-            // Lay danh sach san pham tu ProductRepository
-            var products = await _productRepository.GetProductsAsync();
-            ViewData["Products"] = products.Take(limit).ToList(); //lay so luong san pham theo limit
-
-            //luu total va limit de xu ly nut "see more"
-            ViewData["TotalProducts"] = products.Count;
-            ViewData["Limit"] = limit;
-
-            return View();
-        }
-        //search theo ten
-        public async Task<IActionResult> Search(string searchString, string price = null, string sortBy = null, int? categoryId = null, int limit = 9)
-        {
-            var viewModel = new CategoriesList();
-
-            // Lay danh muc cha va con 
-            viewModel.CategoriesParent = await _categoryRepository.GetCatgoryParent();
-            var childCategoriesArray = await Task.WhenAll(
-                viewModel.CategoriesParent.Select(async parent =>
-                {
-                    using (var context = new OnlineShoppingContext())
-                    {
-                        return await context.Categories
-                            .Where(c => c.ParentId == parent.Id) // Tim danh muc con theo ParentId
-                            .ToListAsync();
-                    }
-                })
-            );
-            viewModel.CategoriesChild = childCategoriesArray.ToList();
-            ViewData["CategoriesList"] = viewModel;
-
-            // Tìm kiếm sản phẩm theo tên
-            var products = await _productRepository.SearchProductsByNameAsync(searchString);
-
-            // Áp dụng filter theo category nếu có
-            if (categoryId.HasValue)
-            {
-                products = products.Where(p => p.CategoryId == categoryId.Value).ToList();
-            }
-
-            // Áp dụng filter theo giá nếu có
-            if (!string.IsNullOrEmpty(price))
-            {
-                var parts = price.Split('-');
-                if (parts.Length == 2 && 
-                    double.TryParse(parts[0], out double minPrice) && 
-                    double.TryParse(parts[1], out double maxPrice))
-                {
-                    products = products.Where(p => p.Price >= minPrice && p.Price <= maxPrice).ToList();
-                }
-            }
-
-            // Áp dụng sắp xếp nếu có
-            products = sortBy switch
-            {
-                "price-asc" => products.OrderBy(p => p.Price).ToList(),
-                "price-desc" => products.OrderByDescending(p => p.Price).ToList(),
-                "name-asc" => products.OrderBy(p => p.Name).ToList(),
-                "name-desc" => products.OrderByDescending(p => p.Name).ToList(),
-                _ => products
-            };
-
-            ViewData["Products"] = products.Take(limit).ToList();
-            ViewData["TotalProducts"] = products.Count;
-            ViewData["Limit"] = limit;
-            ViewData["SearchString"] = searchString;
-            ViewData["CategoryId"] = categoryId;
-            ViewData["SelectedPrice"] = price;
-            ViewData["SortBy"] = sortBy;
-
-            return View("Index");
-        }
-
-        //Hien thi san pham theo danh muc
-        public async Task<IActionResult> ProductsByCategory(int categoryId)
+        public async Task<IActionResult> Index(int page = 1, int limit = 9)
         {
             var viewModel = new CategoriesList
             {
@@ -131,13 +33,122 @@ namespace OnlineMarketPlace.Controllers
             viewModel.CategoriesChild = childCategoriesArray.ToList();
             ViewData["CategoriesList"] = viewModel;
 
-            // Loc san pham theo danh muc duoc truyen vao
-            var products = await _productRepository.GetProductsByCategoryIdAsync(categoryId);
-            ViewData["Products"] = products;
-            ViewData["CategoryId"] = categoryId; // Luu categoryId de xu ly Sort
+            var products = await _productRepository.GetProductsAsync();
+            var totalProducts = products.Count;
+
+            // Pagination logic
+            var totalPages = (int)Math.Ceiling((double)totalProducts / limit);
+            var pagedProducts = products.Skip((page - 1) * limit).Take(limit).ToList();
+
+            ViewData["Products"] = pagedProducts;
+            ViewData["TotalProducts"] = totalProducts;
+            ViewData["Limit"] = limit;
+            ViewData["Page"] = page;
+            ViewData["TotalPages"] = totalPages;
+
+            return View();
+        }
+
+        public async Task<IActionResult> Search(string searchString, string price = null, string sortBy = null, int? categoryId = null, int page = 1, int limit = 9)
+        {
+            var viewModel = new CategoriesList();
+            viewModel.CategoriesParent = await _categoryRepository.GetCatgoryParent();
+            var childCategoriesArray = await Task.WhenAll(
+                viewModel.CategoriesParent.Select(async parent =>
+                {
+                    using var context = new OnlineShoppingContext();
+                    return await context.Categories
+                        .Where(c => c.ParentId == parent.Id)
+                        .ToListAsync();
+                })
+            );
+            viewModel.CategoriesChild = childCategoriesArray.ToList();
+            ViewData["CategoriesList"] = viewModel;
+
+            var products = await _productRepository.SearchProductsByNameAsync(searchString);
+
+            if (categoryId.HasValue)
+            {
+                products = products.Where(p => p.CategoryId == categoryId.Value).ToList();
+            }
+
+            if (!string.IsNullOrEmpty(price))
+            {
+                var parts = price.Split('-');
+                if (parts.Length == 2 && double.TryParse(parts[0], out double minPrice) && double.TryParse(parts[1], out double maxPrice))
+                {
+                    products = products.Where(p => p.Price >= minPrice && p.Price <= maxPrice).ToList();
+                }
+            }
+
+            // Apply sorting
+            products = sortBy switch
+            {
+                "price-asc" => products.OrderBy(p => p.Price).ToList(),
+                "price-desc" => products.OrderByDescending(p => p.Price).ToList(),
+                "name-asc" => products.OrderBy(p => p.Name).ToList(),
+                "name-desc" => products.OrderByDescending(p => p.Name).ToList(),
+                _ => products
+            };
+
+            var totalProducts = products.Count();
+            var totalPages = (int)Math.Ceiling((double)totalProducts / limit);
+            var pagedProducts = products.Skip((page - 1) * limit).Take(limit).ToList();
+
+            ViewData["Products"] = pagedProducts;
+            ViewData["TotalProducts"] = totalProducts;
+            ViewData["Limit"] = limit;
+            ViewData["Page"] = page;
+            ViewData["TotalPages"] = totalPages;
+            ViewData["SearchString"] = searchString;
+            ViewData["CategoryId"] = categoryId;
+            ViewData["SelectedPrice"] = price;
+            ViewData["SortBy"] = sortBy;
 
             return View("Index");
         }
+
+
+        // Similarly update FilterByPrice and Sort methods to include pagination handling
+
+
+        //Hien thi san pham theo danh muc
+        public async Task<IActionResult> ProductsByCategory(int categoryId, int page = 1, int limit = 9)
+        {
+            var viewModel = new CategoriesList
+            {
+                CategoriesParent = await _categoryRepository.GetCatgoryParent()
+            };
+
+            var childCategoriesArray = await Task.WhenAll(
+                viewModel.CategoriesParent.Select(async parent =>
+                {
+                    using var context = new OnlineShoppingContext();
+                    return await context.Categories
+                        .Where(c => c.ParentId == parent.Id)
+                        .ToListAsync();
+                })
+            );
+            viewModel.CategoriesChild = childCategoriesArray.ToList();
+            ViewData["CategoriesList"] = viewModel;
+
+            var products = await _productRepository.GetProductsByCategoryIdAsync(categoryId);
+            var totalProducts = products.Count();
+
+            // Pagination logic
+            var totalPages = (int)Math.Ceiling((double)totalProducts / limit);
+            var pagedProducts = products.Skip((page - 1) * limit).Take(limit).ToList();
+
+            ViewData["Products"] = pagedProducts;
+            ViewData["TotalProducts"] = totalProducts;
+            ViewData["Limit"] = limit;
+            ViewData["Page"] = page;
+            ViewData["TotalPages"] = totalPages;
+            ViewData["CategoryId"] = categoryId;
+
+            return View("Index");
+        }
+
 
         //Loc san pham theo gia
         [HttpGet("Category/FilterByPriceRange")]

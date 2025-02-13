@@ -38,8 +38,24 @@
                 </div>
                 <div class="col-md-6">
                     <div class="search">
-                        <input type="text" placeholder="Search">
-                        <button><i class="fa fa-search"></i></button>
+                        <div class="product-search search_box">
+                            <form asp-controller="Category" asp-action="Search" method="get" class="d-flex">
+                                <input type="text" name="searchString" class="form-control" placeholder="Search" value="@ViewData["SearchString"]">
+                                @if (ViewData["CategoryId"] != null)
+                                {
+                                    <input type="hidden" name="categoryId" value="@ViewData["CategoryId"]" />
+                                }
+                                @if (ViewData["SelectedPrice"] != null)
+                                {
+                                    <input type="hidden" name="price" value="@ViewData["SelectedPrice"]" />
+                                }
+                                @if (ViewData["SortBy"] != null)
+                                {
+                                    <input type="hidden" name="sortBy" value="@ViewData["SortBy"]" />
+                                }
+                                <button type="submit" class="btn btn-primary ml-2"><i class="fa fa-search"></i></button>
+                            </form>
+                        </div>
                     </div>
                 </div>
                 <div class="col-md-3">
@@ -67,10 +83,13 @@
                                 </div>
                             }
                         </div>
+
+                        
+
 						@if (string.IsNullOrEmpty(userName))
 						{
 							//<a asp-controller="Login" asp-action="Login" class="btn">Login</a>
-                            <div class="cart" onclick="window.location.href='/Login/Login';" style="cursor: pointer;">
+                            <div class="nonlogin cart" onclick="window.location.href='/Login/Login';" style="cursor: pointer;">
                                 <i class="fa fa-cart-plus"></i>
                                 <span>(0)</span>
                             </div>
@@ -81,7 +100,6 @@
                                 <i class="fa fa-cart-plus"></i>
                                 <span>(0)</span>
                             </div>
-							
 						}
 						
 					</div>
@@ -229,15 +247,16 @@
     <script src="~/lib/slick/slick.min.js"></script>
 
 
+
     <!-- Template Javascript -->
     <script src="~/js/main.js"></script>
     
     <script>
         $(document).ready(function(){
-            $(".cart").click(function(event){
-                event.preventDefault(); // Prevent navigation
-                alert("You need to log in first.");
-                window.location.href = "/Login/Login"; // Redirect manually
+            $(".nonlogin").click(function(event){
+                    event.preventDefault(); // Prevent navigation
+                    alert("You need to log in first.");
+                    window.location.href = "/Login/Login"; // Redirect manually
             });
         });
     </script>

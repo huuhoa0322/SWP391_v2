@@ -101,8 +101,14 @@ public class LoginController : Controller
                 LoginBy = true
             };
             await _userRepository.AddAsync(existUser);
-            HttpContext.Session.SetString("Username", username);
-            HttpContext.Session.SetString("Role", existUser.Role);
+
+            var user = await _userRepository.GetUser(username, ncryptpasswordmd5.HashPasswordMD5("123456789"));
+
+
+            HttpContext.Session.SetString("Id", user.Id.ToString());
+            HttpContext.Session.SetString("Username", user.Username);
+            HttpContext.Session.SetString("Role", user.Role);
+
             return RedirectToAction("Index", "Home");
         }
         else if (existUser.LoginBy == false) //Email da duoc dang ky bang Register
@@ -121,6 +127,7 @@ public class LoginController : Controller
         }
         else
         {
+            HttpContext.Session.SetString("Id", existUser.Id.ToString());
             HttpContext.Session.SetString("Username", username);
             HttpContext.Session.SetString("Role", existUser.Role);
             return RedirectToAction("Index", "Home"); //Email da duoc dky trong DB

@@ -1,146 +1,153 @@
 ﻿@{
-
-    ViewData["Title"] = "Danh mục sản phẩm";
+    ViewData["Title"] = "Product Categories";
     var categories = ViewData["CategoriesList"] as OnlineMarketPlace.Models.CategoriesList;
     var products = ViewData["Products"] as List<OnlineMarketPlace.Models.Product>;
     int totalProducts = ViewData["TotalProducts"] is int total ? total : 0;
     int limit = ViewData["Limit"] != null ? Convert.ToInt32(ViewData["Limit"]) : 10;
 }
-<!-- Product List Start -->
-<div class="product-view">
-    <div class="container">
-        <div class="row">
-            <!-- Phần sản phẩm -->
-            <div class="col-md-9">
-                <div class="row mb-4">
-                    <div class="col-lg-12">
-                        <div class="row align-items-center">
-                            <div class="col-md-8">
-                                <div class="product-search search_box">
-    <form asp-controller="Category" asp-action="Search" method="get" class="d-flex">
-        <input type="text" name="searchString" class="form-control" placeholder="Search" value="@ViewData["SearchString"]">
-        @if (ViewData["CategoryId"] != null)
-        {
-            <input type="hidden" name="categoryId" value="@ViewData["CategoryId"]" />
-        }
-        @if (ViewData["SelectedPrice"] != null)
-        {
-            <input type="hidden" name="price" value="@ViewData["SelectedPrice"]" />
-        }
-        @if (ViewData["SortBy"] != null)
-        {
-            <input type="hidden" name="sortBy" value="@ViewData["SortBy"]" />
-        }
-        <button type="submit" class="btn btn-primary ml-2"><i class="fa fa-search"></i></button>
-    </form>
-</div>
-                            </div>
-                            <div class="col-md-4" style="margin-bottom: 12px;">
-                                <div class="product-short text-right">
-                                    <div class="dropdown">
-                                        <a href="#" class="dropdown-toggle btn btn-secondary" data-toggle="dropdown">Sort by =></a>
-                                        <div class="dropdown-content dropdown-menu dropdown-menu-right">
-                                            <button class="dropdown-item" onclick="sortProducts('price-asc')">Price: Low to High</button>
-                                            <button class="dropdown-item" onclick="sortProducts('price-desc')">Price: High to Low</button>
-                                            <button class="dropdown-item" onclick="sortProducts('name-asc')">Name: A to Z</button>
-                                            <button class="dropdown-item" onclick="sortProducts('name-desc')">Name: Z to A</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-3">
+            @Html.Partial("_SidebarPartial", categories)
+        </div>
+        <div class="col-md-9">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div class="dropdown">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown">
+                        Sort
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-right">
+                        <button class="dropdown-item" onclick="sortProducts('price-asc')">Price: Low to High</button>
+                        <button class="dropdown-item" onclick="sortProducts('price-desc')">Price: High to Low</button>
+                        <button class="dropdown-item" onclick="sortProducts('name-asc')">Name: A to Z</button>
+                        <button class="dropdown-item" onclick="sortProducts('name-desc')">Name: Z to A</button>
                     </div>
-                    <script>
-                        function sortProducts(sortBy) {
-                            var categoryId = "@ViewData["CategoryId"]";
-                            var selectedPrice = "@ViewData["SelectedPrice"]";
-                            var searchString = "@ViewData["SearchString"]";
-                            var url = `/Category/Sort?sortBy=${sortBy}`;
-                            
-                            if (categoryId) {
-                                url += `&categoryId=${categoryId}`;
-                            }
-                            if (selectedPrice) {
-                                url += `&price=${selectedPrice}`;
-                            }
-                            if (searchString) {
-                                url += `&searchString=${searchString}`;
-                            }
-                            
-                            window.location.href = url;
-                        }
-                    </script>
-                    <!-- Danh sách sản phẩm -->
-                    <div class="row">
-                        @if (products != null && products.Any())
-                        {
-                            @foreach (var product in products)
-                            {
-                                <div class="col-lg-4 col-md-6 mb-4">
-                                    <div class="product-item card">
-                                        <div class="product-image">
-                                            <a href="/Product/Detail/@product.Id">
-                                                @if (!string.IsNullOrEmpty(product.Image))
-                                                {
-                                                    <img src="@product.Image" alt="@product.Name" class="img-fluid">
-                                                }
-                                                else
-                                                {
-                                                    <img src="/images/default-product.jpg" alt="@product.Name" class="img-fluid">
-                                                }
-                                            </a>
-                                            <div class="product-action">
-                                                <a href="#" class="btn btn-outline-primary"><i class="fa fa-cart-plus"></i></a>
-                                                <a href="#" class="btn btn-outline-secondary"><i class="fa fa-heart"></i></a>
-                                                <a href="#" class="btn btn-outline-info"><i class="fa fa-search"></i></a>
-                                            </div>
-                                        </div>
-                                        <div class="product-content">
-                                            <div class="title"><a href="/Product/Details/@product.Id">@product.Name</a></div>
-                                            <div class="price">$ @product.Price </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            }
-                        }
-                        else
-                        {
-                            <div class="col-12 text-center">
-                                <p>Không tìm thấy sản phẩm nào.</p>
-                            </div>
-                        }
-                        @if (totalProducts > limit)
-                        {
-                            <form method="get" action="@Url.Action("FilterByPriceRange", "Category")" class="text-center mt-4">
-                                <input type="hidden" name="limit" value="@(limit + 9)" />
-                                @if (ViewData["CategoryId"] != null)
-                                {
-                                    <input type="hidden" name="categoryId" value="@ViewData["CategoryId"]" />
-                                }
-                                @if (ViewData["SelectedPrice"] != null)
-                                {
-                                    <input type="hidden" name="price" value="@ViewData["SelectedPrice"]" />
-                                }
-                                <button type="submit" class="btn btn-outline-primary btn-lg">See more</button>
-                            </form>
-                        }
-                    </div>
-                   
                 </div>
             </div>
 
-            <!-- Sidebar nằm bên phải -->
-            <div class="col-md-3">
-                @Html.Partial("_SidebarPartial", categories)
+            <div class="row">
+                @if (products != null && products.Any())
+                {
+                    @foreach (var product in products)
+                    {
+                        <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                            <a href="/Product/Details/@product.Id" class="text-decoration-none">
+                                <div class="card h-100 text-center shadow-sm" style="background-color: #f9f9f9; border: none;">
+                                    <img src="@(!string.IsNullOrEmpty(product.Image) ? product.Image : "/images/default-product.jpg")" class="card-img-top" alt="@product.Name">
+                                    <div class="card-body d-flex flex-column">
+                                        <div class="d-flex justify-content-center mb-2">
+                                            <button class="btn btn-outline-primary btn-sm mr-2">
+                                                <i class="fa fa-cart-plus"></i>
+                                            </button>
+                                            <button class="btn btn-outline-info btn-sm">
+                                                <i class="fa fa-info-circle"></i>
+                                            </button>
+                                        </div>
+                                        <h5 class="card-title" style="color: #4a4a4a;">@product.Name</h5>
+                                        @* <p class="text-muted">no rating yet</p> *@
+                                        <p class="card-text text-primary font-weight-heigh" style="color: #4a4a4a;">$ @product.Price</p>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div class="col-12 text-center">
+                        <p>No products found.</p>
+                    </div>
+                }
             </div>
-        </div>
+
+            @* @if (totalProducts > limit) *@
+            @* { *@
+            @*     <div class="text-center mt-4"> *@
+            @*         <form method="get" action="@Url.Action("FilterByPriceRange", "Category")"> *@
+            @*             <input type="hidden" name="limit" value="@(limit + 9)" /> *@
+            @*             @if (ViewData["CategoryId"] != null) *@
+            @*             { *@
+            @*                 <input type="hidden" name="categoryId" value="@ViewData["CategoryId"]" /> *@
+            @*             } *@
+            @*             @if (ViewData["SelectedPrice"] != null) *@
+            @*             { *@
+            @*                 <input type="hidden" name="price" value="@ViewData["SelectedPrice"]" /> *@
+            @*             } *@
+            @*             <button type="submit" class="btn btn-outline-primary btn-lg">See More</button> *@
+            @*         </form> *@
+            @*     </div> *@
+            @* } *@
+            <div class="pagination">
+    <ul class="pagination-list">
+        @if (ViewData["Page"] != null && (int)ViewData["Page"] > 1)
+        {
+            <li class="page-item">
+                <a class="page-link" href="@Url.Action("Index", new { page = (int)ViewData["Page"] - 1, limit = ViewData["Limit"], categoryId = ViewData["CategoryId"] })">Previous</a>
+            </li>
+        }
+
+        @if (ViewData["TotalPages"] != null)
+        {
+            @for (int i = 1; i <= (int)ViewData["TotalPages"]; i++)
+            {
+                <li class="page-item @(i == (int)ViewData["Page"] ? "active" : "")">
+                    <a class="page-link" href="@Url.Action("Index", new { page = i, limit = ViewData["Limit"], categoryId = ViewData["CategoryId"] })">@i</a>
+                </li>
+            }
+        }
+
+        @if (ViewData["Page"] != null && (int)ViewData["Page"] < (int)ViewData["TotalPages"])
+        {
+            <li class="page-item">
+                <a class="page-link" href="@Url.Action("Index", new { page = (int)ViewData["Page"] + 1, limit = ViewData["Limit"], categoryId = ViewData["CategoryId"] })">Next</a>
+            </li>
+        }
+    </ul>
 </div>
+
+<style>
+    .pagination {
+        display: flex;
+        justify-content: center;
+        margin-top: 20px;
+    }
+    .pagination-list {
+        list-style: none;
+        padding: 0;
+        display: flex;
+    }
+    .page-item {
+        margin: 0 5px;
+    }
+    .page-link {
+        display: block;
+        padding: 8px 16px;
+        color: #007bff;
+        text-decoration: none;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        transition: background-color 0.3s, color 0.3s;
+    }
+    .page-item.active .page-link {
+        background-color: #ccc;
+        color: white;
+        border-color: #ccc;
+    }
+    .page-link:hover {
+        background-color: #f1f1f1;
+        color: #007bff;
+    }
+</style>
+
 <script>
     function sortProducts(sortBy) {
     var categoryId = "@ViewData["CategoryId"]";
     var selectedPrice = "@ViewData["SelectedPrice"]";
     var searchString = "@ViewData["SearchString"]";
-    var url = `/Category/Sort?sortBy=${sortBy}`;
+    var page = "@ViewData["Page"]";
+    var limit = "@ViewData["Limit"]";
+    var url = `/Category/Sort?sortBy=${sortBy}&page=${page}&limit=${limit}`;
     
     if (categoryId) {
         url += `&categoryId=${categoryId}`;
@@ -154,5 +161,49 @@
     
     window.location.href = url;
 }
+    function sortProducts(sortBy) {
+        var categoryId = "@ViewData["CategoryId"]";
+        var selectedPrice = "@ViewData["SelectedPrice"]";
+        var searchString = "@ViewData["SearchString"]";
+        var page = "@ViewData["Page"]";
+        var limit = "@ViewData["Limit"]";
+        var url = `/Category/Sort?sortBy=${sortBy}&page=${page}&limit=${limit}`;
+        
+        if (categoryId) {
+            url += `&categoryId=${categoryId}`;
+        }
+        if (selectedPrice) {
+            url += `&price=${selectedPrice}`;
+        }
+        if (searchString) {
+            url += `&searchString=${searchString}`;
+        }
+        
+        window.location.href = url;
+    }
 </script>
-<!-- Product List End -->
+
+<style>
+    .card {
+        border-color: #e0e0e0;
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .card:hover {
+        transform: scale(1.05);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    .card-title {
+        color: #4a4a4a;
+    }
+    .btn-outline-primary {
+        color: #007bff;
+        border-color: #007bff;
+    }
+    .btn-outline-info {
+        color: #17a2b8;
+        border-color: #17a2b8;
+    }
+    .btn-outline-primary:hover, .btn-outline-info:hover {
+        background-color: #f1f1f1;
+    }
+</style>
