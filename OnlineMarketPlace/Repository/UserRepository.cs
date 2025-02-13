@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using OnlineMarketPlace.Models;
 namespace OnlineMarketPlace.Repository
 {
@@ -94,14 +95,50 @@ namespace OnlineMarketPlace.Repository
             }
         }
 
-        public async Task<List<Order>> GetOrdersByUserIdAsync(int userId)
+        public async Task<List<OrderViewModel>> GetOrdersByUserIdAsync(int userId)
         {
             _context = new();
-            return await _context.Orders
+            var orders = await _context.Orders
                 .Where(o => o.UserId == userId)
                 .Include(o => o.OrderDetails)
                 .ThenInclude(od => od.Product)
+                .ThenInclude(p => p.Seller)
                 .ToListAsync();
+
+            var orderViewModels = new List<OrderViewModel>();
+
+            foreach (var order in orders)
+            {
+                // Nhóm các sản phẩm theo Shop
+                var groupedByShop = order.OrderDetails
+                    .GroupBy(od => od.Product.Seller.Name)  // Nhóm theo tên Shop
+                    .Select(g => new ShopGroup
+                    {
+                        ShopName = g.Key,
+                        TotalAmount = g.Sum(od => od.Quantity * od.Product.Price), // Tính tổng tiền cho Shop
+                        Products = g.Select(od => new ProductDetails
+                        {
+                            ProductName = od.Product.Name,
+                            Quantity = od.Quantity,
+                            Price = od.Product.Price,
+                            TotalProductAmount = od.Quantity * od.Product.Price // Tính tổng tiền cho sản phẩm
+                        }).ToList()
+                    }).ToList();
+
+                orderViewModels.Add(new OrderViewModel
+                {
+                    OrderId = order.Id,
+                    TotalAmount = order.Total, // Tổng tiền của đơn hàng
+                    OrderDate = order.CreateAt,
+                    Status = order.Status,
+                    PaymentMethod = order.PaymentMethod,
+                    ShopGroups = groupedByShop
+                });
+            }
+
+            return orderViewModels;
         }
+
+
     }
 }

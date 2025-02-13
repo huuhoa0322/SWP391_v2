@@ -110,7 +110,7 @@ CREATE TABLE [Direct] (
   [id] INT PRIMARY KEY NOT NULL IDENTITY(1, 1),
   [userId] INT NOT NULL,
   [directer] NVARCHAR(255) NOT NULL,
-  [phoneNumber] VARCHAR NOT NULL,
+  [phoneNumber] VARCHAR(255) NOT NULL,
   [name] NVARCHAR(255) NOT NULL
 )
 ALTER TABLE [Direct]
@@ -159,6 +159,3 @@ GO
 select * from Category c join Product p on c.id = p.categoryId join Shop s on s.id = p.sellerId
 
 
-select * from RatingAndReview
-select * from Product
-select * from Shop

@@ -148,3 +148,32 @@ INSERT INTO [Product] ([name], [price], [description], [image], [sellerId], [cat
 ('Winter Jacket', 24.99, 'Warm baby jacket', 'baby_jacket.jpg', 1, (SELECT id FROM [Category] WHERE [name] = 'Baby Clothes'), 0, 50, 0),
 ('Baby Socks Set', 9.99, 'Pack of 5 soft socks', 'baby_socks.jpg', 1, (SELECT id FROM [Category] WHERE [name] = 'Baby Clothes'), 0, 50, 0),
 ('Cotton Pants', 14.99, 'Soft and stretchy pants', 'baby_pants.jpg', 1, (SELECT id FROM [Category] WHERE [name] = 'Baby Clothes'), 0, 50, 0);
+
+INSERT INTO [Direct] ([userId], [directer], [phoneNumber], [name])
+VALUES
+(1, '123 Street, City', '0123456', 'tien');
+	INSERT INTO [Order] ([userId], [total], [createAt], [status], [directId], [paymentMethod]) 
+VALUES
+(1, 10, '2025-01-26', 'Pending', 1, 'money'),
+(1, 20, '2025-01-26', 'done', 1, 'card'),
+(1, 30, '2025-01-26', 'Pending', 1, 'money'),
+(1, 40, '2025-01-26', 'done', 1, 'card'),
+(2, 10, '2025-01-26', 'Pending', 1, 'money'),
+(2, 20, '2025-01-26', 'done', 1, 'card'),
+(2, 30, '2025-01-26', 'Pending', 1, 'money'),
+(2, 40, '2025-01-26', 'done', 1, 'card');
+	INSERT INTO [OrderDetail] ([orderId],[productId],[quantity])
+VALUES 
+(1,1,2),
+(1,2,2),
+(2,3,2),
+(2,4,2);
+	
+select * from [dbo].[Direct]
+select * from [User]
+
+select * from [Order];
+select * from [dbo].[OrderDetail];
+select * from [dbo].[Shop]
+select * from [Product];
+
