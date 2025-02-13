@@ -156,10 +156,6 @@ VALUES
 VALUES
 (1, 10, '2025-01-26', 'Pending', 1, 'money'),
 (1, 20, '2025-01-26', 'done', 1, 'card'),
-(1, 30, '2025-01-26', 'Pending', 1, 'money'),
-(1, 40, '2025-01-26', 'done', 1, 'card'),
-(2, 10, '2025-01-26', 'Pending', 1, 'money'),
-(2, 20, '2025-01-26', 'done', 1, 'card'),
 (2, 30, '2025-01-26', 'Pending', 1, 'money'),
 (2, 40, '2025-01-26', 'done', 1, 'card');
 	INSERT INTO [OrderDetail] ([orderId],[productId],[quantity])
@@ -176,4 +172,7 @@ select * from [Order];
 select * from [dbo].[OrderDetail];
 select * from [dbo].[Shop]
 select * from [Product];
+
+DELETE FROM [Order] WHERE UserId = 2;
+
 

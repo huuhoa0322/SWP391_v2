@@ -16,7 +16,7 @@
 <div class="breadcrumb-wrap">
 	<div class="container">
 		<ul class="breadcrumb">
-			<li class="breadcrumb-item"><a href="#">Home</a></li>
+			<li class="breadcrumb-item"><a asp-action="Index" asp-controller="Home">Home</a></li>
 			<li class="breadcrumb-item active">Register</li>
 		</ul>
 	</div>
@@ -98,6 +98,12 @@
 				<button type="submit" id="registerButton" class="btn btn-primary">Register</button>
 			</td>
 		</tr>
+		<tr>
+			<td colspan="2" style="text-align: center; padding-top: 10px;">
+				<p>If you already have an account, please <a asp-controller="Login" asp-action="Login" class="text-primary">log in here</a>.</p>
+			</td>
+		</tr>
+
 	</table>
 </form>
 

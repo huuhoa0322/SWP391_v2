@@ -114,6 +114,7 @@ namespace OnlineMarketPlace.Repository
                     .GroupBy(od => od.Product.Seller.Name)  // Nhóm theo tên Shop
                     .Select(g => new ShopGroup
                     {
+                        ShopId = g.First().Product.Seller.Id,
                         ShopName = g.Key,
                         TotalAmount = g.Sum(od => od.Quantity * od.Product.Price), // Tính tổng tiền cho Shop
                         Products = g.Select(od => new ProductDetails
