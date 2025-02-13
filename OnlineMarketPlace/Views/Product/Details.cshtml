@@ -34,9 +34,9 @@
 									</a>
 									| <a href="#reviews" style="text-decoration: none; color: inherit;">
 										@Model.RatingAndReviews.Count Review
-									</a>
+									</a>									
 									| @Model.QuantitySold Selled
-									| <span style="color: #007bff; cursor: pointer;">Report</span>
+									| @Html.Partial("ProductReportModal")<button type="button" style="color: #007bff; cursor: pointer;" data-product-id="@Model.Id" data-product-name="@Model.Name">Report</button>
 
 								</p>
 								<p>Availability: @Model.Inventory</p>
@@ -52,7 +52,8 @@
 								</div>
 								
 							</div>
-							@Html.Partial("ProductReviewModal")
+							
+                            
 							@* <div class="action"> *@
 
 								<button type="button" class="btn btn-default get">
@@ -68,7 +69,7 @@
 								<button type="button" class="btn btn-default get">
                                 <a href="#" title="" style="color: white"><i class="fa fa-heart"></i> Add to wishlist</a>
 								</button>
-
+							@Html.Partial("ProductReviewModal")
 								<button type="button" class="btn btn-default review" data-product-id="@Model.Id" data-product-name="@Model.Name">
 									<i class="fa fa-star"></i> Rate
 								</button>
