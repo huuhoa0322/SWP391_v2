@@ -36,7 +36,7 @@
 										@Model.RatingAndReviews.Count Review
 									</a>									
 									| @Model.QuantitySold Selled
-									| @Html.Partial("ProductReportModal")<button type="button" style="color: #007bff; cursor: pointer;" data-product-id="@Model.Id" data-product-name="@Model.Name">Report</button>
+									| @Html.Partial("ProductReportModal")<button type="button" class="btn btn-default report" style="color: white; cursor: pointer;" data-product-id="@Model.Id" data-product-name="@Model.Name">Report</button>
 
 								</p>
 								<p>Availability: @Model.Inventory</p>

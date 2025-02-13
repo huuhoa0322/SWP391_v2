@@ -22,6 +22,7 @@ namespace OnlineMarketPlace.Repository
         }
         public async Task<Report?> GetReportByProductAndUserAsync(int productId, int userId)
         {
+            _context = new();
             return await _context.Reports
                 .Where(r => r.ProductId == productId && r.UserId == userId)
                 .FirstOrDefaultAsync();
