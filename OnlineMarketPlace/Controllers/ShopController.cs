@@ -23,16 +23,16 @@ namespace OnlineMarketPlace.Controllers
 
 
         [HttpGet]
-        public async Task<IActionResult> Shop(int id)
+        public async Task<IActionResult> Shop(int id, int productId)
         {
             //Console.WriteLine("ShopId: " + id + " | Time: " + DateTime.Now);
-
+            Console.WriteLine(productId);
             var shop = await _shopRepository.GetShopByIdAsync(id);
             var rating = await _ratingAndReviewRepository.GetAverageRatingByProductAsync(id);
 
             if (shop == null)
             {
-                ViewData["rating"] = rating.HasValue ? rating.Value.ToString("F1") : "0";
+                //ViewData["rating"] = rating.HasValue ? rating.Value.ToString("F1") : "0";
                 ViewData["Shop"] = null;
                 return View();
             }
@@ -53,14 +53,38 @@ namespace OnlineMarketPlace.Controllers
 
             categoryList.CategoriesChild = categoriesChild;
 
-            //for (int i = 0; i < categoryList.CategoriesParent.Count; i++)
-            //{
-            //    var parent = categoryList.CategoriesParent[i];
-            //    var children = categoryList.CategoriesChild[i];
+            //recommended product = random products same categoryId/cateParent/shop
+            var product = await _productRepository.GetProductByIdAsync(productId);
+            if (product != null)
+            {
+                var productsByCate = shop.Products.Where(p => p.CategoryId == product.CategoryId);
+                var recommendProduct = new List<Product>();
+                var productsByParentCategory = shop.Products
+                    .Where(p => p.Category.ParentId == product.Category.ParentId && p.CategoryId != product.CategoryId);
 
-            //    Console.WriteLine($"Danh mục cha: {parent.Name}");
-            //    Console.WriteLine($"Danh mục con count: {children?.Count ?? 0}");
-            //}
+                if (productsByCate.Count() >= 8)
+                {
+                    recommendProduct = productsByCate.OrderBy(x => Guid.NewGuid()).Take(8).ToList();
+                }
+                else
+                {
+                    if (productsByCate.Count() + productsByParentCategory.Count() >= 8)
+                    {
+                        recommendProduct = productsByCate.OrderBy(x => Guid.NewGuid()).Take(8).ToList();
+                        recommendProduct.AddRange(productsByParentCategory.OrderBy(x => Guid.NewGuid()).Take(8 - recommendProduct.Count));
+                    }
+                    else
+                    {
+                        recommendProduct = productsByCate.OrderBy(x => Guid.NewGuid()).ToList();
+                        recommendProduct.AddRange(productsByParentCategory.OrderBy(x => Guid.NewGuid()));
+                        recommendProduct.AddRange(shop.Products.Where(p => p.Category.ParentId != product.Category.ParentId).OrderBy(x => Guid.NewGuid()).Take(8 - recommendProduct.Count - productsByParentCategory.Count()));
+                    }
+                }
+
+                Console.WriteLine("kkkkk");
+
+                ViewData["recommendProduct"] = recommendProduct;
+            }
 
 
             ViewData["CategoriesList"] = categoryList;
