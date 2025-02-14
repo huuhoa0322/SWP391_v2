@@ -39,7 +39,7 @@ namespace OnlineMarketPlace.Controllers
                         Rating = rating,
                         Review = review,
                         CreatedBy = userId,
-                        CreatedAt = DateTime.UtcNow
+                        CreatedAt = DateTime.Now
                     };
                     await _ratingAndReviewRepository.AddAsync(ratingAndReview);
                 }

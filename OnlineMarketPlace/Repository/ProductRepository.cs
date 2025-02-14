@@ -13,7 +13,7 @@ namespace OnlineMarketPlace.Repository
             return await _context.Products.Where(p => p.IsDeleted == false).ToListAsync();
         }
 
-        public async Task<Product> GetProductByIdAsync(int id)
+        public async Task<Product?> GetProductByIdAsync(int id)
         {
             _context = new();
             return await _context.Products.FirstOrDefaultAsync(p => p.Id == id);
@@ -48,5 +48,6 @@ namespace OnlineMarketPlace.Repository
                     .ToListAsync(); //tra ve danh sach san pham thoa man
             }
         }
+
     }
 }

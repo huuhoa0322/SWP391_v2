@@ -1,39 +1,81 @@
-﻿@model List<Order>
-
-@{
-    ViewData["Title"] = "Danh sách đơn hàng";
-}
+﻿@model List<OrderViewModel>
 
 <h2>Danh sách đơn hàng</h2>
 
 <table class="table">
-    <thead>
-        <tr>
-            <th>Mã Đơn Hàng</th>
-            <th>Tổng Tiền</th>
-            <th>Ngày Tạo</th>
-            <th>Trạng Thái</th>
-            <th>Phương Thức Thanh Toán</th>
-        </tr>
-    </thead>
+    
     <tbody>
         @if (Model != null && Model.Any())
-    {
-        @foreach (var order in Model)
         {
-            <tr>
-                <td>@order.Id</td>
-                <td>@order.Total VNĐ</td>
-                <td>@order.CreateAt.ToString("dd/MM/yyyy")</td>
-                <td>@order.Status</td>
-                <td>@order.PaymentMethod</td>
-            </tr>
-        }
+            @foreach (var order in Model)
+            {
+                @foreach (var shopGroup in order.ShopGroups)
+                {
+                    var shopTotalAmount = shopGroup.Products.Sum(p => p.TotalProductAmount); // Tính tổng tiền của Shop
+                    var shopNameRowDisplayed = false;
+                    var statusDisplayed = false; // Biến để kiểm tra trạng thái
+
+                    @foreach (var product in shopGroup.Products)
+                    {
+                        <tr>
+                            @if (!shopNameRowDisplayed)
+                            {
+                                <td rowspan="@shopGroup.Products.Count">
+                                    @shopGroup.ShopName <!-- Hiển thị tên shop một lần -->
+                                    <!-- Nút Chat và View Shop dưới tên shop -->
+                                    <div class="mt-2">
+                                        <button type="button" class="btn btn-default get">
+                                            <a href="#" style="color:white">
+                                                <i class="fa fa-comments"></i>  Chat
+                                            </a>
+                                        </button>
+                                        <button type="button" class="btn btn-default get">
+                                            <a asp-action="Shop" asp-controller="Shop" asp-route-id="@shopGroup.ShopId" style="color:white">
+                                                <i class="fa fa-store"></i> View Shop
+                                            </a>
+                                        </button>
+                                    </div>
+                                </td>
+                                shopNameRowDisplayed = true;
+                            }
+                            <td><img src="#" alt="Product Image" style="width: 50px; height: auto;"></td>
+                            <td>@product.ProductName</td>
+                            <td>@product.Quantity</td>
+
+                            <!-- Chỉ hiển thị trạng thái một lần duy nhất -->
+                            @if (!statusDisplayed)
+                            {
+                                <td>@order.Status</td> <!-- Hiển thị trạng thái của đơn hàng -->
+                                statusDisplayed = true; // Đánh dấu trạng thái đã được hiển thị
+                            }
+                            else
+                            {
+                                <td></td> <!-- Nếu trạng thái đã hiển thị thì không hiển thị lại -->
+                            }
+
+                            <td>@product.TotalProductAmount VNĐ</td> <!-- Hiển thị tổng tiền cho từng sản phẩm -->
+                        </tr>
+                    }
+
+                    <!-- Hiển thị tổng tiền của Shop một lần -->
+                    <tr>
+                        <td colspan="4" class="text-right">
+                            <button type="button" class="btn btn-warning btn-sm">
+                                <a href="#" style="color:white;">
+                                    <i class="fa fa-info-circle"></i> Xem Chi Tiết
+                                </a>
+                            </button>
+                        </td>
+                        <td colspan="1" class="text-right"><strong>Tổng Tiền</strong></td>
+                        <td>@shopTotalAmount VNĐ</td> <!-- Tổng tiền của shop -->
+                    </tr>
+                }
+            }
         }
         else
         {
             <tr>
-                <td colspan="3" class="text-center">Không có đơn hàng nào.</td>
+                <td colspan="7" class="text-center">Không có đơn hàng nào.</td>
             </tr>
         }
     </tbody>
