@@ -160,20 +160,42 @@
     
     
     // Quantity
-    $('.qty button').on('click', function () {
-        var $button = $(this);
-        var oldValue = $button.parent().find('input').val();
-        if ($button.hasClass('btn-plus')) {
-            var newVal = parseFloat(oldValue) + 1;
-        } else {
-            if (oldValue > 0) {
-                var newVal = parseFloat(oldValue) - 1;
+    $(document).ready(function () {
+        $('.qty button').on('click', function () {
+            var $button = $(this);
+            var $row = $button.closest('tr'); // Get the row
+            var $input = $row.find('.qty-input'); // Find the quantity input
+            var oldValue = parseInt($input.val()) || 1; // Ensure it's an integer
+
+            if ($button.hasClass('btn-plus')) {
+                var newVal = oldValue + 1;
             } else {
-                newVal = 0;
+                newVal = oldValue > 1 ? oldValue - 1 : 1; // Prevent quantity < 1
+            }
+
+            $input.val(newVal);
+
+            // Update total price
+            updateTotal($row);
+        });
+
+        function updateTotal($row) {
+            var priceText = $row.find('.product-price').text().trim(); // Get text and trim spaces
+            var price = parseFloat(priceText.replace(/[^0-9.]/g, '')) || 0; // Extract valid number
+            var qty = parseInt($row.find('.qty-input').val()) || 1; // Get the quantity
+
+            console.log("Price:", price, "Quantity:", qty); // Debugging to check values
+
+            var total = price * qty; // Calculate total
+
+            if (!isNaN(total)) {
+                $row.find('.total-price').text(total.toFixed(2)); // Format to 2 decimal places
+            } else {
+                $row.find('.total-price').text("0.00"); // Fallback in case of error
             }
         }
-        $button.parent().find('input').val(newVal);
     });
+
     
     
     // Shipping address show hide
